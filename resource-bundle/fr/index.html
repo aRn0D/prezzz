@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Développer avec le SyliusResourceBundle</title>
+
+		<meta name="author" content="Arnaud Langlade">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/sylius.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+
+<section>
+    <h2>Développer avec le SyliusResourceBundle</h2>
+</section>
+
+
+
+<section>
+    <h2>Qui suis-je ?</h2>
+    <p>
+        Arnaud Langlade (@_aRn0D)
+    </p>
+    <p>
+        Membre de la Sylius core team depuis un peu plus d'un an
+    </p>
+    <p>
+        Travaille chez Clever Age (@CleverAge)
+    </p>
+</section>
+
+
+
+<section>
+    <h2>Sylius</h2>
+    <ul>
+        <li>Projet initié par Paweł Jędrzejewski en 2012</li>
+        <li>Framework E-commerce basé Symfony</li>
+        <li>Ensemble de bundles et composants utilisables idénpendement les uns des autres</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Kézako ?</h2>
+    <ul>
+        <li>Permet de gérer les ressources de son application (Web/Api)</li>
+        <li>Inspirer d’un composant Spring (Resources)</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Quelques chiffres!</h2>
+    <ul>
+		<li>57 Stars, 45 Forks</li>
+		<li>57 contributeurs (@lsmith77, @Seldaek)</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Pourquoi ?</h2>
+    <ul>
+        <li>Eviter la duplication de code dans nos contrôleurs</li>
+        <li>Utiliser une solution simple et flexible sans utiliser d'admin generator</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Comment ça marche ?</h2>
+    <p>TODO</p>
+</section>
+
+
+
+<section>
+    <h2>Configurons nos ressources</h2>
+    <pre>
+        <code data-trim contenteditable>
+sylius_resource:
+    resources:
+        live.user:
+            driver: doctrine/orm
+            object_manager: default
+            templates: App:User
+            classes:
+                model: Live\Entity\User
+                controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
+                repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
+                        </code>
+                    </pre>
+				</section>
+
+
+
+<section>
+    <h2>Mais que ce passe t'il ?</h2>
+			<pre>
+        <code data-trim contenteditable>
+$ php app/console container:debug | grep user
+live.repository.user container Live\Entity\User
+live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
+
+$ php app/console container:debug --parameters | grep user
+sylius.config.classes {"live.user": {"driver":"...", "object_manager": "...", "classes":{"model":"...", "controller":"...", "repository":"...", "interface":"..."}}}
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Configurons nos routes</h2>
+    <pre>
+        <code data-trim contenteditable>
+TODO : Est qu'on met tout
+live_user_show:
+    pattern: /{id}
+    methods: [GET]
+    defaults:
+        _controller: live.controller.user:indexAction
+live_user_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: live.controller.user:indexAction
+live_user_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: live.controller.user:createAction
+live_user_update:
+    pattern: /{id}/edit
+    methods: [GET, POST]
+    defaults:
+        _controller: live.controller.user:updateAction
+live_user_delete:
+    pattern: /{id}
+    methods: [DELETE]
+    defaults:
+        _controller: live.controller.user:deleteAction
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Création du formulaire</h2>
+    <pre>
+        <code data-trim contenteditable>
+class TaxonomyType extends AbstractResourceType
+{
+    public function getName()
+    {
+        return 'sylius_user';
+    }
+}
+        </code>
+    </pre>
+    <pre>
+        <code data-trim contenteditable>
+live.form.type.user:
+    class: Live\Form\Type\UserType
+    arguments: ['Live\Entity\User', 'live']
+    tags:
+      - { name: form.type, alias: live_user }
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Créons nos templates</h2>
+    <pre>
+        <code data-trim contenteditable>
+<form method="POST">
+    {{ form_widget(form) }}
+</form>
+
+<table>
+    <th>...</th>
+    {% for user in users %}
+    <tr>...</tr>
+    {% endfor %}
+</table>
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+	<!-- TODO Urile ??-->
+    <h2>Messages flash</h2>
+    <ul>
+        <li>Clé de message flash par défaut sylius.resource.actionName</li>
+        <li>Clé généré par resource appName.resource.actionName</li>
+        <li>Domaine utilisé : flashes (flashes.en.yml)</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Créer une action personnalisé</h2>
+    <ul>
+        <li>Créer un controlleur qui étend le ResourceController</li>
+        <li>Modifier la configuration de votre resource</li>
+        <li>Ajouter une route</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Vous avez dis flexible ?</h2>
+</section>
+
+
+
+<section>
+    <h2>Utiliser un template différent</h2>
+    <pre>
+        <code data-trim contenteditable>
+live_user_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: live.controller.user:createAction
+        _sylius:
+            template: LiveBundle:Backend/User:index.html.twig
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Rédiriger l'utilisateur</h2>
+    <pre>
+        <code data-trim contenteditable>
+live_user_create:
+    pattern: /new
+    methods: [GET, POST]
+        _controller: live.controller.user:createAction
+        _sylius:
+            redirect: live_user_index
+            # Ou
+            redirect:
+                route: live_user_index
+                parameters: []
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Configurer un formulaire différent</h2>
+    <pre>
+        <code data-trim contenteditable>
+live_user_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: live.controller.user:createAction
+        _sylius:
+            form: form_alias
+            # Ou
+            form: Live\Form\Type\OtherUserType
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Récupérer des données dans la BDD</h2>
+    <pre>
+        <code data-trim contenteditable>
+TODO dispo pour lecture et écriture
+live_user_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: live.controller.user:indexAction
+        _sylius:
+            # Repository
+            method: myCustomMethod
+            arguments: []
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Lister ses ressources</h2>
+	<pre>
+        <code data-trim contenteditable>
+TODO : On parle des extension twig ??
+live_user_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: live.controller.user:indexAction
+        _sylius:
+            # Filtre
+            filterable: true
+            criteria:
+                company: Lakion
+            # Trie
+            sortable: true
+            sorting:
+                updatedAt: asc|desc
+            # Paginate
+            paginate: 50
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>ParameterParser</h2>    
+	<pre>
+        <code data-trim contenteditable>
+live_user_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: live.controller.user:indexAction
+        _sylius:
+            # Filtre
+            filterable: true
+            criteria: $criteri
+            # Trie
+            sortable: true
+            sorting: $sorting
+            # Paginate
+            paginate: $paginate
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Comment créer un bundle ?</h2>
+</section>
+
+
+
+<section>
+    <h2>Configuration sémantique</h2>    
+	<pre>
+        <code data-trim contenteditable>
+bundle_name:
+    driver: doctrine/orm
+    object_manager: my_custom_manager
+	templates:
+		user: LiveBundle:Backend/User
+    validation_groups:
+        user: [live]
+    classes:
+        my_entity:
+            model: Live\UserBundle\Model
+            controller: Live\UserBundle\Entity\ModelController
+            repository: Live\UserBundle\Repository\ModelRepository
+            form: Live\UserBundle\Form\Type\FormType
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Créer une extension</h2>    
+	<pre>
+        <code data-trim contenteditable>
+TODO : setting
+class MyBundleExtension extends AbstractResourceExtension
+{
+    protected $applicationName = 'my_app';
+    protected $configDirectory = '/../Resources/config';
+    protected $configFiles = array('services','forms');
+	protected $configFormat = self::CONFIG_XML;
+
+    public function load(array $config, ContainerBuilder $container)
+    {
+        $this->configure(
+           	/* ... */
+            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | 
+			self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS | self::CONFIGURE_FORMS
+        );
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Mais qu’est ce qui se passe ?</h2>    
+	<pre>
+        <code data-trim contenteditable>
+TODO : setting
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Mapping doctrine</h2>
+    <ul>
+        <li>Déclarer votre classe en tant mapped-superclass</li>
+        <li>Le mapping est réécris grâce à l’évènement loadClassMetadata</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Créer son Doctrine MappingDriver</h2>    
+	<pre>
+        <code data-trim contenteditable>
+TODO : setting
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Configurer le Doctrine Target Resolver</h2>    
+	<pre>
+        <code data-trim contenteditable>
+TODO : setting
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Comment créer une API ?</h2>
+</section>
+
+
+
+<section>
+    <h2></h2>    
+    <ul>
+		<li>Dépendences : JMSSerializer et BazingaHateoasBundle et le FOSRestBundle</li>
+		<li>Resource controller extends the FOSRestController</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Le routing</h2>    
+    <p>Utiliser le ApiLoader pour générer le routes</p>
+        <code data-trim contenteditable>
+live_api_user_(index|show|create|update|delete):
+    pattern: (/users/|/users/{id})
+    methods: [(GET|GET|POST|PUT-PATH|DELETE)]
+    defaults:
+        _controller: live.controller.user:indexAction
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Le parameter parser</h2>    
+    <pre>
+        <code data-trim contenteditable>
+Accept: application/json; version=1.0.1; groups=Default,Details
+        </code>
+    </pre>
+    <pre>
+        <code data-trim contenteditable>
+Live\Entity\User:
+    properties:
+        firstName:
+            expose: true
+            type: integer
+            groups: [Default, Details]
+			since_version: 0.3
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Venez contribuer!</h2>
+    <ul>
+		<li>Merci à tous les contributeurs!</li>
+		<li>N'hésister pas à nous soumettre vos PRs...</li>
+		<li>... surtout si vous aimez faire de la doc :D !</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Questions ?</h2>
+</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				width: 1200,
+   				height: 1000,
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+                slideNumber: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
