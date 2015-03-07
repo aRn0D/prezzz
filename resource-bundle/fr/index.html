@@ -512,7 +512,7 @@ class LiveUserBundle extends AbstractResourceBundle
 }
         </code>
     </pre>
-</section
+</section>
 
 
 
@@ -546,24 +546,40 @@ class LiveUserBundle extends AbstractResourceBundle
 
 
 <section>
-    <h2>Comment créer une API ?</h2>
+    <h2>Comment créer une API REST ?</h2>
 </section>
 
 
 
 <section>
-    <h2></h2>    
+    <h2>Comment ça fonctionne ?</h2>    
     <ul>
-		<li>Dépendences : JMSSerializer et BazingaHateoasBundle et le FOSRestBundle</li>
-		<li>Resource controller extends the FOSRestController</li>
+		<li>Le ResourceController étend the FOSRestController</li>
+		<li>La sérialization est faite grâce au JMSSerializerBundle</li>
+		<li>Possibilité d'utiliser BazingaHateoasBundle</li>
     </ul>
+    <aside class="notes">
+		<p>        
+			Expose en plus de l'état, les actions / transitions possibles autour de l'objet au travers de liens hypermédias.
+        </p>
+        <p>
+            <strong>H</strong>ypermedia <strong>A</strong>s <strong>T</strong>he <strong>E</strong>ngine <strong>O</strong>f <strong>A</strong>pplication <strong>S</strong>tate
+            permet de faire un API de niveau 3 <strong>Hypermedia Controls</strong>
+		</p>		
+		<ul>
+			<li>implémentation découplée</li>
+			<li>plus besoin de manipuler les URLs</li>
+			<li>forme d'auto-documentation de l’API</li>
+		</ul>
+    </aside>
 </section>
 
 
 
 <section>
     <h2>Le routing</h2>    
-    <p>Utiliser le ApiLoader pour générer le routes</p>
+    <p>Utiliser le ApiLoader pour générer vos routes automatiquement</p>
+	<pre>
         <code data-trim contenteditable>
 live_api_user_(index|show|create|update|delete):
     pattern: (/users/|/users/{id})
@@ -572,26 +588,40 @@ live_api_user_(index|show|create|update|delete):
         _controller: live.controller.user:indexAction
         </code>
     </pre>
+	<aside class="notes">
+		<p>
+			Les routes sont construites à partir des resources configurées. 
+		</p>
+		<ul>
+			<li>live: nom de l'application</li>
+			<li>user: nom de le ressource</li>
+		</ul>	
+	<aside>
 </section>
 
 
 
 <section>
     <h2>Le header parser</h2>    
+	<p>Il récupére dans les entêtes HTTP de la version et des groupes de validation</p>
     <pre>
         <code data-trim contenteditable>
+GET /api/user/57 HTTP/1.1
+Host: live.com
 Accept: application/json; version=1.0.1; groups=Default,Details
         </code>
     </pre>
+
     <pre>
         <code data-trim contenteditable>
+# Configuration du sérialiseur
 Live\Entity\User:
     properties:
         firstName:
             expose: true
             type: integer
             groups: [Default, Details]
-			since_version: 0.3
+            since_version: 0.3
         </code>
     </pre>
 </section>
