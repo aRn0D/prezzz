@@ -471,17 +471,20 @@ sylius_taxonomy.object_manager   default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 <section>
-    <h2>Créer TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h2>    
+    <h2>Initialiser votre bundle</h2>
 	<pre>
         <code data-trim contenteditable>
 class LiveUserBundle extends AbstractResourceBundle
 {
+    /**
+     * Liste des drivers supportés par le bundle
+     */
     public static function getSupportedDrivers()
     {
         return array(
             SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
-			SyliusResourceBundle::DRIVER_DOCTRINE_MONGODB_ODM,
-			SyliusResourceBundle::DRIVER_DOCTRINE_PHPCR_ODM,
+            SyliusResourceBundle::DRIVER_DOCTRINE_MONGODB_ODM,
+            SyliusResourceBundle::DRIVER_DOCTRINE_PHPCR_ODM,
         );
     }
 }
@@ -492,19 +495,22 @@ class LiveUserBundle extends AbstractResourceBundle
 
 
 <section>
-    <h2>Créer son Doctrine MappingDriver</h2>    
+    <h2>Créer son Doctrine Mapping Driver</h2>
 	<pre>
         <code data-trim contenteditable>
 class LiveUserBundle extends AbstractResourceBundle
 {
-	/**
-	 * Construit le chemin : /path/to/bundle/Resources/config/doctrine/model
-	 */
+    /**
+     * Les fichier de mapping seront placés dans /path/to/bundle/Resources/config/doctrine/model,
+     */
     protected function getDoctrineMappingDirectory()
     {
         return 'model';
     }
 
+    /**
+     * pour le namespace suivant :
+     */
     protected function getModelNamespace()
     {
         return 'Live\UserBundle\Model';
@@ -517,7 +523,7 @@ class LiveUserBundle extends AbstractResourceBundle
 
 
 <section>
-    <h2>Configurer le Doctrine Target Resolver</h2>    
+    <h2>Configurer le ResolveTargetEntityListener</h2>
 	<pre>
         <code data-trim contenteditable>
 class LiveUserBundle extends AbstractResourceBundle
@@ -525,12 +531,18 @@ class LiveUserBundle extends AbstractResourceBundle
     protected function getModelInterfaces()
     {
         return array(
-			'Live\UserBundle\Model\UserInterface', 'live.model.user.class',		
-		);
+            'Live\UserBundle\Model\UserInterface', 'live.model.user.class',
+        );
     }
 }
         </code>
     </pre>
+    <aside class="notes">
+        <ul>
+            <li>Il ré-écrit des paramètres <strong>targetEntity</strong> dans le mappind de votre model durant l'exécution.</li>
+            <li>Cette fonctionnalité permet de définir des relations entre différentes entités sans les écrire en dur.</li>
+        </ul>
+    </aside>
 </section>
 
 
