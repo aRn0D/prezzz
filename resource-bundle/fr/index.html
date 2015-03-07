@@ -49,15 +49,11 @@
 
 <section>
     <h2>Qui suis-je ?</h2>
-    <p>
-        Arnaud Langlade (@_aRn0D)
-    </p>
-    <p>
-        Membre de la Sylius core team depuis un peu plus d'un an
-    </p>
-    <p>
-        Travaille chez Clever Age (@CleverAge)
-    </p>
+    <ul>
+        <li>Arnaud Langlade (@_aRn0D)</li>
+        <li>Membre de la Sylius core team depuis un peu plus d'un an</li>
+        <li>Travaille chez Clever Age (@CleverAge)</li>
+    </ul>
 </section>
 
 
@@ -67,7 +63,7 @@
     <ul>
         <li>Projet initié par Paweł Jędrzejewski en 2012</li>
         <li>Framework E-commerce basé Symfony</li>
-        <li>Ensemble de bundles et composants utilisables idénpendement les uns des autres</li>
+        <li>Bundles et composants indépendents les uns des autres</li>
     </ul>
 </section>
 
@@ -76,18 +72,9 @@
 <section>
     <h2>Kézako ?</h2>
     <ul>
-        <li>Permet de gérer les ressources de son application (Web/Api)</li>
+        <li>Permet la gestion des ressources dans une applications via CRUD</li>
+		<li>Permet la mise en place d'une API</li>
         <li>Inspirer d’un composant Spring (Resources)</li>
-    </ul>
-</section>
-
-
-
-<section>
-    <h2>Quelques chiffres!</h2>
-    <ul>
-		<li>57 Stars, 45 Forks</li>
-		<li>57 contributeurs (@lsmith77, @Seldaek)</li>
     </ul>
 </section>
 
@@ -104,8 +91,19 @@
 
 
 <section>
+    <h2>Quelques chiffres!</h2>
+    <ul>
+		<li>57 Stars</li> 
+		<li>45 Forks</li>
+		<li>57 contributeurs (@lsmith77, @Seldaek)</li>
+    </ul>
+</section>
+
+
+
+<section>
     <h2>Comment ça marche ?</h2>
-    <p>TODO</p>
+    <p>TODO : Transition + explication du resourceController</p>
 </section>
 
 
@@ -131,7 +129,7 @@ sylius_resource:
 
 
 <section>
-    <h2>Mais que ce passe t'il ?</h2>
+    <h2>Mais que se passe t'il ?</h2>
 			<pre>
         <code data-trim contenteditable>
 $ php app/console container:debug | grep user
@@ -140,7 +138,7 @@ live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceC
 live.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
 
 $ php app/console container:debug --parameters | grep user
-sylius.config.classes {"live.user": {"driver":"...", "object_manager": "...", "classes":{"model":"...", "controller":"...", "repository":"...", "interface":"..."}}}
+sylius.config.classes {"live.user": {...}}
         </code>
     </pre>
 </section>
@@ -151,7 +149,7 @@ sylius.config.classes {"live.user": {"driver":"...", "object_manager": "...", "c
     <h2>Configurons nos routes</h2>
     <pre>
         <code data-trim contenteditable>
-TODO : Est qu'on met tout
+TODO : Est qu'on met tout / Override method
 live_user_show:
     pattern: /{id}
     methods: [GET]
@@ -184,7 +182,7 @@ live_user_delete:
 
 
 <section>
-    <h2>Création du formulaire</h2>
+    <h2>Créons notre formulaire</h2>
     <pre>
         <code data-trim contenteditable>
 class TaxonomyType extends AbstractResourceType
@@ -386,7 +384,7 @@ live_user_index:
 
 
 <section>
-    <h2>Comment créer un bundle ?</h2>
+    <h2>Comment ça se passe si je veux créer un bundle?</h2>
 </section>
 
 
@@ -397,17 +395,21 @@ live_user_index:
         <code data-trim contenteditable>
 bundle_name:
     driver: doctrine/orm
-    object_manager: my_custom_manager
+    object_manager: default
 	templates:
 		user: LiveBundle:Backend/User
     validation_groups:
         user: [live]
     classes:
-        my_entity:
-            model: Live\UserBundle\Model
-            controller: Live\UserBundle\Entity\ModelController
-            repository: Live\UserBundle\Repository\ModelRepository
-            form: Live\UserBundle\Form\Type\FormType
+        user:
+            model: Live\UserBundle\Model\User
+            controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
+            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository
+            form: Live\UserBundle\Form\Type\UserType
+			# Ou
+			form:
+				default: Live\UserBundle\Form\Type\UserType
+				choice: Live\UserBundle\Form\Type\UserChoiceType
         </code>
     </pre>
 </section>
@@ -419,9 +421,9 @@ bundle_name:
 	<pre>
         <code data-trim contenteditable>
 TODO : setting
-class MyBundleExtension extends AbstractResourceExtension
+class LiveUserExtension extends AbstractResourceExtension
 {
-    protected $applicationName = 'my_app';
+    protected $applicationName = 'live';
     protected $configDirectory = '/../Resources/config';
     protected $configFiles = array('services','forms');
 	protected $configFormat = self::CONFIG_XML;
@@ -445,7 +447,88 @@ class MyBundleExtension extends AbstractResourceExtension
     <h2>Mais qu’est ce qui se passe ?</h2>    
 	<pre>
         <code data-trim contenteditable>
-TODO : setting
+$ php app/console container:debug | grep user
+live.controller.user              container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.form.type.user               container Live\UserBundle\Form\Type\UserType // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+live.manager.user                 n/a       alias for doctrine.orm.default_entity_manager
+live.repository.user              container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+
+$ php app/console container:debug --parameters | grep user
+live.config.classes                   {...}
+live.controller.user.class       Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.form.type.user.class        Live\UserBundle\Form\Type\UserType
+live.model.user.class            Live\UserBundle\Model\User
+live.repository.user.class       Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.validation_group.user       ["live"]
+live_user.driver                 doctrine/orm 
+live_user.driver.doctrine/orm    true  // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sylius_taxonomy.object_manager   default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//...
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Créer TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h2>    
+	<pre>
+        <code data-trim contenteditable>
+class LiveUserBundle extends AbstractResourceBundle
+{
+    public static function getSupportedDrivers()
+    {
+        return array(
+            SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
+			SyliusResourceBundle::DRIVER_DOCTRINE_MONGODB_ODM,
+			SyliusResourceBundle::DRIVER_DOCTRINE_PHPCR_ODM,
+        );
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Créer son Doctrine MappingDriver</h2>    
+	<pre>
+        <code data-trim contenteditable>
+class LiveUserBundle extends AbstractResourceBundle
+{
+	/**
+	 * Construit le chemin : /path/to/bundle/Resources/config/doctrine/model
+	 */
+    protected function getDoctrineMappingDirectory()
+    {
+        return 'model';
+    }
+
+    protected function getModelNamespace()
+    {
+        return 'Live\UserBundle\Model';
+    }
+}
+        </code>
+    </pre>
+</section
+
+
+
+<section>
+    <h2>Configurer le Doctrine Target Resolver</h2>    
+	<pre>
+        <code data-trim contenteditable>
+class LiveUserBundle extends AbstractResourceBundle
+{
+    protected function getModelInterfaces()
+    {
+        return array(
+			'Live\UserBundle\Model\UserInterface', 'live.model.user.class',		
+		);
+    }
+}
         </code>
     </pre>
 </section>
@@ -458,28 +541,6 @@ TODO : setting
         <li>Déclarer votre classe en tant mapped-superclass</li>
         <li>Le mapping est réécris grâce à l’évènement loadClassMetadata</li>
     </ul>
-</section>
-
-
-
-<section>
-    <h2>Créer son Doctrine MappingDriver</h2>    
-	<pre>
-        <code data-trim contenteditable>
-TODO : setting
-        </code>
-    </pre>
-</section>
-
-
-
-<section>
-    <h2>Configurer le Doctrine Target Resolver</h2>    
-	<pre>
-        <code data-trim contenteditable>
-TODO : setting
-        </code>
-    </pre>
 </section>
 
 
@@ -516,7 +577,7 @@ live_api_user_(index|show|create|update|delete):
 
 
 <section>
-    <h2>Le parameter parser</h2>    
+    <h2>Le header parser</h2>    
     <pre>
         <code data-trim contenteditable>
 Accept: application/json; version=1.0.1; groups=Default,Details
@@ -536,6 +597,13 @@ Live\Entity\User:
 </section>
 
 
+
+<section>
+    <h2>Formulaires TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h2>
+</section>
+
+
+
 <section>
     <h2>Venez contribuer!</h2>
     <ul>
@@ -544,6 +612,7 @@ Live\Entity\User:
 		<li>... surtout si vous aimez faire de la doc :D !</li>
     </ul>
 </section>
+
 
 
 <section>
