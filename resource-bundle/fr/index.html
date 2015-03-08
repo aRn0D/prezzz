@@ -65,19 +65,30 @@
         <li>Framework E-commerce basé Symfony</li>
         <li>Bundles et composants indépendents les uns des autres</li>
     </ul>
+    <aside class="notes">
+        Le projet démarra 2012 par l'écriture de certains bundles mais le développement de l’application commença il y a environ deux ans
+    </aside>
 </section>
 
 
 
 <section>
     <h2>Kézako ?</h2>
-    <ul>
-        <li>Permet la gestion des ressources dans une applications via CRUD</li>
-		<li>Permet la mise en place d'une API</li>
-        <li>Inspirer d’un composant Spring (Resources)</li>
-    </ul>
+    <p>
+        Le SyliusResourceBundle simplifie la gestion des ressources (de vos CRUD) dans votre application Symfony.
+    </p>
 </section>
 
+
+
+<section>
+    <h2>Quelques chiffres!</h2>
+    <ul>
+        <li>57 Stars</li>
+        <li>45 Forks</li>
+        <li>57 contributeurs (@lsmith77, @Seldaek)</li>
+    </ul>
+</section>
 
 
 <section>
@@ -91,19 +102,33 @@
 
 
 <section>
-    <h2>Quelques chiffres!</h2>
+    <h2>Resource Controller</h2>
     <ul>
-		<li>57 Stars</li> 
-		<li>45 Forks</li>
-		<li>57 contributeurs (@lsmith77, @Seldaek)</li>
+        <li>Création d'un contrôlleur générique qui permet de gérer les actions d'un CRUD</li>
+        <li>Ajout d'actions supplémentaires : gestion de la position, d'un status ou de l'état</li>
+        <li>Utilisation des évènements</li>
+        <li>Initialisation par une configuration et non du code</li>
     </ul>
 </section>
 
 
 
 <section>
-    <h2>Comment ça marche ?</h2>
-    <p>TODO : Transition + explication du resourceController</p>
+    <h2>Resource Repository</h2>
+    <ul>
+        <li>Création d'un repository répondant au besoin d'un CRUD :</li>
+        <ul>
+            <li>Pagination des collections</li>
+            <li>Gestion des filtres et tries des collections</li>
+            <li>Usinage des resources</li>
+        </ul>
+        <li>Il étend et ajoute des fonctionnalités au repository Doctrine</li>
+    </ul>
+    <aside class="notes">
+        <p>
+            Nous utilisons Pagerfanta pour gérer la pagination de ressources
+        </p>
+    </aside>
 </section>
 
 
@@ -115,16 +140,21 @@
 sylius_resource:
     resources:
         live.user:
-            driver: doctrine/orm
+            driver: (doctrine/orm|doctrine/mongodb-odm|doctrine/phpcr-odm)
             object_manager: default
             templates: App:User
             classes:
                 model: Live\Entity\User
                 controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
                 repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
-                        </code>
-                    </pre>
-				</section>
+        </code>
+    </pre>
+    <aside class="notes">
+        <p>
+            Le nom de la resource est préfixé par ce qu'on appelle le "nom de l'application", il est utilisé comme namespace.
+        </p>
+    </aside>
+</section>
 
 
 
@@ -133,7 +163,7 @@ sylius_resource:
 			<pre>
         <code data-trim contenteditable>
 $ php app/console container:debug | grep user
-live.repository.user container Live\Entity\User
+live.manager.user    alias for "doctrine.orm.default_entity_manager"
 live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
 live.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
 
