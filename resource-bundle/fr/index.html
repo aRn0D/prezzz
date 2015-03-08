@@ -134,6 +134,10 @@
 
 
 <section>
+    <h2>Comment le mettre en place ?</h2>
+</section>
+
+<section>
     <h2>Configurons nos ressources</h2>
     <pre>
         <code data-trim contenteditable>
@@ -207,6 +211,18 @@ live_user_delete:
         _controller: live.controller.user:deleteAction
         </code>
     </pre>
+    <aside class="notes">
+        <p>
+            Les contrôlleurs sont définis en tant que service, pensez à les utiliser dans votre routing pour n'avoir qu'à modifier la configuration en cas de changement.
+        </p>
+        <p>
+            Routing
+            <ul>
+                <li>La création et la modification renvoie vers la route show</li>
+                <li>La suppression renvoie vers la route index</li>
+            </ul>
+        </p>
+    </aside>
 </section>
 
 
@@ -442,6 +458,11 @@ bundle_name:
 				choice: Live\UserBundle\Form\Type\UserChoiceType
         </code>
     </pre>
+    <aside class="notes">
+        <p>
+            La seconde façon de déclarer les formulaires permet de les enregistrer automatiquement en tant que service.
+        </p>
+    </aside>
 </section>
 
 
@@ -569,7 +590,7 @@ class LiveUserBundle extends AbstractResourceBundle
     </pre>
     <aside class="notes">
         <ul>
-            <li>Il ré-écrit des paramètres <strong>targetEntity</strong> dans le mappind de votre model durant l'exécution.</li>
+            <li>Il ré-écrit des paramètres <strong>targetEntity</strong> dans le mapping de votre model durant l'exécution.</li>
             <li>Cette fonctionnalité permet de définir des relations entre différentes entités sans les écrire en dur.</li>
         </ul>
     </aside>
@@ -582,6 +603,7 @@ class LiveUserBundle extends AbstractResourceBundle
     <ul>
         <li>Déclarer votre classe en tant mapped-superclass</li>
         <li>Le mapping est réécris grâce à l’évènement loadClassMetadata</li>
+        <li>Le but : permettre d'étendre vos modèles sans devoir réécrire leur mapping</li>
     </ul>
 </section>
 
