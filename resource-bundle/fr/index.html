@@ -75,7 +75,7 @@
 <section>
     <h2>Kézako ?</h2>
     <p>
-        Le SyliusResourceBundle simplifie la gestion des ressources dans votre application Symfony ou une API REST.
+        Le SyliusResourceBundle simplifie la gestion des ressources dans votre application Symfony ou votre API REST.
     </p>
 </section>
 
@@ -104,10 +104,10 @@
 <section>
     <h2>Resource Controller</h2>
     <ul>
-        <li>Création d'un contrôlleur générique qui permet de gérer les actions d'un CRUD</li>
-        <li>Ajout d'actions supplémentaires : gestion de la position, d'un status ou de l'état</li>
+        <li>Contrôlleur générique qui gére les actions d'un CRUD</li>
+        <li>Actions supplémentaires : gestion de la position, d'un status ou de l'état</li>
         <li>Utilisation des évènements</li>
-        <li>Initialisation par une configuration et non du code</li>
+        <li>Initialisation par la configuration et non du code</li>
     </ul>
 </section>
 
@@ -116,13 +116,12 @@
 <section>
     <h2>Resource Repository</h2>
     <ul>
-        <li>Création d'un repository répondant au besoin d'un CRUD :</li>
+        <li>Ajout de fonctionnalités au repository Doctrine</li>
         <ul>
-            <li>Pagination des collections</li>
+            <li>Pagination des collections (Pagerfanta)</li>
             <li>Gestion des filtres et tries des collections</li>
             <li>Usinage des resources</li>
         </ul>
-        <li>Il étend et ajoute des fonctionnalités au repository Doctrine</li>
     </ul>
     <aside class="notes">
         <p>
@@ -255,20 +254,33 @@ live.form.type.user:
 
 <section>
     <h2>Créons nos templates</h2>
+    <p>
+        Où mettre vos templates? Live:User:action.twig.html
+    </p>
     <pre>
         <code data-trim contenteditable>
+{% Formulaire *}
+
 <form method="POST">
     {{ form_widget(form) }}
 </form>
-
-<table>
-    <th>...</th>
-    {% for user in users %}
-    <tr>...</tr>
-    {% endfor %}
-</table>
         </code>
     </pre>
+    <pre>
+        <code data-trim contenteditable>
+{% Listing *}
+
+{% for user in users %}
+    {% ... *}
+{% endfor %}
+        </code>
+    </pre>
+    <aside class="notes">
+        <ul>
+            <li>Une variable nommée form (FormView) est assignée au template de création et modification</li>
+            <li>La variable contenant la collection de ressource pour le listing correspond à la clé de la ressource plurialisée</li>
+        </ul>
+    </aside>
 </section>
 
 
@@ -442,8 +454,8 @@ live_user_index:
 bundle_name:
     driver: doctrine/orm
     object_manager: default
-	templates:
-		user: LiveBundle:Backend/User
+    templates:
+        user: LiveBundle:Backend/User
     validation_groups:
         user: [live]
     classes:
@@ -452,10 +464,10 @@ bundle_name:
             controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
             repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository
             form: Live\UserBundle\Form\Type\UserType
-			# Ou
-			form:
-				default: Live\UserBundle\Form\Type\UserType
-				choice: Live\UserBundle\Form\Type\UserChoiceType
+            # Ou
+            form:
+                default: Live\UserBundle\Form\Type\UserType
+                choice: Live\UserBundle\Form\Type\UserChoiceType
         </code>
     </pre>
     <aside class="notes">
@@ -471,25 +483,32 @@ bundle_name:
     <h2>Créer une extension</h2>    
 	<pre>
         <code data-trim contenteditable>
-TODO : setting
 class LiveUserExtension extends AbstractResourceExtension
 {
     protected $applicationName = 'live';
     protected $configDirectory = '/../Resources/config';
+    protected $configFormat = self::CONFIG_XML; // Ou self::CONFIG_YML
     protected $configFiles = array('services','forms');
-	protected $configFormat = self::CONFIG_XML;
 
     public function load(array $config, ContainerBuilder $container)
     {
         $this->configure(
            	/* ... */
-            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | 
-			self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS | self::CONFIGURE_FORMS
+            self::CONFIGURE_LOADER |
+            self::CONFIGURE_DATABASE |
+            self::CONFIGURE_PARAMETERS |
+            self::CONFIGURE_VALIDATORS |
+            self::CONFIGURE_FORMS
         );
     }
 }
         </code>
     </pre>
+    <aside class="notes">
+        <p>
+            Utilisation d'un <a href="http://php.net/manual/fr/language.operators.bitwise.php">opérateurs sur les bits</a> (bitwise operators)
+        </p>
+    </aside>
 </section>
 
 
@@ -498,25 +517,28 @@ class LiveUserExtension extends AbstractResourceExtension
     <h2>Mais qu’est ce qui se passe ?</h2>    
 	<pre>
         <code data-trim contenteditable>
+// TODO : Faut montrer ce qu'il se passe avec les constante !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $ php app/console container:debug | grep user
-live.controller.user              container Sylius\Bundle\ResourceBundle\Controller\ResourceController
-live.form.type.user               container Live\UserBundle\Form\Type\UserType // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-live.manager.user                 n/a       alias for doctrine.orm.default_entity_manager
-live.repository.user              container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.controller.user    container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.manager.user       n/a       alias for doctrine.orm.default_entity_manager
+live.repository.user    container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.form.type.user     container Live\UserBundle\Form\Type\UserType
 
 $ php app/console container:debug --parameters | grep user
-live.config.classes                   {...}
+live.config.classes              {...}
 live.controller.user.class       Sylius\Bundle\ResourceBundle\Controller\ResourceController
-live.form.type.user.class        Live\UserBundle\Form\Type\UserType
-live.model.user.class            Live\UserBundle\Model\User
 live.repository.user.class       Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.model.user.class            Live\UserBundle\Model\User
+live.form.type.user.class        Live\UserBundle\Form\Type\UserType
 live.validation_group.user       ["live"]
 live_user.driver                 doctrine/orm 
 live_user.driver.doctrine/orm    true  // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-sylius_taxonomy.object_manager   default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//...
+live_user.object_manager         default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         </code>
     </pre>
+    <aside class="notes">
+        <p>Attention: votre formulaire est déclaré automatiquement en tant que service seulement si vous optez pour le dexième type de configuration</p>
+    </aside>
 </section>
 
 
@@ -552,7 +574,8 @@ class LiveUserBundle extends AbstractResourceBundle
 class LiveUserBundle extends AbstractResourceBundle
 {
     /**
-     * Les fichier de mapping seront placés dans /path/to/bundle/Resources/config/doctrine/model,
+     * Les fichier de mapping seront placés dans le dossier
+     * /path/to/bundle/Resources/config/doctrine/model,
      */
     protected function getDoctrineMappingDirectory()
     {
