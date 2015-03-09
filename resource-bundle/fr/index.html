@@ -51,9 +51,21 @@
     <h2>Qui suis-je ?</h2>
     <ul>
         <li>Arnaud Langlade (@_aRn0D)</li>
-        <li>Membre de la Sylius core team depuis un peu plus d'un an</li>
+        <li>Membre de la Sylius core team</li>
         <li>Travaille chez Clever Age (@CleverAge)</li>
     </ul>
+</section>
+
+
+
+<section>
+    <h2>Kézako ?</h2>
+    <p>
+        Le SyliusResourceBundle simplifie la gestion des ressources dans votre application Symfony ou votre API REST.
+    </p>
+    <p>
+        Développé dans le cadre du projet open source Sylius.
+    </p>
 </section>
 
 
@@ -72,80 +84,98 @@
 
 
 
+
+<!--<section>-->
+    <!--<h2>Quelques chiffres!</h2>-->
+    <!--<ul>-->
+        <!--<li>57 Stars</li>-->
+        <!--<li>45 Forks</li>-->
+        <!--<li>57 contributeurs (@lsmith77, @Seldaek)</li>-->
+    <!--</ul>-->
+<!--</section>-->
+
+
 <section>
-    <h2>Kézako ?</h2>
+    <h2>Pourquoi a t'on créer ce bundle ?</h2>
+    <ul>
+        <li>Eviter la duplication de code dans nos contrôleurs</li>
+        <li>La core team ne voulait pas utiliser d'admin generator</li>
+        <li>Utiliser une solution simple et flexible</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Comment gérer un CRUD dans Symfony ?</h2>
+    <ul>
+        <li>Un contôlleur (index, show, create, update et delete) et ses routes</li>
+        <li>Un ORM pour lire / écrire ses données en base</li>
+        <li>Un formulaire pour sasir les informations</li>
+        <li>Des templates pour afficher le tout</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>ResourceController</h2>
+    <ul>
+        <li>Contrôleur générique qui gére les actions d'un CRUD</li>
+        <li>Actions supplémentaires comme gestion de la position, d'un status</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Lire et écrire vos données</h2>
+    <ul>
+        <li>
+            L'écriture et la lecture sont gérés par Doctrine
+            <ul>
+                <li>doctrine/orm</li>
+                <li>doctrine/mongodb-odm</li>
+                <li>doctrine/phpcr-odm</li>
+            </ul>
+        </li>
+        <li>Les repository par défaut ont été personnalisés</li>
+        <li>La pagination des resource est gérer PagerFanta</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Pour le reste ?</h2>
     <p>
-        Le SyliusResourceBundle simplifie la gestion des ressources dans votre application Symfony ou votre API REST.
+        On se base sur les composants Symfony
     </p>
 </section>
 
 
 
 <section>
-    <h2>Quelques chiffres!</h2>
-    <ul>
-        <li>57 Stars</li>
-        <li>45 Forks</li>
-        <li>57 contributeurs (@lsmith77, @Seldaek)</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>Pourquoi ?</h2>
-    <ul>
-        <li>Eviter la duplication de code dans nos contrôleurs</li>
-        <li>Utiliser une solution simple et flexible sans utiliser d'admin generator</li>
-    </ul>
-</section>
-
-
-
-<section>
-    <h2>Resource Controller</h2>
-    <ul>
-        <li>Contrôlleur générique qui gére les actions d'un CRUD</li>
-        <li>Actions supplémentaires : gestion de la position, d'un status ou de l'état</li>
-        <li>Utilisation des évènements</li>
-        <li>Initialisation par la configuration et non du code</li>
-    </ul>
-</section>
-
-
-
-<section>
-    <h2>Resource Repository</h2>
-    <ul>
-        <li>Ajout de fonctionnalités au repository Doctrine</li>
-        <ul>
-            <li>Pagination des collections (Pagerfanta)</li>
-            <li>Gestion des filtres et tries des collections</li>
-            <li>Usinage des resources</li>
-        </ul>
-    </ul>
-    <aside class="notes">
-        <p>
-            Nous utilisons Pagerfanta pour gérer la pagination de ressources
-        </p>
-    </aside>
-</section>
-
-
-
-<section>
     <h2>Comment le mettre en place ?</h2>
+    <p>
+        Créons un CRUD pour gérer des utilisateurs (des users comme disent nos amis anglais)
+    </p>
+    <p>
+        Nous supposons que notre modèle et son mapping est déjà créé.
+    </p>
 </section>
+
+
 
 <section>
     <h2>Configurons nos ressources</h2>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 sylius_resource:
     resources:
         live.user:
-            driver: (doctrine/orm|doctrine/mongodb-odm|doctrine/phpcr-odm)
-            object_manager: default
-            templates: App:User
+            driver: doctrine/orm
+            templates: AppBundle:Backend/User
             classes:
                 model: Live\Entity\User
                 controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
@@ -164,7 +194,7 @@ sylius_resource:
 <section>
     <h2>Mais que se passe t'il ?</h2>
 			<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 $ php app/console container:debug | grep user
 live.manager.user    alias for "doctrine.orm.default_entity_manager"
 live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
@@ -179,9 +209,55 @@ sylius.config.classes {"live.user": {...}}
 
 
 <section>
-    <h2>Configurons nos routes</h2>
+    <h2>Créons notre formulaire</h2>
+    <pre>
+        <code data-trim>
+            live.form.type.user:
+            class: Live\Form\Type\UserType
+            tags:
+            - { name: form.type, alias: live_user }
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Créons nos templates</h2>
+    <p>
+        Où mettre vos templates? Live:User:action.twig.html
+    </p>
     <pre>
         <code data-trim contenteditable>
+            {% Formulaire *}
+
+            <form method="POST">
+                {{ form_widget(form) }}
+            </form>
+        </code>
+    </pre>
+    <pre>
+        <code data-trim contenteditable>
+            {% Listing *}
+
+            {% for user in users %}
+            {% ... *}
+            {% endfor %}
+        </code>
+    </pre>
+    <aside class="notes">
+        <ul>
+            <li>Une variable nommée form (FormView) est assignée au template de création et modification</li>
+            <li>La variable contenant la collection de ressource pour le listing correspond à la clé de la ressource plurialisée</li>
+        </ul>
+    </aside>
+</section>
+
+
+<section>
+    <h2>Configurons nos routes</h2>
+    <pre>
+        <code data-trim>
 TODO : Est qu'on met tout / Override method
 live_user_show:
     pattern: /{id}
@@ -212,7 +288,7 @@ live_user_delete:
     </pre>
     <aside class="notes">
         <p>
-            Les contrôlleurs sont définis en tant que service, pensez à les utiliser dans votre routing pour n'avoir qu'à modifier la configuration en cas de changement.
+            Les Contrôleurs sont définis en tant que service, pensez à les utiliser dans votre routing pour n'avoir qu'à modifier la configuration en cas de changement.
         </p>
         <p>
             Routing
@@ -227,89 +303,8 @@ live_user_delete:
 
 
 <section>
-    <h2>Créons notre formulaire</h2>
-    <pre>
-        <code data-trim contenteditable>
-class TaxonomyType extends AbstractResourceType
-{
-    public function getName()
-    {
-        return 'sylius_user';
-    }
-}
-        </code>
-    </pre>
-    <pre>
-        <code data-trim contenteditable>
-live.form.type.user:
-    class: Live\Form\Type\UserType
-    arguments: ['Live\Entity\User', 'live']
-    tags:
-      - { name: form.type, alias: live_user }
-        </code>
-    </pre>
-</section>
-
-
-
-<section>
-    <h2>Créons nos templates</h2>
-    <p>
-        Où mettre vos templates? Live:User:action.twig.html
-    </p>
-    <pre>
-        <code data-trim contenteditable>
-{% Formulaire *}
-
-<form method="POST">
-    {{ form_widget(form) }}
-</form>
-        </code>
-    </pre>
-    <pre>
-        <code data-trim contenteditable>
-{% Listing *}
-
-{% for user in users %}
-    {% ... *}
-{% endfor %}
-        </code>
-    </pre>
-    <aside class="notes">
-        <ul>
-            <li>Une variable nommée form (FormView) est assignée au template de création et modification</li>
-            <li>La variable contenant la collection de ressource pour le listing correspond à la clé de la ressource plurialisée</li>
-        </ul>
-    </aside>
-</section>
-
-
-
-<section>
-	<!-- TODO Urile ??-->
-    <h2>Messages flash</h2>
-    <ul>
-        <li>Clé de message flash par défaut sylius.resource.actionName</li>
-        <li>Clé généré par resource appName.resource.actionName</li>
-        <li>Domaine utilisé : flashes (flashes.en.yml)</li>
-    </ul>
-</section>
-
-
-
-<section>
-    <h2>Créer une action personnalisé</h2>
-    <ul>
-        <li>Créer un controlleur qui étend le ResourceController</li>
-        <li>Modifier la configuration de votre resource</li>
-        <li>Ajouter une route</li>
-    </ul>
-</section>
-
-
-
-<section>
     <h2>Vous avez dis flexible ?</h2>
+    <p>TODO : Transition</p>
 </section>
 
 
@@ -317,7 +312,7 @@ live.form.type.user:
 <section>
     <h2>Utiliser un template différent</h2>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 live_user_create:
     pattern: /new
     methods: [GET, POST]
@@ -334,7 +329,7 @@ live_user_create:
 <section>
     <h2>Rédiriger l'utilisateur</h2>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 live_user_create:
     pattern: /new
     methods: [GET, POST]
@@ -354,7 +349,7 @@ live_user_create:
 <section>
     <h2>Configurer un formulaire différent</h2>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 live_user_create:
     pattern: /new
     methods: [GET, POST]
@@ -373,7 +368,7 @@ live_user_create:
 <section>
     <h2>Récupérer des données dans la BDD</h2>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 TODO dispo pour lecture et écriture
 live_user_index:
     pattern: /
@@ -393,7 +388,7 @@ live_user_index:
 <section>
     <h2>Lister ses ressources</h2>
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 TODO : On parle des extension twig ??
 live_user_index:
     pattern: /
@@ -420,7 +415,7 @@ live_user_index:
 <section>
     <h2>ParameterParser</h2>    
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 live_user_index:
     pattern: /
     methods: [GET]
@@ -442,6 +437,28 @@ live_user_index:
 
 
 <section>
+    <!-- TODO Urile ??-->
+    <h2>Messages flash</h2>
+    <ul>
+        <li>Clé de message flash par défaut sylius.resource.actionName</li>
+        <li>Clé généré par resource appName.resource.actionName</li>
+        <li>Domaine utilisé : flashes (flashes.en.yml)</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Créer une action personnalisé</h2>
+    <ul>
+        <li>Créer un controlleur qui étend le ResourceController</li>
+        <li>Modifier la configuration de votre resource</li>
+        <li>Ajouter une route</li>
+    </ul>
+</section>
+
+
+<section>
     <h2>Comment ça se passe si je veux créer un bundle?</h2>
 </section>
 
@@ -450,7 +467,7 @@ live_user_index:
 <section>
     <h2>Configuration sémantique</h2>    
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 bundle_name:
     driver: doctrine/orm
     object_manager: default
@@ -482,7 +499,7 @@ bundle_name:
 <section>
     <h2>Créer une extension</h2>    
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 class LiveUserExtension extends AbstractResourceExtension
 {
     protected $applicationName = 'live';
@@ -516,7 +533,7 @@ class LiveUserExtension extends AbstractResourceExtension
 <section>
     <h2>Mais qu’est ce qui se passe ?</h2>    
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 // TODO : Faut montrer ce qu'il se passe avec les constante !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $ php app/console container:debug | grep user
 live.controller.user    container Sylius\Bundle\ResourceBundle\Controller\ResourceController
@@ -546,7 +563,7 @@ live_user.object_manager         default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 <section>
     <h2>Initialiser votre bundle</h2>
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 class LiveUserBundle extends AbstractResourceBundle
 {
     /**
@@ -570,7 +587,7 @@ class LiveUserBundle extends AbstractResourceBundle
 <section>
     <h2>Créer son Doctrine Mapping Driver</h2>
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 class LiveUserBundle extends AbstractResourceBundle
 {
     /**
@@ -599,7 +616,7 @@ class LiveUserBundle extends AbstractResourceBundle
 <section>
     <h2>Configurer le ResolveTargetEntityListener</h2>
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 class LiveUserBundle extends AbstractResourceBundle
 {
     protected function getModelInterfaces()
@@ -667,7 +684,7 @@ class LiveUserBundle extends AbstractResourceBundle
     <h2>Le routing</h2>    
     <p>Utiliser le ApiLoader pour générer vos routes automatiquement</p>
 	<pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 live_api_user_(index|show|create|update|delete):
     pattern: (/users/|/users/{id})
     methods: [(GET|GET|POST|PUT-PATH|DELETE)]
@@ -692,7 +709,7 @@ live_api_user_(index|show|create|update|delete):
     <h2>Le header parser</h2>    
 	<p>Il récupére dans les entêtes HTTP de la version et des groupes de validation</p>
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 GET /api/user/57 HTTP/1.1
 Host: live.com
 Accept: application/json; version=1.0.1; groups=Default,Details
@@ -700,7 +717,7 @@ Accept: application/json; version=1.0.1; groups=Default,Details
     </pre>
 
     <pre>
-        <code data-trim contenteditable>
+        <code data-trim>
 # Configuration du sérialiseur
 Live\Entity\User:
     properties:
