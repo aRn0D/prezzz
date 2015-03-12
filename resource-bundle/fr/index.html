@@ -81,6 +81,15 @@
 
 
 <section>
+    <h2>Pourquoi</h2>
+    <ul>
+        <li>Eviter la duplication de code dans vos contrôlleur</li>
+    </ul>
+</section>
+
+
+
+<section>
     <h2>Que faut il pour gérer CRUD avec Symfony ?</h2>
     <ul>
         <li>Un contôlleur (index, show, create, update et delete) et ses routes</li>
@@ -299,7 +308,7 @@ live_user_create:
     defaults:
         _controller: live.controller.user:createAction
         _sylius:
-            template: LiveBundle:Backend/User:index.html.twig
+            template: LiveBundle:Backend/User:custom_create.html.twig
         </code>
     </pre>
 </section>
@@ -473,15 +482,15 @@ live.repository.user    container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntit
 live.form.type.user     container Live\UserBundle\Form\Type\UserType
 
 $ php app/console container:debug --parameters | grep user
-live.config.classes              {...}
+sylius.config.classes            {...}
 live.controller.user.class       Sylius\Bundle\ResourceBundle\Controller\ResourceController
 live.repository.user.class       Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
 live.model.user.class            Live\UserBundle\Model\User
 live.form.type.user.class        Live\UserBundle\Form\Type\UserType
 live.validation_group.user       ["live"]
 live_user.driver                 doctrine/orm 
-live_user.driver.doctrine/orm    true  // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-live_user.object_manager         default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+live_user.driver.doctrine/orm    true
+live_user.object_manager         default
         </code>
     </pre>
     <aside class="notes">
@@ -561,7 +570,9 @@ live_user.object_manager         default   // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     </aside>
 </section>
 
-
+<section>
+    <h2>TODO config rest</h2>
+</section>
 
 <section>
     <h2>Le routing</h2>    
