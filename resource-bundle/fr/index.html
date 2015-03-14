@@ -115,9 +115,17 @@
 <section>
     <h2>Routage</h2>
     <lu>
-        <li>Création d'un système de configuration</li>
-        <li>Génération automatique? En cours de discution!</li>
+        <li>Système de configuration du ResourceContrôlleur par les routes</li>
+        <li>Génération automatique des routes? En cours de discution!</li>
     </lu>
+    <pre>
+        <code data-trim>
+live_user_show:
+    defaults:
+    _controller: live.controller.user:indexAction
+    _sylius: []
+        </code>
+    </pre>
 </section>
 
 
@@ -135,6 +143,26 @@
         </li>
         <li>Les repository par défaut ont été personnalisés (pagination, filtre ou trie)</li>
     </ul>
+</section>
+
+
+<section>
+    <h2>Formulaires</h2>
+    <ul>
+        <li>AbstractResourceType : configuration du data_class et le validation_group</li>
+        <li>ResourceChoiceType : form document/entity/phpcr_document type</li>
+        <li>CollectionExtension et son plugin jQuery</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Templates</h2>
+    <lu>
+        <li>Extension twig (trie et pagination)</li>
+        <li>Macros (flashes, bouton)</li>
+    </lu>
 </section>
 
 
@@ -219,8 +247,7 @@ live.form.type.user:
     <h2>Créons nos templates</h2>
     <pre>
         <code data-trim contenteditable>
-{% Formulaire *}
-
+{% Création/modification d'une resource *}
 <form method="POST">
     {{ form_widget(form) }}
 </form>
@@ -228,10 +255,17 @@ live.form.type.user:
     </pre>
     <pre>
         <code data-trim contenteditable>
-{% Listing *}
-
+{% Page détail d'un resource *}
+<form method="POST">
+    <p>user.firstname</p>
+</form>
+        </code>
+    </pre>
+    <pre>
+        <code data-trim contenteditable>
+{% Listing de resource *}
 {% for user in users %}
-{% ... *}
+    {{ user.fistname }}
 {% endfor %}
         </code>
     </pre>
@@ -280,12 +314,12 @@ live_user_delete:
             Les Contrôleurs sont définis en tant que service, pensez à les utiliser dans votre routing pour n'avoir qu'à modifier la configuration en cas de changement.
         </p>
         <p>
-            Routing
-            <ul>
-                <li>La création et la modification renvoie vers la route show</li>
-                <li>La suppression renvoie vers la route index</li>
-            </ul>
+            Routing :
         </p>
+        <ul>
+            <li>La création et la modification renvoie vers la route show</li>
+            <li>La suppression renvoie vers la route index</li>
+        </ul>
     </aside>
 </section>
 
@@ -328,7 +362,7 @@ live_user_create:
             # Ou
             redirect:
                 route: live_user_index
-                parameters: []
+                parameters: { name: resource.name }
         </code>
     </pre>
 </section>
@@ -387,7 +421,7 @@ live_user_index:
         _sylius:
             # Filtre
             criteria:
-                company: Lakion
+                company: "Clever Age"
             # Trie
             sorting:
                 updatedAt: asc|desc
@@ -417,6 +451,24 @@ live_user_index:
             sorting: $sorting
             # Paginate
             paginate: $paginate
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Expression Language</h2>
+	<pre>
+        <code data-trim>
+app_user_index:
+    path: /customer/orders
+    methods: [POST]
+    defaults:
+        _controller: app.controller.order:indexAction
+        _sylius:
+            method: findOrderByCustomer
+            arguments: ['expr:service("security.context").getToken().getUser()']
         </code>
     </pre>
 </section>
@@ -457,7 +509,7 @@ bundle_name:
 <section>
     <h2>Créer une extension</h2>
     <ul>
-        <li>Création d'une AbstractResourceExtension</li>
+        <li>AbstractResourceExtension permet de créer facilement la votre</li>
         <li>Charger facilement vos fichiers de définitions de services</li>
         <li>Traiter la configuration du bundle</li>
     </ul>
@@ -503,7 +555,7 @@ live_user.object_manager         default
 <section>
     <h2>Initialiser votre bundle</h2>
     <ul>
-        <li>Création d'un AbstractResourceBundle</li>
+        <li>AbstractResourceBundle permet de créer facilement la votre</li>
     </ul>
 </section>
 
@@ -570,9 +622,26 @@ live_user.object_manager         default
     </aside>
 </section>
 
+
+
 <section>
     <h2>TODO config rest</h2>
+	<pre>
+        <code data-trim>
+fos_rest:
+    disable_csrf_role: ROLE_API
+    view:
+        formats:
+            json: true
+            xml:  true
+    format_listener:
+        rules:
+            - { path: '^/api', priorities: ['json', 'xml'], fallback_format: json, prefer_extension: true }
+        </code>
+    </pre>
 </section>
+
+
 
 <section>
     <h2>Le routing</h2>    
@@ -595,7 +664,7 @@ app_resource_update               GET|POST  ANY    ANY  resources/{id}/edit
 			<li>live: nom de l'application</li>
 			<li>user: nom de le ressource</li>
 		</ul>	
-	<aside>
+	</aside>
 </section>
 
 
@@ -623,12 +692,6 @@ Live\Entity\User:
             since_version: 0.3
         </code>
     </pre>
-</section>
-
-
-
-<section>
-    <h2>Formulaires TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</h2>
 </section>
 
 
