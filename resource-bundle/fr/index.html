@@ -49,22 +49,34 @@
 
 <section>
     <h2>Qui suis-je ?</h2>
-    <ul>
-        <li>Arnaud Langlade (@_aRn0D)</li>
-        <li>Membre de la Sylius core team</li>
-        <li>Travaille chez Clever Age (@CleverAge)</li>
-    </ul>
+    <div class="col">
+        <ul>
+
+            <li>Arnaud Langlade</li>
+            <li>Twitter : @_aRn0D</li>
+            <li>Membre de la core team Sylius</li>
+        </ul>
+    </div>
+    <div class="col">
+        <ul>
+
+            <li>Travaille pour Clever Age</li>
+            <li>Twitter : @CleverAge</li>
+            <li>www.clever-age.com</li>
+        </ul>
+    </div>
 </section>
 
 
 
 <section>
     <h2>Kézako ?</h2>
-    <p>
-        Le SyliusResourceBundle simplifie la gestion des ressources (CRUD) et permet de créer rapidement une API REST.
+    <p class="bottomSpace">
+        Le <strong>SyliusResourceBundle</strong> vous permet de gérer rapidement et simplement vos ressources (via des CRUD) et de créer une API REST.
     </p>
+
     <p>
-        Développé dans le cadre du projet open source Sylius (Framework E-commerce) créer par Paweł Jędrzejewski.
+        Développé dans le cadre du projet open source <strong>Sylius</strong> (Framework E-commerce) créer par Paweł Jędrzejewski.
     </p>
 </section>
 
@@ -73,8 +85,8 @@
 <section>
     <h2>Quelques chiffres!</h2>
     <ul>
-        <li>SyliusResourceBundle : 57 contributeurs 57 Stars</li>
-        <li>Sylius : 195 contributeurs +1600 Stars</li>
+        <li>SyliusResourceBundle : ~60 contributeurs, ~60 stars</li>
+        <li>Sylius : ~200 contributeurs, ~1700 stars</li>
     </ul>
 </section>
 
@@ -84,94 +96,71 @@
     <h2>Pourquoi ?</h2>
     <ul>
         <li>Eviter la duplication de code dans vos contrôlleur</li>
-        <li>Développer rapidement votre application</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>Fonctionnement</h2>
-</section>
-
-
-
-<section>
-    <h2>Que se passe t'il ? dans un CRUD ?</h2>
-    <ul>
-        <li>Lecteur : Récupération des info en base pour la donner à la vue</li>
-        <li>Creation/modification : Gestion de la formulaire et écriture des données en base </li>
-        <li>Suppression de la resource</li>
+        <li>Automatiser certaines tâches lors du développement de <strong>Sylius</strong></li>
     </ul>
 </section>
 
 
 
 <section>
-    <h2>Le Resource Controller</h2>
+    <h2>Fonctionnement général</h2>
+</section>
+
+
+
+<section>
+    <h2>Un CRUD dans Symfony, comment ça fonctionne ?</h2>
     <ul>
-        <li>Créer un contrôleur générique qui gére les actions d'un CRUD</li>
-        <li>Plus de code, il est initialisé par une configuration</li>
-        <li>Utiliser le répartiteur d'évènement pour le rendre plus flexible</li>
+        <li>Un <strong>modèle</strong> est un object représente les données</li>
+        <li>Un <strong>contrôleur</strong> avec ses actions (index, show, create, update, delete)</li>
+        <li>Un <strong>object manager</strong> permettra de persister ou supprimer</li>
+        <li>Un <strong>repository</strong> permettra recupération des données</li>
+        <li>Un <strong>formulaire</strong> permettra la saisie des informations</li>
     </ul>
 </section>
 
 
 
 <section>
-    <h2>Routage</h2>
-    <p>
-        Système de configuration du ResourceController par les routes
-    </p>
-    <pre>
-        <code data-trim>
-live_user_show:
-    defaults:
-        _sylius: []
-        </code>
-    </pre>
-    <p>
-        Génération automatique des routes? En cours de discution!
-    </p>
+    <h2>Le Contrôleur</h2>
+    <ul>
+        <p>
+            Création du <strong>ResourceController</strong> :
+        </p>
+        <ul>
+            <li>C'est un contrôlleur générique</li>
+            <li>Il est intialisé via un configuration</li>
+        </ul>
+        <p class="topSpace">
+            Utilisation du <strong>répartiteur d'évènement</strong> (EventDispatcher) :
+        </p>
+        <ul>
+            <li>Il permet des personnaliser les actions</li>
+            <li>Solution plus flexible</li>
+        </ul>
+    </ul>
 </section>
 
 
 
 <section>
-    <h2>Gestion des données</h2>
+    <h2>Doctrine</h2>
     <ul>
-        <li>La gestion des données (en BDD) est gérée par Doctrine</li>
-        <li>
+        <p>
             Plusieurs drivers disponibles :
-            <ul>
-                <li>Doctrine ORM</li>
-                <li>Doctrine Mongodb-ODM</li>
-                <li>Doctrine Phpcr-ODM</li>
-            </ul>
-        </li>
-        <li>Les repository par défaut ont été personnalisés (pagination, filtre ou trie)</li>
+        </p>
+        <ul>
+            <li>Doctrine ORM</li>
+            <li>Doctrine Phpcr-ODM</li>
+            <li>Doctrine Mongodb-ODM</li>
+        </ul>
+        <p class="topSpace">Les repository par défaut ont été personnalisés :</p>
+        <ul>
+            <li>Pagination avec PagerFanta</li>
+            <li>Filtrage, triage avancé</li>
+        </ul>
     </ul>
 </section>
-
-
-
-<section>
-    <h2>Formulaires</h2>
-    <ul>
-        <li>AbstractResourceType : configuration du data_class et le validation_group</li>
-        <li>ResourceChoiceType : form document/entity/phpcr_document type</li>
-        <li>CollectionExtension et son plugin jQuery</li>
-    </ul>
-</section>
-
-
-
-<!--<section>-->
-    <!--<h2>Templates</h2>-->
-    <!--<lu>-->
-        <!--<li>Extension twig (trie et pagination)</li>-->
-        <!--<li>Macros (flashes, bouton)</li>-->
-    <!--</lu>-->
-<!--</section>-->
 
 
 
@@ -187,10 +176,10 @@ live_user_show:
 <section>
     <h2>Un petit exemple ?</h2>
     <p>
-        Créons un CRUD, pour gérer des utilisateurs par exemple (des users comme disent nos amis anglais)
+        Créons un CRUD, pour gérer des utilisateurs par exemple.
     </p>
     <p>
-        Nous supposons que notre modèle et son mapping est déjà créé.
+        (Nous supposons que notre modèle et son mapping est déjà créé)
     </p>
 </section>
 
@@ -239,6 +228,9 @@ sylius.config.classes {"live.user": {...}}
 
 <section>
     <h2>Créons notre formulaire</h2>
+    <p>
+        AbstractResourceType permet de configurer du data_class et le validation_group
+    </p>
     <pre>
         <code data-trim>
 live.form.type.user:
@@ -660,11 +652,11 @@ live_user.object_manager         default
 
 
 <section>
-    <h2>Configuration</h2>
+    <h2>Configuration vos resources</h2>
 	<ul>
         <li>Initialiser vos resources (créer un bundle ou application)</li>
         <li>Configurer le FosRestBundle (format, message d'erreur...)</li>
-        <li>Le sérializer permettra de définir quelles données seront retournée</li>
+        <!--<li>Le sérializer permettra de définir quelles données seront retournée</li>-->
     </ul>
 </section>
 
@@ -672,15 +664,22 @@ live_user.object_manager         default
 
 <section>
     <h2>Le routage</h2>
-    <p>Utiliser le ApiLoader pour générer vos routes automatiquement</p>
+    <p>Utiliser le <strong>ApiLoader</strong> pour générer vos routes automatiquement</p>
+    <pre>
+        <code data-trim>
+live_user:
+    resource: live.user
+    type: sylius.api
+        </code>
+    </pre>
 	<pre>
         <code data-trim>
 $ php app/console router:debug | grep resource
-app_api_resource_index                GET        ANY    ANY  /resources/
-app_api_resource_show                 GET        ANY    ANY  /resources/{id}
-app_api_resource_delete               DELETE     ANY    ANY  /resources/{id}
-app_api_resource_create               POST       ANY    ANY  /resources/new
-app_api_resource_update               PUT|PATCH  ANY    ANY  resources/{id}/edit
+live_api_user_index    GET        ANY    ANY  /user
+live_api_user_show     GET        ANY    ANY  /user/{id}
+live_api_user_delete   DELETE     ANY    ANY  /user/{id}
+live_api_user_create   POST       ANY    ANY  /user
+live_api_user_update   PUT|PATCH  ANY    ANY  /user/{id}
         </code>
     </pre>
 	<aside class="notes">
@@ -695,6 +694,14 @@ app_api_resource_update               PUT|PATCH  ANY    ANY  resources/{id}/edit
 </section>
 
 
+<section>
+    <h2>Configuration</h2>
+    <ul>
+        <li>Initialiser vos resources (créer un bundle ou application)</li>
+        <li>Configurer le FosRestBundle (format, message d'erreur...)</li>
+    </ul>
+</section>
+
 
 <section>
     <h2>Les Formulaire</h2>
@@ -704,8 +711,8 @@ app_api_resource_update               PUT|PATCH  ANY    ANY  resources/{id}/edit
 
 
 <section>
-    <h2>Le header parser</h2>    
-	<p>Il récupére dans les entêtes HTTP de la version et des groupes de validation</p>
+    <h2>Sérialier vos données</h2>
+	<p>Header parser récupére dans les entêtes HTTP de la version et des groupes de validation</p>
     <pre>
         <code data-trim>
 GET /api/user/57 HTTP/1.1
@@ -722,10 +729,45 @@ Live\Entity\User:
         firstName:
             expose: true
             type: integer
-            groups: [Default, Details]
+            groups: [Details]
             since_version: 0.3
+        lastName:
+            expose: true
+            type: integer
+            groups: [Default, Details]
+            until_version: 0.4
         </code>
     </pre>
+</section>
+
+
+
+<section>
+    <h2>Formulaires</h2>
+    <ul>
+        <p>ResourceChoiceType création d'un form type choice à partir de :</p>
+        <ul>
+            <li>Une entité : <strong>entity</strong> form type</li>
+            <li>Un document : <strong>document form</strong> type</li>
+            <li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>
+        </ul>
+
+        <p class="topSpace">CollectionExtension et son plugin jQuery</p>
+        <ul>
+            <li>Ajout/suppression d'item</li>
+            <li>Mise à jour des items (remote/local)</li>
+        </ul>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Templates</h2>
+    <lu>
+        <li>Extension twig (trie et pagination)</li>
+        <li>Macros (flashes, bouton)</li>
+    </lu>
 </section>
 
 
