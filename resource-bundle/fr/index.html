@@ -70,7 +70,7 @@
 
 
 <section>
-    <h2>Kézako ?</h2>
+    <h2>Kézako le SyliusResourceBundle ?</h2>
     <p class="bottomSpace">
         Le <strong>SyliusResourceBundle</strong> vous permet de gérer rapidement et simplement vos ressources (via des CRUD) et de créer une API REST.
     </p>
@@ -132,7 +132,7 @@
             <li>Il est intialisé via un configuration</li>
         </ul>
         <p class="topSpace">
-            Utilisation du <strong>répartiteur d'évènement</strong> (EventDispatcher) :
+            Utilisation du <strong>EventDispatcher</strong> (répartiteur d'évènement) :
         </p>
         <ul>
             <li>Il permet des personnaliser les actions</li>
@@ -176,7 +176,7 @@
 <section>
     <h2>Un petit exemple ?</h2>
     <p>
-        Créons un CRUD, pour gérer des utilisateurs par exemple.
+        Créons un CRUD pour gérer des utilisateurs, par exemple.
     </p>
     <p>
         (Nous supposons que notre modèle et son mapping est déjà créé)
@@ -500,6 +500,22 @@ app_user_index:
     </pre>
 </section>
 
+<section>
+    <h2>Configuration globale</h2>
+    	<pre>
+        <code data-trim>
+sylius_resource:
+    settings:
+        paginate: true
+        default_page_size: 10
+        sortable: false
+        sorting: []
+        filterable: false
+        criteria: []
+        </code>
+    </pre>
+</section>
+
 
 
 <section>
@@ -694,14 +710,6 @@ live_api_user_update   PUT|PATCH  ANY    ANY  /user/{id}
 </section>
 
 
-<section>
-    <h2>Configuration</h2>
-    <ul>
-        <li>Initialiser vos resources (créer un bundle ou application)</li>
-        <li>Configurer le FosRestBundle (format, message d'erreur...)</li>
-    </ul>
-</section>
-
 
 <section>
     <h2>Les Formulaire</h2>
@@ -742,33 +750,33 @@ Live\Entity\User:
 
 
 
-<section>
-    <h2>Formulaires</h2>
-    <ul>
-        <p>ResourceChoiceType création d'un form type choice à partir de :</p>
-        <ul>
-            <li>Une entité : <strong>entity</strong> form type</li>
-            <li>Un document : <strong>document form</strong> type</li>
-            <li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>
-        </ul>
+<!--<section>-->
+    <!--<h2>Formulaires</h2>-->
+    <!--<ul>-->
+        <!--<p>ResourceChoiceType création d'un form type choice à partir de :</p>-->
+        <!--<ul>-->
+            <!--<li>Une entité : <strong>entity</strong> form type</li>-->
+            <!--<li>Un document : <strong>document form</strong> type</li>-->
+            <!--<li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>-->
+        <!--</ul>-->
 
-        <p class="topSpace">CollectionExtension et son plugin jQuery</p>
-        <ul>
-            <li>Ajout/suppression d'item</li>
-            <li>Mise à jour des items (remote/local)</li>
-        </ul>
-    </ul>
-</section>
+        <!--<p class="topSpace">CollectionExtension et son plugin jQuery</p>-->
+        <!--<ul>-->
+            <!--<li>Ajout/suppression d'item</li>-->
+            <!--<li>Mise à jour des items (remote/local)</li>-->
+        <!--</ul>-->
+    <!--</ul>-->
+<!--</section>-->
 
 
 
-<section>
-    <h2>Templates</h2>
-    <lu>
-        <li>Extension twig (trie et pagination)</li>
-        <li>Macros (flashes, bouton)</li>
-    </lu>
-</section>
+<!--<section>-->
+    <!--<h2>Templates</h2>-->
+    <!--<lu>-->
+        <!--<li>Extension twig (trie et pagination)</li>-->
+        <!--<li>Macros (flashes, bouton)</li>-->
+    <!--</lu>-->
+<!--</section>-->
 
 
 
