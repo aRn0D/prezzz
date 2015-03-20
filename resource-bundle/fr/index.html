@@ -85,8 +85,8 @@
 <section>
     <h2>Quelques chiffres!</h2>
     <ul>
-        <li>SyliusResourceBundle : ~60 contributeurs, ~60 stars</li>
-        <li>Sylius : ~200 contributeurs, ~1700 stars</li>
+        <li><strong>SyliusResourceBundle :</strong> ~60 contributeurs, ~60 stars</li>
+        <li><strong>Sylius :</strong> ~200 contributeurs, ~1700 stars</li>
     </ul>
 </section>
 
@@ -154,7 +154,7 @@
             <li>Doctrine Phpcr-ODM</li>
             <li>Doctrine Mongodb-ODM</li>
         </ul>
-        <p class="topSpace">Les repository par défaut ont été personnalisés :</p>
+        <p class="topSpace">Les repositories par défaut ont été personnalisés :</p>
         <ul>
             <li>Pagination avec PagerFanta</li>
             <li>Filtrage, triage avancé</li>
@@ -167,7 +167,7 @@
 <section>
     <h2>Attention! Ce n'est pas un admin generator</h2>
     <p>
-        Il faut créer vos formulaires, vos templates et le routing à la main (pour le moment!)
+        Il faut créer vos <strong>formulaires</strong>, vos <strong>templates</strong> et le <strong>routing</strong> à la main (pour le moment!)
     </p>
 </section>
 
@@ -229,7 +229,7 @@ sylius.config.classes {"live.user": {...}}
 <section>
     <h2>Créons notre formulaire</h2>
     <p>
-        AbstractResourceType permet de configurer du data_class et le validation_group
+        <strong>AbstractResourceType</strong> permet de configurer du <i>data_class</i> et le <i>validation_group</i>
     </p>
     <pre>
         <code data-trim>
@@ -245,25 +245,31 @@ live.form.type.user:
 
 <section>
     <h2>Créons nos templates</h2>
+    <p>
+        Création ou modification d'une resource
+    </p>
     <pre>
         <code data-trim contenteditable>
-{% Création/modification d'une resource *}
 <form method="POST">
     {{ form_widget(form) }}
 </form>
         </code>
     </pre>
+    <p>
+        Page détail d'une resource
+    </p>
     <pre>
         <code data-trim contenteditable>
-{% Page détail d'un resource *}
 <form method="POST">
     <p>user.firstname</p>
 </form>
         </code>
     </pre>
+    <p>
+        Listing de resource
+    </p>
     <pre>
         <code data-trim contenteditable>
-{% Listing de resource *}
 {% for user in users %}
     {{ user.fistname }}
 {% endfor %}
@@ -281,7 +287,7 @@ live.form.type.user:
 <section>
     <h2>Configurons nos routes</h2>
     <pre>
-        <code data-trim>
+        <code data-trim class="no-max-height ">
 live_user_show:
     pattern: /{id}
     methods: [GET]
@@ -500,6 +506,8 @@ app_user_index:
     </pre>
 </section>
 
+
+
 <section>
     <h2>Configuration globale</h2>
     	<pre>
@@ -552,7 +560,7 @@ bundle_name:
 <section>
     <h2>Créer une extension</h2>
     <ul>
-        <li>AbstractResourceExtension permet de créer facilement la votre</li>
+        <li><strong>AbstractResourceExtension</strong> permet de créer facilement la votre</li>
         <li>Charger facilement vos fichiers de définitions de services</li>
         <li>Traiter la configuration du bundle</li>
     </ul>
@@ -594,11 +602,22 @@ live_user.object_manager         default
 
 
 
+<!--<section>-->
+    <!--<h2>AbstractResourceBundle</h2>-->
+    <!--<ul>-->
+        <!--<li>Votre class de Bundle doit étendre le AbstractResourceBundle</li>-->
+        <!--<li>Permet d'initiliser d'autres outils.</li>-->
+    <!--</ul>-->
+<!--</section>-->
+
+
+
 <section>
-    <h2>AbstractResourceBundle</h2>
+    <h2>Mapping doctrine de vos modèles</h2>
     <ul>
-        <li>Votre class de Bundle doit étendre le AbstractResourceBundle</li>
-        <li>Permet d'initiliser d'autres outils.</li>
+        <li>Déclarer votre classe en tant <i>mapped-superclass</i></li>
+        <li>Le mapping est réécris grâce à l’évènement <i>loadClassMetadata</i></li>
+        <li>Permettre d'étendre vos modèles sans devoir réécrire leurs mappings</li>
     </ul>
 </section>
 
@@ -607,7 +626,8 @@ live_user.object_manager         default
 <section>
     <h2>Créer un "Doctrine Mapping Driver"</h2>
     <ul>
-        <li>Permet de configurer le mapping de vos modèles, définir où se trouve vos fichiers de mapping pour un namespace</li>
+        <li>Fournir un model pour plusieurs implementations Doctrine</li>
+        <li>Définir où se trouve vos fichiers de mapping pour un namespace</li>
         <li>Définir les <strong>getDoctrineMappingDirectory()</strong> et <strong>getModelNamespace()</strong></li>
     </ul>
 </section>
@@ -617,20 +637,9 @@ live_user.object_manager         default
 <section>
     <h2>Configurer le "ResolveTargetEntityListener"</h2>
     <ul>
-        <li>Ré-écrit des paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
+        <li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
         <li>Définir des relations entre différentes entités sans les écrire en dur</li>
         <li><strong>getModelInterfaces()</strong> retournera le mapping entre vos interfaces et vos modèles</li>
-    </ul>
-</section>
-
-
-
-<section>
-    <h2>Mapping doctrine de vos modèles</h2>
-    <ul>
-        <li>Déclarer votre classe en tant mapped-superclass</li>
-        <li>Le mapping est réécris grâce à l’évènement loadClassMetadata</li>
-        <li>Le but : permettre d'étendre vos modèles sans devoir réécrire leur mapping</li>
     </ul>
 </section>
 
@@ -645,9 +654,9 @@ live_user.object_manager         default
 <section>
     <h2>Comment ça fonctionne ?</h2>    
     <ul>
-		<li>Le ResourceController étend the FOSRestController</li>
-		<li>La sérialization est faite grâce au JMSSerializerBundle</li>
-		<li>Possibilité d'utiliser BazingaHateoasBundle</li>
+		<li>Le ResourceController étend the <strong>FOSRestController</strong></li>
+		<li>La sérialization est faite grâce au <strong>JMSSerializerBundle</strong></li>
+		<li>Possibilité d'utiliser <strong>BazingaHateoasBundle</strong></li>
     </ul>
     <aside class="notes">
 		<p>        
@@ -671,7 +680,7 @@ live_user.object_manager         default
     <h2>Configuration vos resources</h2>
 	<ul>
         <li>Initialiser vos resources (créer un bundle ou application)</li>
-        <li>Configurer le FosRestBundle (format, message d'erreur...)</li>
+        <li>Configurer le <strong>FOSRestBundle</strong> (format, message d'erreur...)</li>
         <!--<li>Le sérializer permettra de définir quelles données seront retournée</li>-->
     </ul>
 </section>
@@ -728,7 +737,25 @@ Host: live.com
 Accept: application/json; version=1.0.1; groups=Default,Details
         </code>
     </pre>
+    <p>Vous pouvez les configurer directement dans vos routes</p>
+	<pre>
+        <code data-trim>
+app_user_index:
+    path: /user/
+    methods: [POST]
+    defaults:
+        _controller: app.controller.order:indexAction
+        _sylius:
+            serialization_groups: 1.0.1
+            serialization_version: [Default, Details]
+        </code>
+    </pre>
+</section>
 
+
+
+<section>
+    <h2>Sérialier vos données</h2>
     <pre>
         <code data-trim>
 # Configuration du sérialiseur
