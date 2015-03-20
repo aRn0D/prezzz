@@ -95,7 +95,7 @@
 <section>
     <h2>Pourquoi ?</h2>
     <ul>
-        <li>Eviter la duplication de code dans vos contrôlleur</li>
+        <li>Eviter la duplication de code dans vos contrôleurs</li>
         <li>Automatiser certaines tâches lors du développement de <strong>Sylius</strong></li>
     </ul>
 </section>
@@ -114,7 +114,7 @@
         <li>Un <strong>modèle</strong> est un object représente les données</li>
         <li>Un <strong>contrôleur</strong> avec ses actions (index, show, create, update, delete)</li>
         <li>Un <strong>object manager</strong> permettra de persister ou supprimer</li>
-        <li>Un <strong>repository</strong> permettra recupération des données</li>
+        <li>Un <strong>repository</strong> la permettra recupération des données</li>
         <li>Un <strong>formulaire</strong> permettra la saisie des informations</li>
     </ul>
 </section>
@@ -128,14 +128,14 @@
             Création du <strong>ResourceController</strong> :
         </p>
         <ul>
-            <li>C'est un contrôlleur générique</li>
-            <li>Il est intialisé via un configuration</li>
+            <li>C'est un contrôleur générique</li>
+            <li>Il est intialisé via une configuration</li>
         </ul>
         <p class="topSpace">
             Utilisation du <strong>EventDispatcher</strong> (répartiteur d'évènement) :
         </p>
         <ul>
-            <li>Il permet des personnaliser les actions</li>
+            <li>Il permet de personnaliser les actions</li>
             <li>Solution plus flexible</li>
         </ul>
     </ul>
@@ -229,7 +229,7 @@ sylius.config.classes {"live.user": {...}}
 <section>
     <h2>Créons notre formulaire</h2>
     <p>
-        <strong>AbstractResourceType</strong> permet de configurer du <i>data_class</i> et le <i>validation_group</i>
+        <strong>AbstractResourceType</strong> permet de configurer le <i>data_class</i> et le <i>validation_group</i>
     </p>
     <pre>
         <code data-trim>
@@ -266,7 +266,7 @@ live.form.type.user:
         </code>
     </pre>
     <p>
-        Listing de resource
+        Listing de resources
     </p>
     <pre>
         <code data-trim contenteditable>
@@ -467,7 +467,7 @@ live_user_index:
 
 
 <section>
-    <h2>ParameterParser</h2>    
+    <h2>Parameter Parser</h2>
 	<pre>
         <code data-trim>
 live_user_index:
@@ -478,12 +478,14 @@ live_user_index:
         _sylius:
             # Filtre
             filterable: true
-            criteria: $criteri
+            criteria: $my_criteria
+
             # Trie
             sortable: true
-            sorting: $sorting
+            sorting: $my_sorting
+
             # Paginate
-            paginate: $paginate
+            paginate: $my_paginate
         </code>
     </pre>
 </section>
@@ -538,7 +540,6 @@ sylius_resource:
         <code data-trim>
 bundle_name:
     driver: doctrine/orm
-    object_manager: default
     templates:
         user: LiveBundle:Backend/User
     validation_groups:
@@ -560,7 +561,7 @@ bundle_name:
 <section>
     <h2>Créer une extension</h2>
     <ul>
-        <li><strong>AbstractResourceExtension</strong> permet de créer facilement la votre</li>
+        <li>Votre extension doit étendre <strong>AbstractResourceExtension</strong></li>
         <li>Charger facilement vos fichiers de définitions de services</li>
         <li>Traiter la configuration du bundle</li>
     </ul>
@@ -578,21 +579,20 @@ bundle_name:
 	<pre>
         <code data-trim>
 $ php app/console container:debug | grep user
-live.controller.user    container Sylius\Bundle\ResourceBundle\Controller\ResourceController
-live.manager.user       n/a       alias for doctrine.orm.default_entity_manager
-live.repository.user    container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
-live.form.type.user     container Live\UserBundle\Form\Type\UserType
+live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.manager.user    n/a       alias for doctrine.orm.default_entity_manager
+live.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.form.type.user  container Live\UserBundle\Form\Type\UserType
 
 $ php app/console container:debug --parameters | grep user
-sylius.config.classes            {...}
-live.controller.user.class       Sylius\Bundle\ResourceBundle\Controller\ResourceController
-live.repository.user.class       Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
-live.model.user.class            Live\UserBundle\Model\User
-live.form.type.user.class        Live\UserBundle\Form\Type\UserType
-live.validation_group.user       ["live"]
-live_user.driver                 doctrine/orm 
-live_user.driver.doctrine/orm    true
-live_user.object_manager         default
+sylius.config.classes          {...}
+live.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController
+live.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+live.model.user.class          Live\UserBundle\Model\User
+live.form.type.user.class      Live\UserBundle\Form\Type\UserType
+live.validation_group.user     ["live"]
+live_user.driver               doctrine/orm
+live_user.driver.doctrine/orm  true
         </code>
     </pre>
     <aside class="notes">
@@ -635,10 +635,10 @@ live_user.object_manager         default
 
 
 <section>
-    <h2>Configurer le "ResolveTargetEntityListener"</h2>
+    <h2>Configurer le "Resolve Target Entity Listener"</h2>
     <ul>
-        <li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
         <li>Définir des relations entre différentes entités sans les écrire en dur</li>
+        <li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
         <li><strong>getModelInterfaces()</strong> retournera le mapping entre vos interfaces et vos modèles</li>
     </ul>
 </section>
@@ -729,7 +729,7 @@ live_api_user_update   PUT|PATCH  ANY    ANY  /user/{id}
 
 <section>
     <h2>Sérialier vos données</h2>
-	<p>Header parser récupére dans les entêtes HTTP de la version et des groupes de validation</p>
+	<p>Header parser récupére dans les entêtes HTTP la <i>version</i> et les <i>groupes de validation</i></p>
     <pre>
         <code data-trim>
 GET /api/user/57 HTTP/1.1
