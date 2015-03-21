@@ -404,9 +404,9 @@ live_user_index:
     defaults:
         _controller: live.controller.user:indexAction
         _sylius:
-            # Repository
-            method: myCustomMethod
-            arguments: []
+            repository:
+                method: myCustomMethod
+                arguments: []
         </code>
     </pre>
     <aside class="notes">
