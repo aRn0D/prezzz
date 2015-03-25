@@ -535,7 +535,7 @@ sylius_resource:
 
 
 <section>
-    <h2>Configuration sémantique</h2>    
+    <h2>La configuration sémantique</h2>
 	<pre>
         <code data-trim>
 bundle_name:
@@ -559,7 +559,7 @@ bundle_name:
 
 
 <section>
-    <h2>Créer une extension</h2>
+    <h2>La classe dExtension</h2>
     <ul>
         <li>Votre extension doit étendre <strong>AbstractResourceExtension</strong></li>
         <li>Charger facilement vos fichiers de définitions de services</li>
@@ -602,6 +602,7 @@ live_user.driver.doctrine/orm  true
 
 
 
+
 <!--<section>-->
     <!--<h2>AbstractResourceBundle</h2>-->
     <!--<ul>-->
@@ -617,7 +618,17 @@ live_user.driver.doctrine/orm  true
     <ul>
         <li>Déclarer votre classe en tant <i>mapped-superclass</i></li>
         <li>Le mapping est réécris grâce à l’évènement <i>loadClassMetadata</i></li>
-        <li>Permettre d'étendre vos modèles sans devoir réécrire leurs mappings</li>
+        <li>Permettre d'étendre facilement vos modèles</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Pour finir</h2>
+    <ul>
+        <li>Création des routes, templates et formulaires</li>
+        <li>Le bundle est prêt à être utilisé</li>
     </ul>
 </section>
 
@@ -626,9 +637,10 @@ live_user.driver.doctrine/orm  true
 <section>
     <h2>Créer un "Doctrine Mapping Driver"</h2>
     <ul>
-        <li>Fournir un model pour plusieurs implementations Doctrine</li>
-        <li>Définir où se trouve vos fichiers de mapping pour un namespace</li>
-        <li>Définir les <strong>getDoctrineMappingDirectory()</strong> et <strong>getModelNamespace()</strong></li>
+        <li>Fournir plusieurs implementations Doctrine pour un model</li>
+        <!--<li>Définir où se trouve vos fichiers de mapping pour un namespace</li>-->
+        <li>Utiliser <strong>AbstractResourceBundle</strong></li>
+        <li>Définir <strong>getDoctrineMappingDirectory()</strong> et <strong>getModelNamespace()</strong></li>
     </ul>
 </section>
 
@@ -639,7 +651,8 @@ live_user.driver.doctrine/orm  true
     <ul>
         <li>Définir des relations entre différentes entités sans les écrire en dur</li>
         <li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
-        <li><strong>getModelInterfaces()</strong> retournera le mapping entre vos interfaces et vos modèles</li>
+        <li>Utiliser <strong>AbstractResourceBundle</strong></li>
+        <li>Définir <strong>getModelInterfaces()</strong> qui retournera le mapping entre vos interfaces et vos modèles</li>
     </ul>
 </section>
 
@@ -720,8 +733,34 @@ live_api_user_update   PUT|PATCH  ANY    ANY  /user/{id}
 
 
 <section>
-    <h2>Les Formulaire</h2>
-    <p>Génération automatique des formualaires s'il n'est pas crée en tant que serive</p>
+    <h2>Le Formulaire</h2>
+    <ul>
+        <li>Génération automatique des formulaires</li>
+        <li>Possibilité de toujours les créer à la main</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Sérialier vos données</h2>
+    <pre>
+        <code data-trim>
+# Configuration du sérialiseur
+Live\Entity\User:
+    properties:
+        firstName:
+            expose: true
+            type: integer
+            groups: [Details]
+            since_version: 0.3
+        lastName:
+            expose: true
+            type: integer
+            groups: [Default, Details]
+            until_version: 0.4
+        </code>
+    </pre>
 </section>
 
 
@@ -753,25 +792,14 @@ app_user_index:
 
 
 
+
 <section>
-    <h2>Sérialier vos données</h2>
-    <pre>
-        <code data-trim>
-# Configuration du sérialiseur
-Live\Entity\User:
-    properties:
-        firstName:
-            expose: true
-            type: integer
-            groups: [Details]
-            since_version: 0.3
-        lastName:
-            expose: true
-            type: integer
-            groups: [Default, Details]
-            until_version: 0.4
-        </code>
-    </pre>
+    <h2>Lionframe</h2>
+    <ul>
+        <li>Rapid RESTful API Development</li>
+        <li>Fait par <strong>Lakion</strong></li>
+        <li><strong>Docs :</strong> http://lakion.com/lionframe</li>
+    </ul>
 </section>
 
 
