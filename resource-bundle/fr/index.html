@@ -103,13 +103,13 @@
 
 
 <section>
-    <h2>Fonctionnement général</h2>
+    <h2>Comment ça fonctionne ?</h2>
 </section>
 
 
 
 <section>
-    <h2>Un CRUD dans Symfony, comment ça fonctionne ?</h2>
+    <h2>Symfony et les CRUD!</h2>
     <ul>
         <li>Un <strong>modèle</strong> est un object représente les données</li>
         <li>Un <strong>contrôleur</strong> avec ses actions (index, show, create, update, delete)</li>
@@ -228,17 +228,24 @@ sylius.config.classes {"live.user": {...}}
 
 <section>
     <h2>Créons notre formulaire</h2>
-    <p>
-        <strong>AbstractResourceType</strong> permet de configurer le <i>data_class</i> et le <i>validation_group</i>
-    </p>
     <pre>
         <code data-trim>
 live.form.type.user:
     class: Live\Form\Type\UserType
+    arguments: [Live\Entity\User]
     tags:
         - { name: form.type, alias: live_user }
         </code>
     </pre>
+    <ul>
+        <li>
+            Le <strong>ResourceController</strong> va chercher le <i>form</i> dans la <i>registry</i>
+
+        </li>
+        <li>
+            <strong>AbstractResourceType</strong> permet de configurer le <i>data_class</i> et le <i>validation_group</i>
+        </li>
+    </ul>
 </section>
 
 
@@ -292,7 +299,7 @@ live_user_show:
     pattern: /{id}
     methods: [GET]
     defaults:
-        _controller: live.controller.user:indexAction
+        _controller: live.controller.user:showAction
 live_user_index:
     pattern: /
     methods: [GET]
@@ -530,6 +537,7 @@ sylius_resource:
 
 <section>
     <h2>Créer son bundle</h2>
+    <p>Besoin de gérer vos utilisateurs dans plusieurs applications, créer un bundle pour mutualiser votre code !</p>
 </section>
 
 
@@ -542,8 +550,10 @@ bundle_name:
     driver: doctrine/orm
     templates:
         user: LiveBundle:Backend/User
+        group: ...
     validation_groups:
         user: [live]
+        group: ...
     classes:
         user:
             model: Live\UserBundle\Model\User
@@ -552,6 +562,7 @@ bundle_name:
             form:
                 default: Live\UserBundle\Form\Type\UserType
                 choice: Live\UserBundle\Form\Type\UserChoiceType
+        group: ...
         </code>
     </pre>
 </section>
@@ -612,54 +623,113 @@ live_user.driver.doctrine/orm  true
 <!--</section>-->
 
 
-
 <section>
-    <h2>Mapping doctrine de vos modèles</h2>
+    <h2>Dernière étape</h2>
     <ul>
-        <li>Déclarer votre classe en tant <i>mapped-superclass</i></li>
-        <li>Le mapping est réécris grâce à l’évènement <i>loadClassMetadata</i></li>
-        <li>Permettre d'étendre facilement vos modèles</li>
+        <li>
+            Comme pour votre application il faut créer :
+            <ul>
+                <li>ses routes</li>
+                <li>ses templates</li>
+                <li>ses formulaires</li>
+            </ul>
+        </li>
+        <li>Le bundle est prêt à être utilisé !</li>
     </ul>
 </section>
 
 
 
 <section>
-    <h2>Pour finir</h2>
-    <ul>
-        <li>Création des routes, templates et formulaires</li>
-        <li>Le bundle est prêt à être utilisé</li>
-    </ul>
+    <h2>Mapping de vos modèles</h2>
+    <!--<ul>-->
+        <!--<li>Déclarer votre classe en tant <i>mapped-superclass</i></li>-->
+        <!--<li>Le mapping est réécris grâce à l’évènement <i>loadClassMetadata</i></li>-->
+        <!--<li>Permettre d'étendre facilement vos modèles</li>-->
+    <!--</ul>-->
+    <p>
+        Déclarer votre classe en tant <i>mapped-superclass</i>
+    </p>
+    <pre>
+        <code data-trim>
+<doctrine-mapping>
+    <mapped-superclass name="Live\Entity\User" table="live_user">
+
+        <field name="fistname" type="string"></field>
+        <field name="lastname" type="string"></field>
+        <!-- ... -->
+
+    </mapped-superclass>
+</doctrine-mapping>
+        </code>
+    </pre>
+    <p>
+        Le mapping est réécris (évènement <i>loadClassMetadata</i>) pour permettre d'étendre facilement vos modèles
+    </p>
 </section>
 
 
 
 <section>
-    <h2>Créer un "Doctrine Mapping Driver"</h2>
-    <ul>
-        <li>Fournir plusieurs implementations Doctrine pour un model</li>
-        <!--<li>Définir où se trouve vos fichiers de mapping pour un namespace</li>-->
-        <li>Utiliser <strong>AbstractResourceBundle</strong></li>
-        <li>Définir <strong>getDoctrineMappingDirectory()</strong> et <strong>getModelNamespace()</strong></li>
-    </ul>
+    <h2>"Doctrine Mapping Driver"</h2>
+    <p>
+        Fournir plusieurs implementations Doctrine pour un model
+    </p>
+    <pre>
+        <code data-trim>
+class UserBundle extends AbstractResourceBundle
+{
+    protected function getModelNamespace()
+    {
+        return 'Live\Model';
+    }
+
+    protected function getDoctrineMappingDirectory()
+    {
+        return 'model';
+    }
+}
+        </code>
+    </pre>
 </section>
 
 
 
 <section>
-    <h2>Configurer le "Resolve Target Entity Listener"</h2>
-    <ul>
-        <li>Définir des relations entre différentes entités sans les écrire en dur</li>
-        <li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
-        <li>Utiliser <strong>AbstractResourceBundle</strong></li>
-        <li>Définir <strong>getModelInterfaces()</strong> qui retournera le mapping entre vos interfaces et vos modèles</li>
-    </ul>
+    <h2>Resolve Target Entity Listener</h2>
+    <!--<ul>-->
+        <!--<li>Définir des relations entre différentes entités sans les écrire en dur</li>-->
+        <!--<li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>-->
+        <!--<li>Utiliser <strong>AbstractResourceBundle</strong></li>-->
+        <!--<li>Définir <strong>getModelInterfaces()</strong> qui retournera le mapping entre vos interfaces et vos modèles</li>-->
+    <!--</ul>-->
+    <p>
+        Permet de ne pas écrire en dur les relations entre différentes entités
+    </p>
+    <pre>
+        <code data-trim>
+class UserBundle extends AbstractResourceBundle
+{
+    protected function getModelInterfaces()
+    {
+        return [
+            'Live\Model\UserInterface' => live.model.user.class
+            'Live\Model\GroupInterface' => live.model.group.class
+        ];
+    }
+}
+        </code>
+    </pre>
+    <p>
+        Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model
+    </p>
 </section>
 
 
 
 <section>
     <h2>Créer son API REST</h2>
+    <p>Besoin d'exposer vos utilisateurs via une API ?</p>
 </section>
 
 
@@ -668,7 +738,11 @@ live_user.driver.doctrine/orm  true
     <h2>Comment ça fonctionne ?</h2>    
     <ul>
 		<li>Le ResourceController étend the <strong>FOSRestController</strong></li>
-		<li>La sérialization est faite grâce au <strong>JMSSerializerBundle</strong> et au <strong>BazingaHateoasBundle</strong></li>
+		<li>La sérialization est faite grâce à :</li>
+        <ul>
+            <li><strong>JMSSerializerBundle</strong></li>
+            <li><strong>BazingaHateoasBundle</strong></li>
+        </ul>
     </ul>
     <aside class="notes">
 		<p>        
