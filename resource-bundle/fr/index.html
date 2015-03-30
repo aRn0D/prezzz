@@ -163,8 +163,11 @@
 <section>
     <h2>API</h2>
     <p>La sérialization est faite grâce au <strong>JMSSerializerBundle</strong> et <strong>BazingaHateoasBundle</strong></p>
-    <pre>
-        <code>
+    <pre id="small-code-box">
+        <code data-trim class="json">
+HTTP/1.1 200 CREATED
+Content-Type: application/json; charset=utf-8
+
 {
     "page": 1,
     "limit": 10,
@@ -256,14 +259,14 @@ sylius_resource:
 <section>
     <h2>Mais que se passe t'il ?</h2>
     <pre>
-        <code data-trim>
+        <code data-trim class="sh">
 $ php app/console container:debug | grep customer
 myapp.manager.user    alias for "doctrine.orm.default_entity_manager"
 myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
 myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
 
-$ php app/console container:debug --parameters | grep customer
-sylius.config.classes {"live.user": {...}}
+$ php app/console container:debug --parameters
+sylius.config.classes {"myapp.user": {...}}
         </code>
     </pre>
 </section>
@@ -296,9 +299,9 @@ sylius_resource:
 
 <section>
     <h2>Création du modèle</h2>
-    <pre>
+    <pre id="small-code-box">
         <code data-trim contenteditable>
-namespace AppBundle\Entity;
+// AppBundle\Entity\Customer.php;
 
 /**
  * @ORM\Entity
@@ -323,9 +326,11 @@ class Customer
 
 <section>
     <h2>Créons notre formulaire</h2>
-    <pre>
-        <code data-trim>
-class CutomerType extends AbstractResourceType
+    <pre id="small-code-box">
+        <code data-trim class="php">
+// AppBundle\Form\Type\CustomerType.php;
+
+class CustomerType extends AbstractResourceType
 {
     public function getName()
     {
@@ -335,10 +340,10 @@ class CutomerType extends AbstractResourceType
         </code>
     </pre>
     <ul>
+        <li>Le formulaire doit être défini en tant que service</li>
         <li>
             <strong>Pattern du nom de formulaire :</strong> nomApplication_resource
         </li>
-        <li>Le formulaire doit être défini en tant que service</li>
         <!--<li>-->
             <!--Le <strong>ResourceController</strong> va chercher le <i>form</i> dans la <i>registry</i>-->
         <!--</li>-->
@@ -352,37 +357,37 @@ class CutomerType extends AbstractResourceType
 
 <section>
     <h2>Créons nos templates</h2>
-    <p>
-        Création ou modification d'une resource
-    </p>
-    <pre>
-        <code data-trim>
-<form method="POST">
+    <pre id="small-code-box">
+        <code data-trim class="twig">
+{# create.html.twig ou update.html.twig #}
+
+<form method="POST" action="...">
     {{ form_widget(form) }}
 </form>
         </code>
     </pre>
-    <p>
-        Page détail d'une resource
-    </p>
-    <pre>
-        <code data-trim >
-<form method="POST">
-    <p>customer.firstname</p>
-    <p>customer.lastname</p>
-</form>
+
+    <pre id="small-code-box">
+        <code data-trim class="twig">
+{# show.html.twig #}
+
+<div>
+    <p>{{ customer.firstname }}</p>
+    <p>{{ customer.lastname }}</p>
+</div>
         </code>
     </pre>
-    <p>
-        Listing de resources
-    </p>
-    <pre>
+
+    <pre id="small-code-box" class="twig">
         <code data-trim>
+{# index.html.twig #}
+
 {% for user in users %}
     {{ user.fistname }} {{ user.lastname }}
 {% endfor %}
         </code>
     </pre>
+
     <aside class="notes">
         <ul>
             <li>Une variable nommée form (FormView) est assignée au template de création et modification</li>
@@ -395,9 +400,11 @@ class CutomerType extends AbstractResourceType
 
 <section>
     <h2>Configurons nos routes</h2>
-    <pre>
+    <pre id="small-code-box">
         <code data-trim>
-live_user_index:
+# app/routing.yml
+
+myapp_user_index:
     pattern: /customer
     defaults:
         _controller: myapp.controller.customer:indexAction
@@ -426,6 +433,8 @@ live_user_index:
     </p>
     <pre>
         <code data-trim>
+# app/config.yml
+
 fos_rest:
     format_listener:
         rules:
@@ -471,10 +480,12 @@ Accept: application/json
     </p>
     <pre>
         <code data-trim>
-live_customer_create:
+# app/routing.yml
+
+myapp_customer_create:
     defaults:
         _sylius:
-            template: LiveBundle:Backend/User:custom_create.html.twig
+            template: WebBundle:Backend/Customer:custom_create.html.twig
         </code>
     </pre>
 </section>
@@ -483,18 +494,20 @@ live_customer_create:
 
 <section>
     <h2>Rédiriger l'utilisateur</h2>
-    <pre>
+    <pre id="small-code-box">
         <code data-trim>
-live_user_create:
+# app/routing.yml
+
+myapp_product_create:
     pattern: /new
     methods: [GET, POST]
-        _controller: live.controller.user:createAction
+        _controller: myapp.controller.product:createAction
         _sylius:
-            redirect: live_user_index
+            redirect: myapp_product_index
             # Ou
             redirect:
-                route: live_user_index
-                parameters: { name: resource.name }
+                route: myapp_product_show
+                parameters: { name: resource.sku }
         </code>
     </pre>
 </section>
@@ -503,17 +516,19 @@ live_user_create:
 
 <section>
     <h2>Récupérer des données dans la BDD</h2>
-    <pre>
+    <pre id="small-code-box">
         <code data-trim>
-live_user_index:
+# app/routing.yml
+
+myapp_customer_index:
     pattern: /
     methods: [GET]
     defaults:
-        _controller: live.controller.user:indexAction
+        _controller: myapp.controller.customer:indexAction
         _sylius:
             repository:
-                method: findCustomerByCity
-                arguments: [$city]
+                method: findCustomerBy
+                arguments: [$filter]
         </code>
     </pre>
     <aside class="notes">
@@ -528,19 +543,23 @@ live_user_index:
 
 <section>
     <h2>Lister ses ressources</h2>
-	<pre>
+	<pre id="small-code-box">
         <code data-trim>
-live_user_index:
+# app/routing.yml
+
+myapp_customer_index:
     pattern: /
     methods: [GET]
     defaults:
-        _controller: live.controller.user:indexAction
+        _controller: myapp.controller.customer:indexAction
         _sylius:
             # Filtre
+            filterable: true
             criteria:
                 company: "Clever Age"
 
             # Trie
+            sortable: true
             sorting:
                 updatedAt: asc|desc
 
@@ -557,14 +576,16 @@ live_user_index:
     <h2>Expression Language</h2>
 	<pre>
         <code data-trim>
-app_user_index:
-    path: /customer/orders
-    methods: [POST]
+# app/routing.yml
+
+app_order_index:
+    path: /orders
+    methods: [GET]
     defaults:
         _controller: app.controller.order:indexAction
         _sylius:
             method: findOrderByCustomer
-            arguments: ['expr:service("security.context").getToken().getUser()']
+            arguments: ["expr:service('security.context').getToken().getUser()"]
         </code>
     </pre>
 </section>
@@ -573,15 +594,17 @@ app_user_index:
 
 <section>
     <h2>Configuration globale</h2>
-    	<pre>
+    <pre id="small-code-box">
         <code data-trim>
+# app/config.yml
+
 sylius_resource:
     settings:
         paginate: $paginate
         default_page_size: 10
-        sortable: false
+        sortable: true
         sorting: $my_sorting
-        filterable: false
+        filterable: true
         criteria: $my_criteria
         </code>
     </pre>
@@ -591,73 +614,67 @@ sylius_resource:
 
 <section>
     <h2>Créer son bundle</h2>
-    <p>Besoin de gérer vos utilisateurs dans plusieurs applications, créer un bundle pour mutualiser votre code !</p>
+    <p>Créer un bundle pour mutualiser votre code !</p>
 </section>
 
+
+
+<section>
+    <h2>Les bundles dans Sylius</h2>
+    <ul>
+        <li>Il doit être facilement <strong>étendable</strong></li>
+        <li>Il peuvent supporter plusieurs <strong>"drivers"</strong> (ORM/ODM)</li>
+        <li>Ils ne doivent être <strong>couplés</strong> les uns aux autres</li>
+    </ul>
+</section>
 
 
 <!--<section>-->
     <!--<h2>La configuration sémantique</h2>-->
 	<!--<pre>-->
         <!--<code data-trim>-->
-<!--bundle_name:-->
-    <!--driver: doctrine/orm-->
-    <!--templates:-->
-        <!--user: LiveBundle:Backend/User-->
-        <!--group: ...-->
-    <!--validation_groups:-->
-        <!--user: [live]-->
-        <!--group: ...-->
-    <!--classes:-->
-        <!--user:-->
-            <!--model: Live\UserBundle\Model\User-->
+            <!--bundle_name:-->
+            <!--driver: doctrine/orm-->
+            <!--templates:-->
+            <!--user: myappBundle:Backend/User-->
+            <!--group: ...-->
+            <!--validation_groups:-->
+            <!--user: [myapp]-->
+            <!--group: ...-->
+            <!--classes:-->
+            <!--user:-->
+            <!--model: myapp\UserBundle\Model\User-->
             <!--controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
             <!--repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository-->
             <!--form:-->
-                <!--default: Live\UserBundle\Form\Type\UserType-->
-                <!--choice: Live\UserBundle\Form\Type\UserChoiceType-->
-        <!--group: ...-->
+            <!--default: myapp\UserBundle\Form\Type\UserType-->
+            <!--choice: myapp\UserBundle\Form\Type\UserChoiceType-->
+            <!--group: ...-->
         <!--</code>-->
     <!--</pre>-->
 <!--</section>-->
 
-
-
-<!--<section>-->
-    <!--<h2>La classe dExtension</h2>-->
-    <!--<ul>-->
-        <!--<li>Votre extension doit étendre <strong>AbstractResourceExtension</strong></li>-->
-        <!--<li>Charger facilement vos fichiers de définitions de services</li>-->
-        <!--<li>Traiter la configuration du bundle</li>-->
-    <!--</ul>-->
-    <!--<aside class="notes">-->
-        <!--<p>-->
-            <!--Utilisation d'un <a href="http://php.net/manual/fr/language.operators.bitwise.php">opérateurs sur les bits</a> (bitwise operators)-->
-        <!--</p>-->
-    <!--</aside>-->
-<!--</section>-->
-
-
+                <!---->
 
 <!--<section>-->
-    <!--<h2>Mais qu’est ce qui se passe ?</h2>    -->
+    <!--<h2>Mais qu’est ce qui se passe ?</h2>-->
 	<!--<pre>-->
         <!--<code data-trim>-->
-<!--$ php app/console container:debug | grep user-->
-<!--live.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
-<!--live.manager.user    n/a       alias for doctrine.orm.default_entity_manager-->
-<!--live.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
-<!--live.form.type.user  container Live\UserBundle\Form\Type\UserType-->
+            <!--$ php app/console container:debug | grep user-->
+            <!--myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
+            <!--myapp.manager.user    n/a       alias for doctrine.orm.default_entity_manager-->
+            <!--myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
+            <!--myapp.form.type.user  container myapp\UserBundle\Form\Type\UserType-->
 
-<!--$ php app/console container:debug --parameters | grep user-->
-<!--sylius.config.classes          {...}-->
-<!--live.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
-<!--live.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
-<!--live.model.user.class          Live\UserBundle\Model\User-->
-<!--live.form.type.user.class      Live\UserBundle\Form\Type\UserType-->
-<!--live.validation_group.user     ["live"]-->
-<!--live_user.driver               doctrine/orm-->
-<!--live_user.driver.doctrine/orm  true-->
+            <!--$ php app/console container:debug --parameters | grep user-->
+            <!--sylius.config.classes          {...}-->
+            <!--myapp.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
+            <!--myapp.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
+            <!--myapp.model.user.class          myapp\UserBundle\Model\User-->
+            <!--myapp.form.type.user.class      myapp\UserBundle\Form\Type\UserType-->
+            <!--myapp.validation_group.user     ["myapp"]-->
+            <!--myapp_user.driver               doctrine/orm-->
+            <!--myapp_user.driver.doctrine/orm  true-->
         <!--</code>-->
     <!--</pre>-->
     <!--<aside class="notes">-->
@@ -667,264 +684,68 @@ sylius_resource:
 
 
 
-
-<!--<section>-->
-    <!--<h2>AbstractResourceBundle</h2>-->
-    <!--<ul>-->
-        <!--<li>Votre class de Bundle doit étendre le AbstractResourceBundle</li>-->
-        <!--<li>Permet d'initiliser d'autres outils.</li>-->
-    <!--</ul>-->
-<!--</section>-->
-
-
-<!--<section>-->
-    <!--<h2>Dernière étape</h2>-->
-    <!--<ul>-->
-        <!--<li>-->
-            <!--Comme pour votre application il faut créer :-->
-            <!--<ul>-->
-                <!--<li>ses routes</li>-->
-                <!--<li>ses templates</li>-->
-                <!--<li>ses formulaires</li>-->
-            <!--</ul>-->
-        <!--</li>-->
-        <!--<li>Le bundle est prêt à être utilisé !</li>-->
-    <!--</ul>-->
-<!--</section>-->
-
-
-
 <section>
-    <h2>Mapping de vos modèles</h2>
-    <p>
-        Déclarer votre classe en tant <i>mapped-superclass</i>
-    </p>
-    <pre>
-        <code data-trim>
-<doctrine-mapping>
-    <mapped-superclass name="Live\Entity\User" table="live_user">
-
-        <field name="fistname" type="string"></field>
-        <field name="lastname" type="string"></field>
-        <!-- ... -->
-
-    </mapped-superclass>
-</doctrine-mapping>
-        </code>
-    </pre>
-    <p>
-        Le mapping est réécris (évènement <i>loadClassMetadata</i>) pour permettre d'étendre facilement vos modèles
-    </p>
+    <h2>Etendre facilement votre bundle</h2>
+    <ul>
+        <li>Utiliser l'injecteur de dépendences</li>
+        <li>Déclarer votre classe en tant <strong>mapped-superclass</strong> (évènement <i>loadClassMetadata</i>) </li>
+        <!--<li>Le mapping est réécris (évènement <i>loadClassMetadata</i>) pour permettre d'étendre facilement vos modèles</li>-->
+    </ul>
 </section>
 
 
 
 <section>
     <h2>"Doctrine Mapping Driver"</h2>
-    <p>
-        Fournir plusieurs implementations Doctrine pour un model
-    </p>
-    <pre>
-        <code data-trim>
-class UserBundle extends AbstractResourceBundle
-{
-    protected function getModelNamespace()
-    {
-        return 'Live\Model';
-    }
-
-    protected function getDoctrineMappingDirectory()
-    {
-        return 'model';
-    }
-}
-        </code>
-    </pre>
+    <ul>
+        <li>Fournir plusieurs implementations Doctrine pour un model</li>
+        <li>Vos Documents et Entities peuvent être dans le namespace</li>
+    </ul>
 </section>
 
 
 
 <section>
     <h2>Resolve Target Entity Listener</h2>
-    <!--<ul>-->
-        <!--<li>Définir des relations entre différentes entités sans les écrire en dur</li>-->
-        <!--<li>Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>-->
-        <!--<li>Utiliser <strong>AbstractResourceBundle</strong></li>-->
-        <!--<li>Définir <strong>getModelInterfaces()</strong> qui retournera le mapping entre vos interfaces et vos modèles</li>-->
-    <!--</ul>-->
-    <p>
-        Permet de ne pas écrire en dur les relations entre différentes entités
-    </p>
+    <ul>
+        <li>Définir des relations entre différentes entités sans les écrire en dur</li>
+        <li>Il ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
+    </ul>
     <pre>
         <code data-trim>
-class UserBundle extends AbstractResourceBundle
-{
-    protected function getModelInterfaces()
-    {
-        return [
-            'Live\Model\UserInterface' => live.model.user.class
-            'Live\Model\GroupInterface' => live.model.group.class
-        ];
-    }
-}
+<!-- Resources/config/doctrine/order.xml -->
+
+<mapped-superclass name="Sylius\Component\Order\Model\Order" table="sylius_order">
+    <one-to-many field="items" target-entity="Sylius\Component\Order\Model\OrderItemInterface">
+        <cascade>
+            <cascade-persist/>
+        </cascade>
+    </one-to-many>
+</mapped-superclass>
         </code>
     </pre>
-    <p>
-        Ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model
-    </p>
 </section>
 
 
 
-<!--<section>-->
-    <!--<h2>Créer son API REST</h2>-->
-    <!--<p>Besoin d'exposer vos utilisateurs via une API ?</p>-->
-<!--</section>-->
+<section>
+    <h2>TODO</h2>
+    <!--<p>Notre CRUD est Prêt à l'emploi !! On crée notre API ?</p>-->
+</section>
 
-
-
-<!--<section>-->
-    <!--<h2>Comment ça fonctionne ?</h2>    -->
-    <!--<ul>-->
-		<!--<li>Le ResourceController étend the <strong>FOSRestController</strong></li>-->
-		<!--<li>La sérialization est faite grâce à :</li>-->
-        <!--<ul>-->
-            <!--<li><strong>JMSSerializerBundle</strong></li>-->
-            <!--<li><strong>BazingaHateoasBundle</strong></li>-->
-        <!--</ul>-->
-    <!--</ul>-->
-    <!--<aside class="notes">-->
-		<!--<p>        -->
-			<!--Expose en plus de l'état, les actions / transitions possibles autour de l'objet au travers de liens hypermédias.-->
-        <!--</p>-->
-        <!--<p>-->
-            <!--<strong>H</strong>ypermedia <strong>A</strong>s <strong>T</strong>he <strong>E</strong>ngine <strong>O</strong>f <strong>A</strong>pplication <strong>S</strong>tate-->
-            <!--permet de faire un API de niveau 3 <strong>Hypermedia Controls</strong>-->
-		<!--</p>		-->
-		<!--<ul>-->
-			<!--<li>implémentation découplée</li>-->
-			<!--<li>plus besoin de manipuler les URLs</li>-->
-			<!--<li>forme d'auto-documentation de l’API</li>-->
-		<!--</ul>-->
-    <!--</aside>-->
-<!--</section>-->
-
-
-
-<!--<section>-->
-    <!--<h2>Configuration vos resources</h2>-->
-	<!--<ul>-->
-        <!--<li>Initialiser vos resources (créer un bundle ou application)</li>-->
-        <!--<li>Configurer le <strong>FOSRestBundle</strong> (format, message d'erreur...)</li>-->
-        <!--&lt;!&ndash;<li>Le sérializer permettra de définir quelles données seront retournée</li>&ndash;&gt;-->
-    <!--</ul>-->
-<!--</section>-->
-
-
-
-<!--<section>-->
-    <!--<h2>Le routage</h2>-->
-    <!--<p>Utiliser le <strong>ApiLoader</strong> pour générer vos routes automatiquement</p>-->
-    <!--<pre>-->
-        <!--<code data-trim>-->
-<!--live_user:-->
-    <!--resource: live.user-->
-    <!--type: sylius.api-->
-        <!--</code>-->
-    <!--</pre>-->
-	<!--<pre>-->
-        <!--<code data-trim>-->
-<!--$ php app/console router:debug | grep resource-->
-<!--live_api_user_index    GET        ANY    ANY  /user-->
-<!--live_api_user_show     GET        ANY    ANY  /user/{id}-->
-<!--live_api_user_delete   DELETE     ANY    ANY  /user/{id}-->
-<!--live_api_user_create   POST       ANY    ANY  /user-->
-<!--live_api_user_update   PUT|PATCH  ANY    ANY  /user/{id}-->
-        <!--</code>-->
-    <!--</pre>-->
-	<!--<aside class="notes">-->
-		<!--<p>-->
-			<!--Les routes sont construites à partir des resources configurées. -->
-		<!--</p>-->
-		<!--<ul>-->
-			<!--<li>live: nom de l'application</li>-->
-			<!--<li>user: nom de le ressource</li>-->
-		<!--</ul>	-->
-	<!--</aside>-->
-<!--</section>-->
-
-
-
-<!--<section>-->
-    <!--<h2>Le Formulaire</h2>-->
-    <!--<ul>-->
-        <!--<li>Génération automatique des formulaires</li>-->
-        <!--<li>Possibilité de toujours les créer à la main</li>-->
-    <!--</ul>-->
-<!--</section>-->
-
-
-
-<!--<section>-->
-    <!--<h2>Sérialier vos données</h2>-->
-    <!--<pre>-->
-        <!--<code data-trim>-->
-<!--# Configuration du sérialiseur-->
-<!--Live\Entity\User:-->
-    <!--properties:-->
-        <!--firstName:-->
-            <!--expose: true-->
-            <!--type: integer-->
-            <!--groups: [Details]-->
-            <!--since_version: 0.3-->
-        <!--lastName:-->
-            <!--expose: true-->
-            <!--type: integer-->
-            <!--groups: [Default, Details]-->
-            <!--until_version: 0.4-->
-        <!--</code>-->
-    <!--</pre>-->
-<!--</section>-->
-
-
-
-<!--<section>-->
-    <!--<h2>Sérialier vos données</h2>-->
-	<!--<p>Header parser récupére dans les entêtes HTTP la <i>version</i> et les <i>groupes de validation</i></p>-->
-    <!--<pre>-->
-        <!--<code data-trim>-->
-<!--GET /api/user/57 HTTP/1.1-->
-<!--Host: live.com-->
-<!--Accept: application/json; version=1.0.1; groups=Default,Details-->
-        <!--</code>-->
-    <!--</pre>-->
-    <!--<p>Vous pouvez les configurer directement dans vos routes</p>-->
-	<!--<pre>-->
-        <!--<code data-trim>-->
-<!--app_user_index:-->
-    <!--path: /user/-->
-    <!--methods: [POST]-->
-    <!--defaults:-->
-        <!--_controller: app.controller.order:indexAction-->
-        <!--_sylius:-->
-            <!--serialization_groups: 1.0.1-->
-            <!--serialization_version: [Default, Details]-->
-        <!--</code>-->
-    <!--</pre>-->
-<!--</section>-->
 
 
 <section>
     <h2>Formulaires</h2>
     <ul>
-        <p>ResourceChoiceType création d'un form type choice à partir de :</p>
+        <p><strong>ResourceChoiceType</strong> création d'un form type choice à partir de :</p>
         <ul>
             <li>Une entité : <strong>entity</strong> form type</li>
             <li>Un document : <strong>document form</strong> type</li>
             <li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>
         </ul>
 
-        <p class="topSpace">CollectionExtension et son plugin jQuery</p>
+        <p class="topSpace"><strong>CollectionExtension</strong> et son plugin jQuery</p>
         <ul>
             <li>Ajout/suppression d'item</li>
             <li>Mise à jour des items (remote/local)</li>
@@ -933,13 +754,24 @@ class UserBundle extends AbstractResourceBundle
 </section>
 
 
-
+                
 <section>
     <h2>Templates</h2>
-    <lu>
-        <li>Extension twig (trie et pagination)</li>
-        <li>Macros (flashes, bouton)</li>
-    </lu>
+    <ul>
+        <li>Extensions Twig :
+            <ul>
+                <li>
+                    <strong>sylius_resource_sort</strong><br />
+                    <img src="images/sorting.png">
+                </li>
+                <li>
+                    <strong>sylius_resource_paginate</strong><br />
+                    <img src="images/paginate.png">
+                </li>
+            </ul>
+        </li>
+        <li>Macros (flashes, boutons)</li>
+    </ul>
 </section>
 
 
@@ -977,7 +809,7 @@ class UserBundle extends AbstractResourceBundle
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				width: 1600,
+				width: 1640,
    				height: 1000,
 				controls: true,
 				progress: true,

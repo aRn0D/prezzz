@@ -319,3 +319,7 @@ body {
 #question-text {
     margin-top: 123px
 }
+
+#small-code-box {
+    width: 900px;
+}
