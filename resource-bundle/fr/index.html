@@ -71,7 +71,7 @@
         </p>
     </div>
     <div class="col-70 text-left">
-        <p class="topSpace">Framework E-commerce créer par Paweł Jędrzejewski</p>
+        <p class="topSpace">Framework E-commerce créé par Paweł Jędrzejewski</p>
         <p>Ensemble de bundles Symfony et composants PHP e-commerce</p>
         <p>Sylius Starndard Edition</p>
         <p>Quelques chiffres : ~200 contributeurs / ~1700 stars</p>
@@ -288,17 +288,12 @@ sylius_resource:
             templates: WebBundle:Backend/Customer
         </code>
     </pre>
-    <aside class="notes">
-        <p>
-            Le nom de la resource est préfixé par ce qu'on appelle le "nom de l'application", il est utilisé pour préfixer vos clé de services.
-        </p>
-    </aside>
 </section>
 
 
 
 <section>
-    <h2>Création du modèle</h2>
+    <h2>Créons notre modèle</h2>
     <pre id="small-code-box">
         <code data-trim contenteditable>
 // AppBundle\Entity\Customer.php;
@@ -504,7 +499,9 @@ myapp_product_create:
         _controller: myapp.controller.product:createAction
         _sylius:
             redirect: myapp_product_index
+
             # Ou
+
             redirect:
                 route: myapp_product_show
                 parameters: { name: resource.sku }
@@ -526,16 +523,36 @@ myapp_customer_index:
     defaults:
         _controller: myapp.controller.customer:indexAction
         _sylius:
+            # $repository->findBy(['group' => 'my_group']);
+            criteria:
+                group: my_group
+
+            # $request->get('criteria);
+            filterable: true
+        </code>
+    </pre>
+</section>
+
+
+
+<section>
+    <h2>Récupérer des données dans la BDD</h2>
+    <pre id="small-code-box">
+        <code data-trim>
+# app/routing.yml
+
+myapp_customer_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: myapp.controller.customer:indexAction
+        _sylius:
+            # $repository->findCustomerBy($request->get('filter));
             repository:
                 method: findCustomerBy
                 arguments: [$filter]
         </code>
     </pre>
-    <aside class="notes">
-        <p>
-            Il est possible de surcharger la méthode du repository pour toutes les actions (sauf create)
-        </p>
-    </aside>
 </section>
 
 
@@ -553,15 +570,12 @@ myapp_customer_index:
     defaults:
         _controller: myapp.controller.customer:indexAction
         _sylius:
-            # Filtre
-            filterable: true
-            criteria:
-                company: "Clever Age"
-
             # Trie
-            sortable: true
             sorting:
-                updatedAt: asc|desc
+                updatedAt: asc # Ou desc
+
+            # $request->get('sorting);
+            sortable: true
 
             # Paginate
             paginate: 50
@@ -584,8 +598,10 @@ app_order_index:
     defaults:
         _controller: app.controller.order:indexAction
         _sylius:
-            method: findOrderByCustomer
-            arguments: ["expr:service('security.context').getToken().getUser()"]
+            repository:
+                # $repository->findOrderByCustomer([$user]);
+                method: findOrderByCustomer
+                arguments: ["expr:service('security.context').getToken().getUser()"]
         </code>
     </pre>
 </section>
@@ -629,65 +645,63 @@ sylius_resource:
 </section>
 
 
-<!--<section>-->
-    <!--<h2>La configuration sémantique</h2>-->
-	<!--<pre>-->
-        <!--<code data-trim>-->
-            <!--bundle_name:-->
-            <!--driver: doctrine/orm-->
-            <!--templates:-->
-            <!--user: myappBundle:Backend/User-->
-            <!--group: ...-->
-            <!--validation_groups:-->
-            <!--user: [myapp]-->
-            <!--group: ...-->
-            <!--classes:-->
-            <!--user:-->
-            <!--model: myapp\UserBundle\Model\User-->
-            <!--controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
-            <!--repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository-->
-            <!--form:-->
-            <!--default: myapp\UserBundle\Form\Type\UserType-->
-            <!--choice: myapp\UserBundle\Form\Type\UserChoiceType-->
-            <!--group: ...-->
-        <!--</code>-->
-    <!--</pre>-->
-<!--</section>-->
+<section>
+    <h2>La configuration sémantique</h2>
+	<pre>
+        <code data-trim>
+my_customer_bundle:
+    driver: doctrine/orm
+    templates:
+        user: myappBundle:Backend/User
+        group: ...
+    validation_groups:
+        user: [myapp]
+        group: ...
+    classes:
+        user:
+            model: myapp\UserBundle\Model\User
+            controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
+            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository
+            form:
+                default: myapp\UserBundle\Form\Type\UserType
+                choice: myapp\UserBundle\Form\Type\UserChoiceType
+    group: ...
+        </code>
+    </pre>
+</section>
 
-                <!---->
 
-<!--<section>-->
-    <!--<h2>Mais qu’est ce qui se passe ?</h2>-->
-	<!--<pre>-->
-        <!--<code data-trim>-->
-            <!--$ php app/console container:debug | grep user-->
-            <!--myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
-            <!--myapp.manager.user    n/a       alias for doctrine.orm.default_entity_manager-->
-            <!--myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
-            <!--myapp.form.type.user  container myapp\UserBundle\Form\Type\UserType-->
 
-            <!--$ php app/console container:debug --parameters | grep user-->
-            <!--sylius.config.classes          {...}-->
-            <!--myapp.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController-->
-            <!--myapp.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository-->
-            <!--myapp.model.user.class          myapp\UserBundle\Model\User-->
-            <!--myapp.form.type.user.class      myapp\UserBundle\Form\Type\UserType-->
-            <!--myapp.validation_group.user     ["myapp"]-->
-            <!--myapp_user.driver               doctrine/orm-->
-            <!--myapp_user.driver.doctrine/orm  true-->
-        <!--</code>-->
-    <!--</pre>-->
-    <!--<aside class="notes">-->
-        <!--<p>Attention: votre formulaire est déclaré automatiquement en tant que service seulement si vous optez pour le dexième type de configuration</p>-->
-    <!--</aside>-->
-<!--</section>-->
+<section>
+    <h2>Mais que se passe t'il?</h2>
+	<pre>
+        <code data-trim class="sh">
+$ php app/console container:debug | grep user
+myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+myapp.manager.user    n/a       alias for doctrine.orm.default_entity_manager
+myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+myapp.form.type.user  container myapp\UserBundle\Form\Type\UserType
+
+$ php app/console container:debug --parameters | grep user
+myapp.model.user.class          myapp\UserBundle\Model\User
+myapp.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController
+myapp.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+myapp.form.type.user.class      myapp\UserBundle\Form\Type\UserType
+myapp.validation_group.user     ["myapp"]
+myapp_user.driver               doctrine/orm
+        </code>
+    </pre>
+    <aside class="notes">
+        <p>Attention: votre formulaire est déclaré automatiquement en tant que service seulement si vous optez pour le dexième type de configuration</p>
+    </aside>
+</section>
 
 
 
 <section>
     <h2>Etendre facilement votre bundle</h2>
     <ul>
-        <li>Utiliser l'injecteur de dépendences</li>
+        <li>Utiliser l'injecteur de dépendences (Dependency Injector)</li>
         <li>Déclarer votre classe en tant <strong>mapped-superclass</strong> (évènement <i>loadClassMetadata</i>) </li>
         <!--<li>Le mapping est réécris (évènement <i>loadClassMetadata</i>) pour permettre d'étendre facilement vos modèles</li>-->
     </ul>
@@ -729,7 +743,7 @@ sylius_resource:
 
 
 <section>
-    <h2>TODO</h2>
+    <h2>Les petits plus !</h2>
     <!--<p>Notre CRUD est Prêt à l'emploi !! On crée notre API ?</p>-->
 </section>
 
