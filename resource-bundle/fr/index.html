@@ -118,7 +118,7 @@
     <h2>Pourquoi la création de ce bundle?</h2>
     <ul>
         <li>Le back office de <strong>Sylius</strong> est composé d'énormement de CRUD</li>
-        <li>Eviter la duplication de code parce que c'est <strong>le mal</strong></li>
+        <li>Eviter la duplication de code parce que c'est <strong>mal!</strong></li>
         <li>Développer plus vite en automatisant des tâches</li>
     </ul>
 </section>
@@ -446,7 +446,54 @@ Host: myshop.com
 Accept: application/json
         </code>
     </pre>
+</section>
 
+
+
+<section>
+    <h2>Configurer le sérialiseur</h2>
+    <div class="col-60">
+        <pre>
+            <code data-trim>
+# Resources/config/serializer/Entity/Customer.yml
+
+AppBundle\Entity\Customer:
+    exclusion_policy: ALL
+    properties:
+        firstName:
+            expose: true
+            type: string
+        lastName:
+            expose: true
+            type: string
+        relations:
+            - rel: address
+            href:
+                route: sylius_address_show
+                parameters:
+                    id: expr(object.getAddress().getId())
+            </code>
+        </pre>
+    </div>
+    <div class="col-40">
+        <pre>
+            <code data-trim>
+HTTP/1.1 200 OK
+Content-Type: application/json;
+
+{
+    "id": 2,
+    "firstName": "Arnaud",
+    "lastName": "Langlade",
+    "_links": {
+        "self": {
+            "href": "/address/2"
+        }
+    }
+}
+            </code>
+        </pre>
+    </div>
 </section>
 
 
@@ -454,8 +501,8 @@ Accept: application/json
 <section>
     <h2>Construire une API from strash ?</h2>
     <ul>
-        <li>Génération automatique des formulaires et du routing</li>
         <li>Lionframe (Rapid RESTful API Development)</li>
+        <li>Génération automatique des <strong>formulaires</strong> et du <strong>routing</strong></li>
     </ul>
 </section>
 
@@ -490,7 +537,7 @@ myapp_customer_create:
 <section>
     <h2>Rédiriger l'utilisateur</h2>
     <pre id="small-code-box">
-        <code data-trim>
+        <code data-trim class="php">
 # app/routing.yml
 
 myapp_product_create:
@@ -514,7 +561,7 @@ myapp_product_create:
 <section>
     <h2>Récupérer des données dans la BDD</h2>
     <pre id="small-code-box">
-        <code data-trim>
+        <code data-trim class="php">
 # app/routing.yml
 
 myapp_customer_index:
@@ -523,11 +570,11 @@ myapp_customer_index:
     defaults:
         _controller: myapp.controller.customer:indexAction
         _sylius:
-            # $repository->findBy(['group' => 'my_group']);
+            # $repository->findBy(["group" => 'my_group'])
             criteria:
                 group: my_group
 
-            # $request->get('criteria);
+            # $request->get('criteria')
             filterable: true
         </code>
     </pre>
@@ -547,9 +594,9 @@ myapp_customer_index:
     defaults:
         _controller: myapp.controller.customer:indexAction
         _sylius:
-            # $repository->findCustomerBy($request->get('filter));
+            # $repository->findByFilter($request->get('filter'))
             repository:
-                method: findCustomerBy
+                method: findByFilter
                 arguments: [$filter]
         </code>
     </pre>
@@ -561,7 +608,7 @@ myapp_customer_index:
 <section>
     <h2>Lister ses ressources</h2>
 	<pre id="small-code-box">
-        <code data-trim>
+        <code data-trim class="php">
 # app/routing.yml
 
 myapp_customer_index:
@@ -572,9 +619,9 @@ myapp_customer_index:
         _sylius:
             # Trie
             sorting:
-                updatedAt: asc # Ou desc
+                updatedAt: desc # Ou asc
 
-            # $request->get('sorting);
+            # $request->get('sorting');
             sortable: true
 
             # Paginate
@@ -589,7 +636,7 @@ myapp_customer_index:
 <section>
     <h2>Expression Language</h2>
 	<pre>
-        <code data-trim>
+        <code data-trim class="php">
 # app/routing.yml
 
 app_order_index:
@@ -611,7 +658,7 @@ app_order_index:
 <section>
     <h2>Configuration globale</h2>
     <pre id="small-code-box">
-        <code data-trim>
+        <code data-trim class="php">
 # app/config.yml
 
 sylius_resource:
@@ -712,8 +759,8 @@ myapp_user.driver               doctrine/orm
 <section>
     <h2>"Doctrine Mapping Driver"</h2>
     <ul>
-        <li>Fournir plusieurs implementations Doctrine pour un model</li>
-        <li>Vos Documents et Entities peuvent être dans le namespace</li>
+        <li>Fournir plusieurs implementations <strong>Doctrine</strong> pour un model</li>
+        <li>Vos <strong>Documents</strong> et <strong>Entities</strong> peuvent être dans le namespace</li>
     </ul>
 </section>
 
@@ -726,16 +773,12 @@ myapp_user.driver               doctrine/orm
         <li>Il ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
     </ul>
     <pre>
-        <code data-trim>
+        <code data-trim class="xml">
 <!-- Resources/config/doctrine/order.xml -->
 
-<mapped-superclass name="Sylius\Component\Order\Model\Order" table="sylius_order">
-    <one-to-many field="items" target-entity="Sylius\Component\Order\Model\OrderItemInterface">
-        <cascade>
-            <cascade-persist/>
-        </cascade>
-    </one-to-many>
-</mapped-superclass>
+<one-to-many field="orders" target-entity="Sylius\Component\Order\Model\OrderInterface" />
+    <!-- ... -->
+</one-to-many>
         </code>
     </pre>
 </section>
