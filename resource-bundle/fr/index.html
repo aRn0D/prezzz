@@ -106,21 +106,27 @@
 
 
 <section>
-    <h2>Un CRUD, comment ça fonctionne?</h2>
-    <p>
-        <img src="images/crud-explain.png" />
-    </p>
-</section>
-
-
-
-<section>
     <h2>Pourquoi la création de ce bundle?</h2>
     <ul>
         <li>Le back office de <strong>Sylius</strong> est composé d'énormement de CRUD</li>
         <li>Eviter la duplication de code parce que c'est <strong>mal!</strong></li>
         <li>Développer plus vite en automatisant des tâches</li>
     </ul>
+</section>
+
+
+
+<section>
+    <h2>Comment ça marche?</h2>
+</section>
+
+
+
+<section>
+    <h2>Un CRUD, comment ça fonctionne?</h2>
+    <p>
+        <img src="images/crud-explain.png" />
+    </p>
 </section>
 
 
@@ -153,7 +159,7 @@
     <ul>
         <li>Doctrine <strong>ORM :</strong> Sylius l'utilise par défaut</li>
         <li>Doctrine <strong>Phpcr-ODM :</strong> Sylius intègre le CMF pour gérer des contenus</li>
-        <li>Doctrine <strong>Mongodb-ODM</strong> (en partie)</li>
+        <li>Doctrine <strong>Mongodb-ODM</strong></li>
         <li>Bientôt surement plus !</li>
     </ul>
 </section>
@@ -167,7 +173,6 @@
         <code data-trim class="json">
 HTTP/1.1 200 CREATED
 Content-Type: application/json; charset=utf-8
-
 {
     "page": 1,
     "limit": 10,
@@ -261,12 +266,12 @@ sylius_resource:
     <pre>
         <code data-trim class="sh">
 $ php app/console container:debug | grep customer
-myapp.manager.user    alias for "doctrine.orm.default_entity_manager"
-myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
-myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
+myapp.manager.customer    alias for "doctrine.orm.default_entity_manager"
+myapp.controller.customer container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+myapp.repository.customer container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
 
 $ php app/console container:debug --parameters
-sylius.config.classes {"myapp.user": {...}}
+sylius.config.classes {"myapp.customer": {...}}
         </code>
     </pre>
 </section>
@@ -377,8 +382,8 @@ class CustomerType extends AbstractResourceType
         <code data-trim>
 {# index.html.twig #}
 
-{% for user in users %}
-    {{ user.fistname }} {{ user.lastname }}
+{% for customer in customers %}
+    {{ customer.fistname }} {{ customer.lastname }}
 {% endfor %}
         </code>
     </pre>
@@ -399,7 +404,7 @@ class CustomerType extends AbstractResourceType
         <code data-trim>
 # app/routing.yml
 
-myapp_user_index:
+myapp_customer_index:
     pattern: /customer
     defaults:
         _controller: myapp.controller.customer:indexAction
@@ -499,7 +504,7 @@ Content-Type: application/json;
 
 
 <section>
-    <h2>Construire une API from strash ?</h2>
+    <h2>C'est Tout ?</h2>
     <ul>
         <li>Lionframe (Rapid RESTful API Development)</li>
         <li>Génération automatique des <strong>formulaires</strong> et du <strong>routing</strong></li>
@@ -509,7 +514,7 @@ Content-Type: application/json;
 
 
 <section>
-    <h2>Allons plus loin !!</h2>
+    <h2>C'est pas vraiment flexible !</h2>
     <p>Il est possible de configurer le comportement des méthodes du <strong>ResourceController</strong></p>
 </section>
 
@@ -646,7 +651,7 @@ app_order_index:
         _controller: app.controller.order:indexAction
         _sylius:
             repository:
-                # $repository->findOrderByCustomer([$user]);
+                # $repository->findOrderByCustomer([$customer]);
                 method: findOrderByCustomer
                 arguments: ["expr:service('security.context').getToken().getUser()"]
         </code>
@@ -676,8 +681,7 @@ sylius_resource:
 
 
 <section>
-    <h2>Créer son bundle</h2>
-    <p>Créer un bundle pour mutualiser votre code !</p>
+    <h2>Ça fonctionne comment sur Sylius ?</h2>
 </section>
 
 
@@ -699,19 +703,19 @@ sylius_resource:
 my_customer_bundle:
     driver: doctrine/orm
     templates:
-        user: myappBundle:Backend/User
+        customer: myappBundle:Backend/Customer
         group: ...
     validation_groups:
-        user: [myapp]
+        customer: [myapp]
         group: ...
     classes:
-        user:
-            model: myapp\UserBundle\Model\User
+        customer:
+            model: myapp\CustomerBundle\Model\Customer
             controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
             repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository
             form:
-                default: myapp\UserBundle\Form\Type\UserType
-                choice: myapp\UserBundle\Form\Type\UserChoiceType
+                default: myapp\CustomerBundle\Form\Type\CustomerType
+                choice: myapp\CustomerBundle\Form\Type\CustomerChoiceType
     group: ...
         </code>
     </pre>
@@ -723,19 +727,19 @@ my_customer_bundle:
     <h2>Mais que se passe t'il?</h2>
 	<pre>
         <code data-trim class="sh">
-$ php app/console container:debug | grep user
-myapp.controller.user container Sylius\Bundle\ResourceBundle\Controller\ResourceController
-myapp.manager.user    n/a       alias for doctrine.orm.default_entity_manager
-myapp.repository.user container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
-myapp.form.type.user  container myapp\UserBundle\Form\Type\UserType
+$ php app/console container:debug | grep customer
+myapp.controller.customer container Sylius\Bundle\ResourceBundle\Controller\ResourceController
+myapp.manager.customer    n/a       alias for doctrine.orm.default_entity_manager
+myapp.repository.customer container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+myapp.form.type.customer  container myapp\CustomerBundle\Form\Type\CustomerType
 
-$ php app/console container:debug --parameters | grep user
-myapp.model.user.class          myapp\UserBundle\Model\User
-myapp.controller.user.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController
-myapp.repository.user.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
-myapp.form.type.user.class      myapp\UserBundle\Form\Type\UserType
-myapp.validation_group.user     ["myapp"]
-myapp_user.driver               doctrine/orm
+$ php app/console container:debug --parameters | grep customer
+myapp.model.customer.class          myapp\CustomerBundle\Model\Customer
+myapp.controller.customer.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController
+myapp.repository.customer.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
+myapp.form.type.customer.class      myapp\CustomerBundle\Form\Type\CustomerType
+myapp.validation_group.customer     ["myapp"]
+myapp_customer.driver               doctrine/orm
         </code>
     </pre>
     <aside class="notes">
