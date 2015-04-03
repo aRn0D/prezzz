@@ -106,27 +106,21 @@
 
 
 <section>
+    <h2>Un CRUD, comment ça fonctionne?</h2>
+    <p>
+        <img src="images/crud-explain.png" />
+    </p>
+</section>
+
+
+
+<section>
     <h2>Pourquoi la création de ce bundle?</h2>
     <ul>
         <li>Le back office de <strong>Sylius</strong> est composé d'énormement de CRUD</li>
         <li>Eviter la duplication de code parce que c'est <strong>mal!</strong></li>
         <li>Développer plus vite en automatisant des tâches</li>
     </ul>
-</section>
-
-
-
-<section>
-    <h2>Comment ça marche?</h2>
-</section>
-
-
-
-<section>
-    <h2>Un CRUD, comment ça fonctionne?</h2>
-    <p>
-        <img src="images/crud-explain.png" />
-    </p>
 </section>
 
 
@@ -166,52 +160,52 @@
 
 
 
-<section>
-    <h2>API</h2>
-    <p>La sérialization est faite grâce au <strong>JMSSerializerBundle</strong> et <strong>BazingaHateoasBundle</strong></p>
-    <pre id="small-code-box">
-        <code data-trim class="json">
-HTTP/1.1 200 CREATED
-Content-Type: application/json; charset=utf-8
-{
-    "page": 1,
-    "limit": 10,
-    "pages": 1,
-    "total": 1,
-    "_links": {
-        "self": {
-            "href": "/customer?page=1&paginate=10"
-        },
-        "first": {
-            "href": "/customer?page=1&paginate=10"
-        },
-        "last": {
-            "href": "/customer?page=1&paginate=10"
-        }
-    },
-    "_embedded": {
-        "items": [
-            {...}
-        ]
-    }
-}
-        </code>
-    </pre>
-    <aside class="notes">
-		<p>
-			Expose en plus de l'état, les actions / transitions possibles autour de l'objet au travers de liens hypermédias.
-        </p>
-        <p>
-            <strong>H</strong>ypermedia <strong>A</strong>s <strong>T</strong>he <strong>E</strong>ngine <strong>O</strong>f <strong>A</strong>pplication <strong>S</strong>tate
-            permet de faire un API de niveau 3 <strong>Hypermedia Controls</strong>
-		</p>
-		<ul>
-			<li>implémentation découplée</li>
-			<li>plus besoin de manipuler les URLs</li>
-			<li>forme d'auto-documentation de l’API</li>
-		</ul>
-    </aside>
-</section>
+<!--<section>-->
+    <!--<h2>API</h2>-->
+    <!--<p>La sérialization est faite grâce au <strong>JMSSerializerBundle</strong> et <strong>BazingaHateoasBundle</strong></p>-->
+    <!--<pre id="small-code-box">-->
+        <!--<code data-trim class="json">-->
+<!--HTTP/1.1 200 CREATED-->
+<!--Content-Type: application/json; charset=utf-8-->
+<!--{-->
+    <!--"page": 1,-->
+    <!--"limit": 10,-->
+    <!--"pages": 1,-->
+    <!--"total": 1,-->
+    <!--"_links": {-->
+        <!--"self": {-->
+            <!--"href": "/customer?page=1&paginate=10"-->
+        <!--},-->
+        <!--"first": {-->
+            <!--"href": "/customer?page=1&paginate=10"-->
+        <!--},-->
+        <!--"last": {-->
+            <!--"href": "/customer?page=1&paginate=10"-->
+        <!--}-->
+    <!--},-->
+    <!--"_embedded": {-->
+        <!--"items": [-->
+            <!--{...}-->
+        <!--]-->
+    <!--}-->
+<!--}-->
+        <!--</code>-->
+    <!--</pre>-->
+    <!--<aside class="notes">-->
+		<!--<p>-->
+			<!--Expose en plus de l'état, les actions / transitions possibles autour de l'objet au travers de liens hypermédias.-->
+        <!--</p>-->
+        <!--<p>-->
+            <!--<strong>H</strong>ypermedia <strong>A</strong>s <strong>T</strong>he <strong>E</strong>ngine <strong>O</strong>f <strong>A</strong>pplication <strong>S</strong>tate-->
+            <!--permet de faire un API de niveau 3 <strong>Hypermedia Controls</strong>-->
+		<!--</p>-->
+		<!--<ul>-->
+			<!--<li>implémentation découplée</li>-->
+			<!--<li>plus besoin de manipuler les URLs</li>-->
+			<!--<li>forme d'auto-documentation de l’API</li>-->
+		<!--</ul>-->
+    <!--</aside>-->
+<!--</section>-->
 
 
 
@@ -301,7 +295,7 @@ sylius_resource:
     <h2>Créons notre modèle</h2>
     <pre id="small-code-box">
         <code data-trim contenteditable>
-// AppBundle\Entity\Customer.php;
+# AppBundle\Entity\Customer.php;
 
 /**
  * @ORM\Entity
@@ -421,7 +415,7 @@ myapp_customer_index:
 
 <section>
     <h2>Et paf ! ça fait des Chocapics !</h2>
-    <p>Notre CRUD est Prêt à l'emploi !! On crée notre API ?</p>
+    <p>Notre CRUD est prêt à l'emploi !! On crée notre API ?</p>
 </section>
 
 
@@ -514,8 +508,8 @@ Content-Type: application/json;
 
 
 <section>
-    <h2>C'est pas vraiment flexible !</h2>
-    <p>Il est possible de configurer le comportement des méthodes du <strong>ResourceController</strong></p>
+    <h2>Plus de flexibilité ?</h2>
+    <p>Le comportement des méthodes du <strong>ResourceController</strong> est configurable</p>
 </section>
 
 
@@ -639,7 +633,7 @@ myapp_customer_index:
 
 
 <section>
-    <h2>Expression Language</h2>
+    <h2>Moteur d'expression</h2>
 	<pre>
         <code data-trim class="php">
 # app/routing.yml
@@ -660,34 +654,34 @@ app_order_index:
 
 
 
-<section>
-    <h2>Configuration globale</h2>
-    <pre id="small-code-box">
-        <code data-trim class="php">
-# app/config.yml
+<!--<section>-->
+    <!--<h2>Configuration globale</h2>-->
+    <!--<pre id="small-code-box">-->
+        <!--<code data-trim class="php">-->
+<!--# app/config.yml-->
 
-sylius_resource:
-    settings:
-        paginate: $paginate
-        default_page_size: 10
-        sortable: true
-        sorting: $my_sorting
-        filterable: true
-        criteria: $my_criteria
-        </code>
-    </pre>
+<!--sylius_resource:-->
+    <!--settings:-->
+        <!--paginate: $paginate-->
+        <!--default_page_size: 10-->
+        <!--sortable: true-->
+        <!--sorting: $my_sorting-->
+        <!--filterable: true-->
+        <!--criteria: $my_criteria-->
+        <!--</code>-->
+    <!--</pre>-->
+<!--</section>-->
+
+
+
+<section>
+    <h2>Vous voulez mutualiser votre code ?</h2>
 </section>
 
 
 
 <section>
-    <h2>Ça fonctionne comment sur Sylius ?</h2>
-</section>
-
-
-
-<section>
-    <h2>Les bundles dans Sylius</h2>
+    <h2>Sylius fonctionne avec des bundles</h2>
     <ul>
         <li>Il doit être facilement <strong>étendable</strong></li>
         <li>Il peuvent supporter plusieurs <strong>"drivers"</strong> (ORM/ODM)</li>
@@ -763,7 +757,7 @@ myapp_customer.driver               doctrine/orm
 <section>
     <h2>"Doctrine Mapping Driver"</h2>
     <ul>
-        <li>Fournir plusieurs implementations <strong>Doctrine</strong> pour un model</li>
+        <li>Fournir plusieurs implementations <strong>Doctrine</strong> pour un modèle</li>
         <li>Vos <strong>Documents</strong> et <strong>Entities</strong> peuvent être dans le namespace</li>
     </ul>
 </section>
@@ -774,7 +768,7 @@ myapp_customer.driver               doctrine/orm
     <h2>Resolve Target Entity Listener</h2>
     <ul>
         <li>Définir des relations entre différentes entités sans les écrire en dur</li>
-        <li>Il ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre model</li>
+        <li>Il ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre modèle</li>
     </ul>
     <pre>
         <code data-trim class="xml">
@@ -791,7 +785,6 @@ myapp_customer.driver               doctrine/orm
 
 <section>
     <h2>Les petits plus !</h2>
-    <!--<p>Notre CRUD est Prêt à l'emploi !! On crée notre API ?</p>-->
 </section>
 
 
@@ -816,23 +809,49 @@ myapp_customer.driver               doctrine/orm
 
 
                 
+<!--<section>-->
+    <!--<h2>Templates</h2>-->
+    <!--<ul>-->
+        <!--<li>Extensions Twig :-->
+            <!--<ul>-->
+                <!--<li>-->
+                    <!--<strong>sylius_resource_sort</strong><br />-->
+                    <!--<img src="images/sorting.png">-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<strong>sylius_resource_paginate</strong><br />-->
+                    <!--<img src="images/paginate.png">-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</li>-->
+        <!--<li>Macros (flashes, boutons)</li>-->
+    <!--</ul>-->
+<!--</section>-->
+
+
+
 <section>
-    <h2>Templates</h2>
-    <ul>
-        <li>Extensions Twig :
-            <ul>
-                <li>
-                    <strong>sylius_resource_sort</strong><br />
-                    <img src="images/sorting.png">
-                </li>
-                <li>
-                    <strong>sylius_resource_paginate</strong><br />
-                    <img src="images/paginate.png">
-                </li>
-            </ul>
-        </li>
-        <li>Macros (flashes, boutons)</li>
-    </ul>
+    <h2>Go to the Future!</h2>
+    <div class="col-50 text-right">
+        <ul>
+            <li>
+                Refactoring de l'<strong>Extension</strong> du bundle
+                <ul>
+                    <li>Rendre le système plus flexible</li>
+                    <li>Uniformiser la configuration</li>
+                </ul>
+            </li>
+            <li>
+                De nouveaux <strong>FormType</strong> ?
+            </li>
+            <li>
+                Un <strong>datagrid</strong> !
+            </li>
+        </ul>
+    </div>
+    <div class="col-50 text-left">
+        <img src="images/docwithpowercords.pngs" id="doc-future" />
+    </div>
 </section>
 
 
