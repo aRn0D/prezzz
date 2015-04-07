@@ -120,7 +120,7 @@
 <section>
     <h2>Pourquoi la création de ce bundle?</h2>
     <ul>
-        <li>Le back office de <strong>Sylius</strong> est composé d'énormement de CRUD</li>
+        <li>Le back office de <strong>Sylius</strong> est composé d'énormement de CRUDs</li>
         <li>Eviter la duplication de code parce que c'est <strong>mal!</strong></li>
         <li>Développer plus vite en automatisant des tâches</li>
     </ul>
@@ -157,7 +157,7 @@
         <li>Doctrine <strong>ORM :</strong> Sylius l'utilise par défaut</li>
         <li>Doctrine <strong>Phpcr-ODM :</strong> Sylius intègre le CMF pour gérer des contenus</li>
         <li>Doctrine <strong>Mongodb-ODM</strong></li>
-        <li>Bientôt surement plus !</li>
+        <li>Bientôt sûrement plus !</li>
     </ul>
 </section>
 
@@ -227,7 +227,7 @@
 <section>
     <h2>Créer son CRUD en quelques minutes !</h2>
     <p>
-        Créons un CRUD pour gérer des clients (customer) dans boutique en ligne.
+        Par exemple, créons un CRUD pour gérer des clients (customer).
     </p>
 </section>
 
@@ -245,7 +245,7 @@ sylius_resource:
                 model: AppBundle\Entity\Customer
                 repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
             templates: WebBundle:Backend/Customer
-        myapp.adresse:
+        myapp.address:
             # ...
         </code>
     </pre>
@@ -263,11 +263,14 @@ sylius_resource:
     <pre>
         <code data-trim class="sh">
 $ php app/console container:debug | grep customer
+
 myapp.manager.customer    alias for "doctrine.orm.default_entity_manager"
 myapp.controller.customer container Sylius\Bundle\ResourceBundle\Controller\ResourceController
 myapp.repository.customer container Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
 
+
 $ php app/console container:debug --parameters
+
 sylius.config.classes {"myapp.customer": {...}}
         </code>
     </pre>
@@ -339,7 +342,7 @@ class CustomerType extends AbstractResourceType
     <ul>
         <li>Le formulaire doit être défini en tant que service</li>
         <li>
-            <strong>Pattern du nom de formulaire :</strong> nomApplication_resource
+            <strong>Pattern du nom de formulaire :</strong> nom-application_resource
         </li>
         <!--<li>-->
             <!--Le <strong>ResourceController</strong> va chercher le <i>form</i> dans la <i>registry</i>-->
@@ -408,8 +411,8 @@ myapp_customer_index:
         </code>
     </pre>
     <ul>
-        <li><strong>Pattern des clés des routes :</strong> nomApplication_resource_action</li>
-        <li>Ne pas oublier que les controleurs sont définis en tant que <strong>service</strong></li>
+        <li><strong>Pattern des clés des routes :</strong> nom-application_resource_action</li>
+        <li>Ne pas oublier que les contrôleurs sont définis en tant que <strong>service</strong></li>
         <li><strong>Actions :</strong> index, show, create, update, delete, moveUp, moveDown, revert ou updateState</li>
     </ul>
 </section>
@@ -424,7 +427,7 @@ myapp_customer_index:
 
 
 <section>
-    <h2>Exposer ses customers via API REST</h2>
+    <h2>Exposer ses clients via API REST</h2>
     <p>
         Configurer le <strong>FOSRestBundle</strong>
     </p>
@@ -457,7 +460,7 @@ Accept: application/json
     <div class="col-60">
         <pre>
             <code data-trim>
-# Resources/config/serializer/Entity/Customer.yml
+# Resources/config/serializer/Entity.Customer.yml
 
 AppBundle\Entity\Customer:
     exclusion_policy: ALL
@@ -471,7 +474,7 @@ AppBundle\Entity\Customer:
         relations:
             - rel: address
             href:
-                route: sylius_address_show
+                route: myapp_address_show
                 parameters:
                     id: expr(object.getAddress().getId())
             </code>
@@ -520,7 +523,7 @@ Content-Type: application/json;
 <section>
     <h2>Configurer les methodes du ResourceController</h2>
     <p>
-        Ajouter une entrée <strong>_sylius</strong> dans <strong>defaults</strong> des routes
+        Ajouter une entrée <strong>_sylius</strong> dans le tableau <strong>defaults</strong> des routes
     </p>
     <pre>
         <code data-trim>
@@ -641,7 +644,7 @@ myapp_customer_index:
         <code data-trim class="php">
 # app/routing.yml
 
-app_order_index:
+myapp_order_index:
     path: /orders
     methods: [GET]
     defaults:
@@ -686,8 +689,8 @@ app_order_index:
 <section>
     <h2>Sylius fonctionne avec des bundles</h2>
     <ul>
-        <li>Il doit être facilement <strong>étendable</strong></li>
-        <li>Il peuvent supporter plusieurs <strong>"drivers"</strong> (ORM/ODM)</li>
+        <li>Ils doivent être facilement <strong>étendables</strong></li>
+        <li>Ils peuvent supporter plusieurs <strong>"drivers"</strong> (ORM/ODM)</li>
         <li>Ils ne doivent être <strong>couplés</strong> les uns aux autres</li>
     </ul>
 </section>
@@ -697,23 +700,23 @@ app_order_index:
     <h2>La configuration sémantique</h2>
 	<pre>
         <code data-trim>
-my_customer_bundle:
+customer_bundle:
     driver: doctrine/orm
     templates:
-        customer: myappBundle:Backend/Customer
-        group: ...
+        customer: CustomerBundle:Backend/Customer
+        address: ...
     validation_groups:
         customer: [myapp]
-        group: ...
+        address: ...
     classes:
         customer:
-            model: myapp\CustomerBundle\Model\Customer
+            model: Myapp\CustomerBundle\Model\Customer
             controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
-            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\ModelRepository
+            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository
             form:
-                default: myapp\CustomerBundle\Form\Type\CustomerType
-                choice: myapp\CustomerBundle\Form\Type\CustomerChoiceType
-    group: ...
+                default: Myapp\CustomerBundle\Form\Type\CustomerType
+                choice: Myapp\CustomerBundle\Form\Type\CustomerChoiceType
+        address: ...
         </code>
     </pre>
 </section>
@@ -725,12 +728,16 @@ my_customer_bundle:
 	<pre>
         <code data-trim class="sh">
 $ php app/console container:debug | grep customer
+
 myapp.controller.customer container Sylius\Bundle\ResourceBundle\Controller\ResourceController
 myapp.manager.customer    n/a       alias for doctrine.orm.default_entity_manager
 myapp.repository.customer container Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
 myapp.form.type.customer  container myapp\CustomerBundle\Form\Type\CustomerType
 
+
 $ php app/console container:debug --parameters | grep customer
+
+myapp.model.customer.class          myapp\CustomerBundle\Model\Customer
 myapp.model.customer.class          myapp\CustomerBundle\Model\Customer
 myapp.controller.customer.class     Sylius\Bundle\ResourceBundle\Controller\ResourceController
 myapp.repository.customer.class     Sylius\Bundle\ResourceBundle\Doctrine\ORMEntityRepository
@@ -749,7 +756,7 @@ myapp_customer.driver               doctrine/orm
 <section>
     <h2>Etendre facilement votre bundle</h2>
     <ul>
-        <li>Utiliser l'injecteur de dépendences (Dependency Injector)</li>
+        <li>Utiliser <strong>l'injecteur de dépendences</strong> (Dependency Injector)</li>
         <li>Déclarer votre classe en tant <strong>mapped-superclass</strong> (évènement <i>loadClassMetadata</i>) </li>
         <!--<li>Le mapping est réécris (évènement <i>loadClassMetadata</i>) pour permettre d'étendre facilement vos modèles</li>-->
     </ul>
@@ -758,18 +765,20 @@ myapp_customer.driver               doctrine/orm
 
 
 <section>
-    <h2>"Doctrine Mapping Driver"</h2>
+    <h2>Gérer plusieurs drivers</h2>
     <ul>
+        <li>Créer votre <strong>"Doctrine Mapping Driver"</strong></li>
         <li>Fournir plusieurs implementations <strong>Doctrine</strong> pour un modèle</li>
-        <li>Vos <strong>Documents</strong> et <strong>Entities</strong> peuvent être dans le namespace</li>
+        <li>Vos <strong>documents</strong> et <strong>entités</strong> sont dans le même namespace</li>
     </ul>
 </section>
 
 
 
 <section>
-    <h2>Resolve Target Entity Listener</h2>
+    <h2>Limiter le couplage de vos bundles</h2>
     <ul>
+        <li>Utiliser le <strong>Resolve Target Entity Listener</strong></li>
         <li>Définir des relations entre différentes entités sans les écrire en dur</li>
         <li>Il ré-écrit les paramètres <strong>targetEntity</strong> dans le mapping de votre modèle</li>
     </ul>
@@ -787,28 +796,28 @@ myapp_customer.driver               doctrine/orm
 
 
 <section>
-    <h2>Les petits plus !</h2>
+    <h2>Vous êtes équipés pour construire vos bundles!</h2>
 </section>
 
 
 
-<section>
-    <h2>Formulaires</h2>
-    <ul>
-        <p><strong>ResourceChoiceType</strong> création d'un form type choice à partir de :</p>
-        <ul>
-            <li>Une entité : <strong>entity</strong> form type</li>
-            <li>Un document : <strong>document form</strong> type</li>
-            <li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>
-        </ul>
+<!--<section>-->
+    <!--<h2>Formulaires</h2>-->
+    <!--<ul>-->
+        <!--<p><strong>ResourceChoiceType</strong> création d'un form type choice à partir de :</p>-->
+        <!--<ul>-->
+            <!--<li>Une entité : <strong>entity</strong> form type</li>-->
+            <!--<li>Un document : <strong>document form</strong> type</li>-->
+            <!--<li>Un document PhpCr : <strong>phpcr_document</strong> form type</li>-->
+        <!--</ul>-->
 
-        <p class="topSpace"><strong>CollectionExtension</strong> et son plugin jQuery</p>
-        <ul>
-            <li>Ajout/suppression d'item</li>
-            <li>Mise à jour des items (remote/local)</li>
-        </ul>
-    </ul>
-</section>
+        <!--<p class="topSpace"><strong>CollectionExtension</strong> et son plugin jQuery</p>-->
+        <!--<ul>-->
+            <!--<li>Ajout/suppression d'item</li>-->
+            <!--<li>Mise à jour des items (remote/local)</li>-->
+        <!--</ul>-->
+    <!--</ul>-->
+<!--</section>-->
 
 
                 
@@ -835,10 +844,10 @@ myapp_customer.driver               doctrine/orm
 
 <section>
     <h2>Go to the Future!</h2>
-    <div class="col-50 text-right">
+    <div class="col-60 text-right">
         <ul>
             <li>
-                Refactoring de l'<strong>Extension</strong> du bundle
+                Refactoring de la <strong>SyliusResourceExtension</strong>
                 <ul>
                     <li>Rendre le système plus flexible</li>
                     <li>Uniformiser la configuration</li>
@@ -848,11 +857,11 @@ myapp_customer.driver               doctrine/orm
                 De nouveaux <strong>FormType</strong> ?
             </li>
             <li>
-                Un <strong>datagrid</strong> !
+                Un <strong>datagrid</strong> ?
             </li>
         </ul>
     </div>
-    <div class="col-50 text-left">
+    <div class="col-40 text-left">
         <img src="images/docwithpowercords.png" id="doc-future" />
     </div>
 </section>
@@ -864,7 +873,7 @@ myapp_customer.driver               doctrine/orm
     <ul>
 		<li>Merci à tous les contributeurs!</li>
 		<li>N'hésister pas à nous soumettre vos PRs...</li>
-		<li>... surtout si vous aimez faire de la doc :D !</li>
+		<li>... surtout si vous aimez écrire de la doc :D !</li>
     </ul>
 </section>
 
