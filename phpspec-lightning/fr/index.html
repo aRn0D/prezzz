@@ -52,6 +52,7 @@
     <div class="col-50 text-right">
         <p class="topSpace">Arnaud Langlade (@_aRn0D)</p>
         <p>Développeur Symfony chez Clever Age</p>
+        <p>Sylius core team member</p>
         <p>www.clever-age.com / @CleverAge</p>
     </div>
     <div class="col-50 text-left">
@@ -80,8 +81,6 @@ use Prophecy\Argument;
 
 class CalculatorSpec extends ObjectBehavior
 {
-    // ...
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Calculator');
@@ -109,7 +108,7 @@ class CalculatorSpec extends ObjectBehavior
 </section>
 
 <section>
-    <h2>Lançons ses specs</h2>
+    <h2>Lançons nos specs</h2>
     <p>
         <img src="images/run.png">
     </p>
@@ -141,7 +140,7 @@ class Calculator
     <h2>Les type de matcher</h2>
     <ul>
         <li>Identité (===)</li>
-        <li>comparaison (==)</li>
+        <li>Comparaison (==)</li>
         <li>Exception</li>
         <li>Type (instanceof)</li>
         <li>Inline (matcher personnalisé)</li>
@@ -156,8 +155,8 @@ class CalculatorSpec extends ObjectBehavior
 {
     function it_add_numbers(Integer $firstNumber, Integer $secondNumber)
     {
-        $firstNumber->willReturn(11);
-        $secondNumber->willReturn(2);
+        $firstNumber->getValue()->willReturn(11);
+        $secondNumber->getValue()->willReturn(2);
 
         $this->add($firstNumber, $secondNumber)->shouldReturn(13);
     }
@@ -172,7 +171,7 @@ class CalculatorSpec extends ObjectBehavior
         <code data-trim class="sh">
 class CalculatorSpec extends ObjectBehavior
 {
-    // Methode éxécutée avant chaque exemple et letGo après
+    // Methode éxécutée avant chaque exemple et letGo le sera après
     function let()
     {
         $this->beConstructedWith('My params');
@@ -187,7 +186,6 @@ class CalculatorSpec extends ObjectBehavior
     <div class="col-50 text-right">
         <p id="question-text">Arnaud Langlade</p>
         <p>Twiter @_aRn0D</p>
-        <p>Sylius : www.sylius.org</p>
     </div>
     <div class="col-50 text-left">
         <img src="images/question.jpg" id="question">
