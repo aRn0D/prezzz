@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Programmation STUPID VS SOLID</title>
+
+		<meta name="author" content="Arnaud Langlade">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/sylius.css" id="theme">
+		<link rel="stylesheet" href="css/custom.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+
+<section>
+    <h2>Programmation STUPID VS SOLID</h2>
+</section>
+
+
+
+<section>
+    <h2>Qui suis-je ?</h2>
+    <div class="col-50 text-right">
+        <p class="topSpace">Arnaud Langlade / @_aRn0D</p>
+        <p>Développeur Symfony chez Clever Age</p>
+        <p>Sylius core team member / @Sylius</p>
+        <p>www.clever-age.com / @CleverAge</p>
+    </div>
+    <div class="col-50 text-left">
+        <p>
+            <img src="images/common/clever.png" id="logo-clever">
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <h2>STUPID, Kézako ?</h2>
+    <div class="col-50 text-right">
+        <p>Ce sont des mauvaises pratiques.</p>
+    </div>
+    <div class="col-50 text-left">
+        <p>
+            <img src="images/stupid-solid/no-idea.jpg" id="logo-clever">
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <h2>Instances uniques </h2>
+    <ul>
+        <li>Un singleton est comparable à une variable globale de l'application</li>
+        <li>Un singleton ne facilite pas la configuration des objets</li>
+        <li>Les singletons introduisent des couplages forts entre les objets</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Instances uniques (Singleton)</h2>
+    <ul>
+        <li>Un singleton est comparable à une variable globale de l'application</li>
+        <li>Un singleton ne facilite pas la configuration des objets</li>
+        <li>Les singletons introduisent des couplages forts entre les objets</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Couplage fort (Tight Coupling)</h2>
+    <ul>
+        <li>Difficulté dans la mise en place des tests (impossible de créer des mocks)</li>
+        <li>Dépendence forte entre composants</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Non testabilité (Untestability)</h2>
+    <div class="col-50 text-right">
+        <ul>
+            <li>Eviter bogues, les régressions et faciliter la refacto</li>
+            <li>Un code fortement couplé sera difficilement testable</li>
+        </ul>
+    </div>
+    <div class="col-50 text-left">
+        <p>
+            <img src="images/stupid-solid/no-test-no-beer.jpg" id="logo-clever">
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <h2>Optimisations prématurées (Premature Optimizations)</h2>
+    <ul>
+        <li>La lecture, la compréhension ou/et la maintenance du code peuvent être plus difficiles</li>
+        <li>De simples applications peuvent se transformer en usine à gaz</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Nommage indéchiffrable (Indescriptive Naming)</h2>
+    <ul>
+        <li>Gain de temps lors de la relecture, la maintenance ou l’évolution</li>
+        <li>L’usage d'abréviations ou d'acronymes est fortement déconseillé car tout le monde ne connaît pas forcément le sens exact de ces derniers</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Duplications (Duplication)</h2>
+    <ul>
+        <li>Une modification du code nécessite de répercuter le changement à plusieurs endroits</li>
+        <li>PHP Copy Paste Detector (PHPC) ou SonarSource automatisent la détection de duplications de code</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>SOLID, Kézako ?</h2>
+    <div class="col-50 text-right">
+        <ul>
+            <li>Principe Michael Feathers et Robert C. Martin (aka Uncle Bob)</li>
+            <li>Ce sont <strong>des</strong> bonnes pratiques !</li>
+        </ul>
+    </div>
+    <div class="col-50 text-left">
+        <p>
+            <img src="images/stupid-solid/chuck-norris.jpg" id="logo-clever">
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <h2>Principe de responsabilité unique (Single Responsability Principle)</h2>
+    <ul>
+        <li>Une classe doit remplir un rôle précis</li>
+        <li>La classe est facilement testable</li>
+        <li>Facilite l’évolution des implémentations existantes ou d'en ajouter de nouvelles</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Principe ouvert / fermé (Open Close Principle)</h2>
+    <ul>
+        <li>Le principe ouvert / fermé consiste à rendre les modules ouverts à l'extension et fermés aux modifications</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Principe de substitution de Liskov (Formulé par Barbara Liskov et Jeannette Wing)</h2>
+    <ul>
+        <li>Formulé par Barbara Liskov et Jeannette Wing</li>
+        <li>Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S</li>
+        <li>Conserver les signatures des méthodes d'une classe parente ainsi que la nature des valeurs de retour de ces dernières.</li>
+        <li>Diminution du couplage.</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Principe de ségrégation d'interfaces (Interface Segregation Principle)</h2>
+    <ul>
+        <li>Formulé par Barbara Liskov et Jeannette Wing</li>
+        <li>Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Principe d'injection de dépendance (Dependency Injection Principle)</h2>
+    <ul>
+        <li>Injecter dynamiquement les dépendances d’une classe en s'appuyant sur une description ou de manière programmatique</li>
+        <li>Une nette diminution du couplage</li>
+        <li>Une meilleure encapsulation</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Merci! Questions ?</h2>
+    <div class="col-50 text-right">
+        <p id="question-text">Arnaud Langlade</p>
+        <p>Twiter @_aRn0D</p>
+        <p>Sylius : www.sylius.org</p>
+    </div>
+    <div class="col-50 text-left">
+        <img src="images/common/question.jpg" id="question">
+    </div>
+</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				width: 1300,
+   				height: 1000,
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+                slideNumber: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
