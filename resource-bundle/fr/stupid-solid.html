@@ -67,124 +67,273 @@
 <section>
     <h2>STUPID, Kézako ?</h2>
     <div class="col-50 text-right">
-        <p>Ce sont des mauvaises pratiques.</p>
+        <ul>
+            <li><strong>S</strong>ingleton</li>
+            <li><strong>T</strong>ight coupling</li>
+            <li><strong>U</strong>ntestability</li>
+            <li><strong>P</strong>remature Optimization</li>
+            <li><strong>I</strong>ndescriptive Naming</li>
+            <li><strong>D</strong>uplication</li>
+        </ul>
     </div>
     <div class="col-50 text-left">
-        <p>
-            <img src="images/stupid-solid/no-idea.jpg" id="logo-clever">
-        </p>
+        <img src="images/stupid-solid/no-idea.jpg" id="stupid">
     </div>
 </section>
 
 
 <section>
-    <h2>Instances uniques </h2>
+    <h2>Instances uniques <small>(<strong>S</strong>ingleton)</small></h2>
+    <pre>
+        <code data-trim class="php">
+class MyClass
+{
+    public function __contruct()
+    {
+        $this->connexion = Connexion::getInstance([
+            'dsn' => 'mysql:host=localhost;dbname=my_db'
+        ])
+    }
+}
+        </code>
+    </pre>
     <ul>
-        <li>Un singleton est comparable à une variable globale de l'application</li>
+        <!--<li>Un singleton est comparable à une variable globale de l'application</li>-->
         <li>Un singleton ne facilite pas la configuration des objets</li>
         <li>Les singletons introduisent des couplages forts entre les objets</li>
+        <li>Pas vue globale sur l'application (les dépendences sont cachées)</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Instances uniques (Singleton)</h2>
+    <h2>Couplage fort <small>(<strong>T</strong>ight coupling)</small></h2>
+    <div class="col-45 text-right">
+        <pre>
+            <code data-trim class="php">
+class MyClass
+{
+    public function __construct()
+    {
+        $this->connexion = new Connexion();
+    }
+}
+            </code>
+        </pre>
+    </div>
+    <div class="col-55 text-right">
+        <pre>
+            <code data-trim class="php">
+class MyClass
+{
+    public function __construct(Connexion $connexion)
+    {
+        $this->connexion = $connexion;
+    }
+}
+            </code>
+        </pre>
+    </div>
     <ul>
-        <li>Un singleton est comparable à une variable globale de l'application</li>
-        <li>Un singleton ne facilite pas la configuration des objets</li>
-        <li>Les singletons introduisent des couplages forts entre les objets</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>Couplage fort (Tight Coupling)</h2>
-    <ul>
-        <li>Difficulté dans la mise en place des tests (impossible de créer des mocks)</li>
+        <li>Difficulté dans la mise en place des tests</li>
+        <li>Impossible de créer des mocks</li>
         <li>Dépendence forte entre composants</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Non testabilité (Untestability)</h2>
-    <div class="col-50 text-right">
+    <h2>Non testabilité <small>(<strong>U</strong>ntestability)</small></h2>
+    <div class="col-60 text-right">
         <ul>
-            <li>Eviter bogues, les régressions et faciliter la refacto</li>
-            <li>Un code fortement couplé sera difficilement testable</li>
+            <li>Eviter les bogues et les régressions</li>
+            <li>Faciliter la refactorisation</li>
+            <li><strong>Attention:</strong> Un code fortement couplé sera difficilement testable</li>
         </ul>
     </div>
-    <div class="col-50 text-left">
-        <p>
-            <img src="images/stupid-solid/no-test-no-beer.jpg" id="logo-clever">
-        </p>
+    <div class="col-40 text-left">
+        <img src="images/stupid-solid/no-test-no-beer.jpg" id="logo-clever">
     </div>
 </section>
 
 
 <section>
-    <h2>Optimisations prématurées (Premature Optimizations)</h2>
+    <h2>Optimisations prématurées <small>(<strong>P</strong>remature Optimization)</small></h2>
     <ul>
-        <li>La lecture, la compréhension ou/et la maintenance du code peuvent être plus difficiles</li>
         <li>De simples applications peuvent se transformer en usine à gaz</li>
+        <li>
+            Rend difficile :
+            <ul>
+                <li>la lecture et compréhension du code</li>
+                <li>la maintenance de votre application</li>
+            </ul>
+        </li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Nommage indéchiffrable (Indescriptive Naming)</h2>
+    <h2>Nommage indéchiffrable <small>(<strong>I</strong>ndescriptive Naming)</small></h2>
     <ul>
-        <li>Gain de temps lors de la relecture, la maintenance ou l’évolution</li>
-        <li>L’usage d'abréviations ou d'acronymes est fortement déconseillé car tout le monde ne connaît pas forcément le sens exact de ces derniers</li>
+        <li>Gain de temps lors de
+            <ul>
+                <li>la relecture</li>
+                <li>la maintenance</li>
+                <li>l’évolution</li>
+            </ul>
+        </li>
+        <li>Eviter les abréviations ou d'acronymes est fortement</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Duplications (Duplication)</h2>
+    <h2>Duplications <small>(<strong>D</strong>uplication)</small></h2>
     <ul>
-        <li>Une modification du code nécessite de répercuter le changement à plusieurs endroits</li>
-        <li>PHP Copy Paste Detector (PHPC) ou SonarSource automatisent la détection de duplications de code</li>
+        <li>Une modification de code entraîne :
+            <ul>
+                <li>la répercuter le changement à plusieurs endroits</li>
+                <li>la maintenance de l'application plus difficile</li>
+            </ul>
+        </li>
+        <li>Des outils automatisent la détection des duplications
+            <ul>
+                <li>PHP Copy Paste Detector (PHPC)</li>
+                <li>SonarSource</li>
+            </ul>
+       </li>
     </ul>
 </section>
 
 
 <section>
     <h2>SOLID, Kézako ?</h2>
-    <div class="col-50 text-right">
+    <div class="col-60 text-right">
         <ul>
-            <li>Principe Michael Feathers et Robert C. Martin (aka Uncle Bob)</li>
-            <li>Ce sont <strong>des</strong> bonnes pratiques !</li>
+            <!--<li>Ce sont <strong>des</strong> bonnes pratiques !</li>-->
+            <li><strong>S</strong>ingle Responsibility Principle</li>
+            <li><strong>O</strong>pen/Closed Principle</li>
+            <li><strong>L</strong>iskov Substitution Principle</li>
+            <li><strong>I</strong>nterface Segregation Principle</li>
+            <li><strong>D</strong>ependency Inversion Principle</li>
         </ul>
+        <p>Michael Feathers et Robert C. Martin (aka Uncle Bob)</p>
     </div>
-    <div class="col-50 text-left">
-        <p>
-            <img src="images/stupid-solid/chuck-norris.jpg" id="logo-clever">
-        </p>
+    <div class="col-40 text-left">
+        <img src="images/stupid-solid/chuck-norris.jpg" id="logo-clever">
     </div>
 </section>
 
 
 <section>
-    <h2>Principe de responsabilité unique (Single Responsability Principle)</h2>
+    <h2>Principe de responsabilité unique <small>(<strong>S</strong>ingle Responsibility Principle)</small></h2>
+    <blockquote>Une classe doit remplir un <strong>rôle précis</strong></blockquote>
+</section>
+
+
+<section>
+    <h2>Principe de responsabilité unique <small>(Interface Segregation Principle)</small></h2>
+    <pre>
+        <code data-trim class="php">
+class DataImporter
+{
+    public function import($file)
+    {
+        $this->writeData(
+            $this->loadFile($file)
+        );
+    }
+
+    private function loadData($file) { ... }
+    private function writeData(array $data) { ... }
+}
+        </code>
+    </pre>
+</section>
+
+<section>
+    <h2>Principe de responsabilité unique <small>(<strong>S</strong>ingle Responsibility Principle)</small></h2>
+    <pre>
+        <code data-trim class="php">
+class DataImporter
+{
+    public function __construct(Loader $loader, Write $write)
+    {
+        $this->loader = $loader;
+        $this->writer = $write;
+    }
+
+    public function import($file)
+    {
+        foreach($this->loader->load($file) as $item) {
+            $this->writer->write();
+        }
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Principe de responsabilité unique <small>(<strong>S</strong>ingle Responsibility Principle)</small></h2>
     <ul>
-        <li>Une classe doit remplir un rôle précis</li>
         <li>La classe est facilement testable</li>
-        <li>Facilite l’évolution des implémentations existantes ou d'en ajouter de nouvelles</li>
+        <li>Facilite l’évolution des implémentations existantes</li>
+        <li>Facilite l'ajouter de nouvelles implémentations</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Principe ouvert / fermé (Open Close Principle)</h2>
+    <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
+    <blockquote>Ce principe consiste à rendre les modules <strong>ouverts</strong> à l'extension et <strong>fermés</strong> aux modifications</blockquote>
+</section>
+
+
+<section>
+    <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
+    <pre>
+        <code data-trim class="php">
+$loader = CsvLoader();
+$writer = new MysqlWriter();
+
+$importer = DataImporter(new CsvLoader(), new MysqlWriter());
+$importer = DataImporter(new XMLLoader(), new MongoWriter());
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
+    <pre>
+        <code data-trim class="php">
+class UserControler
+{
+    public function createUser($file)
+    {
+        // Event pre_create
+
+        // Enregistrement de l'utilisateur
+
+        // Event post_create
+    }
+}
+        </code>
+    </pre>
+</section>
+
+<section>
+    <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
     <ul>
-        <li>Le principe ouvert / fermé consiste à rendre les modules ouverts à l'extension et fermés aux modifications</li>
+        <li>Diminue le couplage entre classes</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Principe de substitution de Liskov (Formulé par Barbara Liskov et Jeannette Wing)</h2>
+    <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
     <ul>
         <li>Formulé par Barbara Liskov et Jeannette Wing</li>
         <li>Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S</li>
@@ -195,21 +344,70 @@
 
 
 <section>
-    <h2>Principe de ségrégation d'interfaces (Interface Segregation Principle)</h2>
+    <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class CsvLoader implements Loader
+{
+    public function load($file)
+    {
+        // ...
+    }
+}
+            </code>
+        </pre>
+    </div>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class XmlLoader implements Loader
+{
+    public function load($file)
+    {
+        // ...
+    }
+}
+            </code>
+        </pre>
+    </div>
+</section>
+
+
+<section>
+    <h2>Principe de ségrégation d'interfaces <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
     <ul>
-        <li>Formulé par Barbara Liskov et Jeannette Wing</li>
-        <li>Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S</li>
+        <li>Principe de responsabilité unique pour les interfaces</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Principe d'injection de dépendance (Dependency Injection Principle)</h2>
+    <h2>Principe d'injection de dépendance <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
     <ul>
         <li>Injecter dynamiquement les dépendances d’une classe en s'appuyant sur une description ou de manière programmatique</li>
         <li>Une nette diminution du couplage</li>
         <li>Une meilleure encapsulation</li>
     </ul>
+</section>
+
+
+<section>
+    <h2>Principe d'injection de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+    <pre>
+        <code data-trim class="php">
+services:
+    loader:
+        class: CsvLoader
+    writer:
+        class: MysqlWriter
+    import:
+        class: DataImporter
+        arguments:
+            - @loader
+            - @writer
+        </code>
+    </pre>
 </section>
 
 
@@ -235,7 +433,7 @@
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				width: 1300,
+				width: 1600,
    				height: 1000,
 				controls: true,
 				progress: true,
