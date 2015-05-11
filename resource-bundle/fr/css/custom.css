@@ -22,6 +22,33 @@
     width: 40%;
 }
 
+.col-55 {
+    float: left;
+    width: 55%;
+}
+
+.col-45 {
+    float: left;
+    width: 45%;
+}
+
+.reveal section ul {
+    margin-top: 15px;
+}
+.reveal small {
+    vertical-align: middle;
+}
+
+.reveal .col-30 pre,
+.reveal .col-70 pre,
+.reveal .col-60 pre,
+.reveal .col-45 pre,
+.reveal .col-55 pre,
+.reveal .col-50 pre {
+    margin: 0;
+    width: 97%;
+}
+
 .reveal p.topSpace {
     margin-top: 47px;
 }
