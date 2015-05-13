@@ -100,7 +100,7 @@ class MyClass
     <ul>
         <!--<li>Un singleton est comparable à une variable globale de l'application</li>-->
         <li>Un singleton ne facilite pas la configuration des objets</li>
-        <li>Les singletons introduisent des couplages forts entre les objets</li>
+        <li>Les singletons introduisent des <strong>couplages forts</strong> entre les objets</li>
         <li>Pas vue globale sur l'application (les dépendences sont cachées)</li>
     </ul>
 </section>
@@ -115,7 +115,7 @@ class MyClass
 {
     public function __construct()
     {
-        $this->connexion = new Connexion();
+        $this->connexion = new MyConnexion();
     }
 }
             </code>
@@ -164,8 +164,8 @@ class MyClass
         <li>
             Rend difficile :
             <ul>
-                <li>la lecture et compréhension du code</li>
-                <li>la maintenance de votre application</li>
+                <li>la <strong>lecture</strong> et <strong>compréhension</strong> du code</li>
+                <li>la <strong>maintenance</strong> de votre application</li>
             </ul>
         </li>
     </ul>
@@ -174,15 +174,35 @@ class MyClass
 
 <section>
     <h2>Nommage indéchiffrable <small>(<strong>I</strong>ndescriptive Naming)</small></h2>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class Quadrilateral
+{
+    public function getOutline($a, $b)
+    {
+        return ($a + $b) * 2;
+    }
+}
+            </code>
+        </pre>
+    </div>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class Quadrilateral
+{
+    public function getPerimeter($with, $height)
+    {
+        return ($with + $height) * 2;
+    }
+}
+            </code>
+        </pre>
+    </div>
     <ul>
-        <li>Gain de temps lors de
-            <ul>
-                <li>la relecture</li>
-                <li>la maintenance</li>
-                <li>l’évolution</li>
-            </ul>
-        </li>
-        <li>Eviter les abréviations ou d'acronymes est fortement</li>
+        <li>Gain de temps lors de : la <strong>relecture</strong>, la <strong>maintenance</strong> et l’<strong>évolution</strong></li>
+        <li>Eviter les abréviations ou d'acronymes est fortement conseillé</li>
     </ul>
 </section>
 
@@ -192,7 +212,7 @@ class MyClass
     <ul>
         <li>Une modification de code entraîne :
             <ul>
-                <li>la répercuter le changement à plusieurs endroits</li>
+                <li>la répercuter le changement à <strong>plusieurs endroits</strong></li>
                 <li>la maintenance de l'application plus difficile</li>
             </ul>
         </li>
@@ -208,6 +228,7 @@ class MyClass
 
 <section>
     <h2>SOLID, Kézako ?</h2>
+    <blockquote>Michael Feathers et Robert C. Martin (aka Uncle Bob)</blockquote>
     <div class="col-60 text-right">
         <ul>
             <!--<li>Ce sont <strong>des</strong> bonnes pratiques !</li>-->
@@ -217,10 +238,9 @@ class MyClass
             <li><strong>I</strong>nterface Segregation Principle</li>
             <li><strong>D</strong>ependency Inversion Principle</li>
         </ul>
-        <p>Michael Feathers et Robert C. Martin (aka Uncle Bob)</p>
     </div>
     <div class="col-40 text-left">
-        <img src="images/stupid-solid/chuck-norris.jpg" id="logo-clever">
+        <img src="images/stupid-solid/chuck-norris.jpg" id="solid">
     </div>
 </section>
 
@@ -232,7 +252,7 @@ class MyClass
 
 
 <section>
-    <h2>Principe de responsabilité unique <small>(Interface Segregation Principle)</small></h2>
+    <h2>Principe de responsabilité unique <small>(<strong>S</strong>ingle Responsibility Principle)</small></h2>
     <pre>
         <code data-trim class="php">
 class DataImporter
@@ -278,9 +298,9 @@ class DataImporter
 <section>
     <h2>Principe de responsabilité unique <small>(<strong>S</strong>ingle Responsibility Principle)</small></h2>
     <ul>
-        <li>La classe est facilement testable</li>
-        <li>Facilite l’évolution des implémentations existantes</li>
-        <li>Facilite l'ajouter de nouvelles implémentations</li>
+        <li>La classe est <strong>facilement testable</strong></li>
+        <li>Facilite l’<strong>évolution</strong> des implémentations existantes</li>
+        <li>Facilite l'<strong>ajouter</strong> de nouvelles implémentations</li>
     </ul>
 </section>
 
@@ -295,9 +315,6 @@ class DataImporter
     <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
     <pre>
         <code data-trim class="php">
-$loader = CsvLoader();
-$writer = new MysqlWriter();
-
 $importer = DataImporter(new CsvLoader(), new MysqlWriter());
 $importer = DataImporter(new XMLLoader(), new MongoWriter());
         </code>
@@ -311,7 +328,7 @@ $importer = DataImporter(new XMLLoader(), new MongoWriter());
         <code data-trim class="php">
 class UserControler
 {
-    public function createUser($file)
+    public function createUser()
     {
         // Event pre_create
 
@@ -324,90 +341,139 @@ class UserControler
     </pre>
 </section>
 
+<!--<section>-->
+    <!--<h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>-->
+    <!--<ul>-->
+        <!--<li>Diminue le couplage entre classes</li>-->
+        <!--<li>Utile pour c</li>-->
+    <!--</ul>-->
+<!--</section>-->
+
+
 <section>
-    <h2>Principe ouvert / fermé <small>(<strong>O</strong>pen/Closed Principle)</small></h2>
-    <ul>
-        <li>Diminue le couplage entre classes</li>
-    </ul>
+    <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
+    <blockquote>
+        Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S.<br>
+    </blockquote>
+    <p>Formulé par Barbara Liskov et Jeannette Wing</p>
+</section>
+
+
+<section>
+    <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class CsvLoader implements LoaderInterface
+{
+    public function load(File $file)
+    {
+        // ...
+    }
+}
+            </code>
+        </pre>
+    </div>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+class XmlLoader implements LoaderInterface
+{
+    public function load(File $file)
+    {
+        // ...
+    }
+}
+            </code>
+        </pre>
+    </div>
+        <pre>
+            <code data-trim class="php">
+class DataImporter
+{
+    public function load(LoaderInterface $loader, /* ... */)
+    {
+        // ...
+    }
+}
+            </code>
+        </pre>
 </section>
 
 
 <section>
     <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
     <ul>
-        <li>Formulé par Barbara Liskov et Jeannette Wing</li>
-        <li>Si la classe T a une dépendance de type S alors on doit pouvoir remplacer cette dépendance par tous types dérivés de S</li>
-        <li>Conserver les signatures des méthodes d'une classe parente ainsi que la nature des valeurs de retour de ces dernières.</li>
+        <li>
+            Implique de conserver de la classe parente (surtout en PHP) :
+            <ul>
+                <li>les <strong>mêmes signatures</strong> des méthodes </li>
+                <li>la <strong>nature des valeurs</strong> de retour des méthodes</li>
+            </ul>
+        </li>
         <li>Diminution du couplage.</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Principe de substitution de Liskov <small>(<strong>L</strong>iskov Substitution Principle)</small></h2>
-    <div class="col-50 text-right">
-        <pre>
-            <code data-trim class="php">
-class CsvLoader implements Loader
-{
-    public function load($file)
-    {
-        // ...
-    }
-}
-            </code>
-        </pre>
-    </div>
-    <div class="col-50 text-right">
-        <pre>
-            <code data-trim class="php">
-class XmlLoader implements Loader
-{
-    public function load($file)
-    {
-        // ...
-    }
-}
-            </code>
-        </pre>
-    </div>
+    <h2>Principe de ségrégation d'interfaces <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
+    <blockquote>Principe de responsabilité unique pour les interfaces</blockquote>
 </section>
 
 
 <section>
-    <h2>Principe de ségrégation d'interfaces <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
-    <ul>
-        <li>Principe de responsabilité unique pour les interfaces</li>
-    </ul>
+    <h2>Principe d'injection de dépendance <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
+    <blockquote>
+        Injecter dynamiquement les dépendances d’une classe en s'appuyant sur une description ou de manière programmatique
+    </blockquote>
+</section>
+
+
+<section>
+    <h2>Principe d'injection de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="yaml">
+services:
+    loader:
+        class: CsvLoader
+    writer:
+        class: MysqlWriter
+    importer:
+        class: DataImporter
+        arguments:
+            - @loader
+            - @writer
+            </code>
+        </pre>
+    </div>
+    <div class="col-50 text-right">
+        <pre>
+            <code data-trim class="php">
+$loader = new Definition('CsvLoader');
+$container->setDefinition('loader', $loader);
+
+$writer = new Definition('MysqlWriter');
+$container->setDefinition('writer', $writer);
+
+$importer = new Definition('DataImporter', [
+    new Reference('loader'),
+    new Reference('writer'),
+]);
+$container->setDefinition('importer', $importer);
+            </code>
+        </pre>
+    </div>
 </section>
 
 
 <section>
     <h2>Principe d'injection de dépendance <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
     <ul>
-        <li>Injecter dynamiquement les dépendances d’une classe en s'appuyant sur une description ou de manière programmatique</li>
         <li>Une nette diminution du couplage</li>
         <li>Une meilleure encapsulation</li>
     </ul>
-</section>
-
-
-<section>
-    <h2>Principe d'injection de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
-    <pre>
-        <code data-trim class="php">
-services:
-    loader:
-        class: CsvLoader
-    writer:
-        class: MysqlWriter
-    import:
-        class: DataImporter
-        arguments:
-            - @loader
-            - @writer
-        </code>
-    </pre>
 </section>
 
 
