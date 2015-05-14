@@ -277,10 +277,10 @@ class DataImporter
         <code data-trim class="php">
 class DataImporter
 {
-    public function __construct(Loader $loader, Write $write)
+    public function __construct(Loader $loader, Writer $writer)
     {
         $this->loader = $loader;
-        $this->writer = $write;
+        $this->writer = $writer;
     }
 
     public function import($file)
