@@ -452,16 +452,16 @@ services:
         <pre>
             <code data-trim class="php">
 $loader = new Definition('CsvLoader');
-$container->setDefinition('loader', $loader);
+$containerBuilder->setDefinition('loader', $loader);
 
 $writer = new Definition('MysqlWriter');
-$container->setDefinition('writer', $writer);
+$containerBuilder->setDefinition('writer', $writer);
 
 $importer = new Definition('DataImporter', [
     new Reference('loader'),
     new Reference('writer'),
 ]);
-$container->setDefinition('importer', $importer);
+$containerBuilder->setDefinition('importer', $importer);
             </code>
         </pre>
     </div>
