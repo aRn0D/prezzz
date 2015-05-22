@@ -423,48 +423,60 @@ class DataImporter
 
 
 <section>
-    <h2>Principe d'injection de dépendance <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
+    <h2>Principe d'injection/inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
     <blockquote>
-        Injecter dynamiquement les dépendances d’une classe en s'appuyant sur une description ou de manière programmatique
+        Il faut dépendre des abstractions, pas des implémentations
     </blockquote>
 </section>
 
 
 <section>
-    <h2>Principe d'injection de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
-    <div class="col-50 text-right">
-        <pre>
-            <code data-trim class="yaml">
-services:
-    loader:
-        class: CsvLoader
-    writer:
-        class: MysqlWriter
-    importer:
-        class: DataImporter
-        arguments:
-            - @loader
-            - @writer
-            </code>
-        </pre>
-    </div>
-    <div class="col-50 text-right">
+    <h2>Principe d'injection/inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+
         <pre>
             <code data-trim class="php">
-$loader = new Definition('CsvLoader');
-$containerBuilder->setDefinition('loader', $loader);
-
-$writer = new Definition('MysqlWriter');
-$containerBuilder->setDefinition('writer', $writer);
-
-$importer = new Definition('DataImporter', [
-    new Reference('loader'),
-    new Reference('writer'),
-]);
-$containerBuilder->setDefinition('importer', $importer);
+class DataImporter
+{
+    public function __construct()
+    {
+        $this->loader  = new CsvLoader();
+        $this->writer = new MysqlGateway();
+    }
+}
             </code>
         </pre>
-    </div>
+
+        <pre>
+            <code data-trim class="php">
+class DataImporter
+{
+    public function __construct(CsvLoader $loader, MysqlGateway $writer)
+    {
+        $this->loader = $loader;
+        $this->writer = $writer;
+    }
+}
+            </code>
+        </pre>
+
+</section>
+
+
+<section>
+    <h2>Principe d'injection/inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+        <pre>
+            <code data-trim class="php">
+class DataImporter
+{
+    public function __construct(LoaderInterface $loader, WriterInterface $writer)
+    {
+        $this->loader = $loader;
+        $this->writer = $writer;
+    }
+}
+            </code>
+        </pre>
+
 </section>
 
 
