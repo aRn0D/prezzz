@@ -423,7 +423,7 @@ class DataImporter
 
 
 <section>
-    <h2>Principe d'injection/inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+    <h2>Principe d'inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
     <blockquote>
         Il faut dépendre des abstractions, pas des implémentations
     </blockquote>
@@ -440,7 +440,7 @@ class DataImporter
     public function __construct()
     {
         $this->loader  = new CsvLoader();
-        $this->writer = new MysqlGateway();
+        $this->writer = new MysqlWriter();
     }
 }
             </code>
@@ -463,7 +463,7 @@ class DataImporter
 
 
 <section>
-    <h2>Principe d'injection/inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
+    <h2>Principe d'inversion de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
         <pre>
             <code data-trim class="php">
 class DataImporter
@@ -481,7 +481,7 @@ class DataImporter
 
 
 <section>
-    <h2>Principe d'injection de dépendance <small>(<strong>I</strong>nterface Segregation Principle)</small></h2>
+    <h2>Principe d'injection de dépendance <small>(<strong>D</strong>ependency Inversion Principle)</small></h2>
     <ul>
         <li>Une nette diminution du couplage</li>
         <li>Une meilleure encapsulation</li>
