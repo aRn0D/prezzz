@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Sylius en 5 minutes</title>
+		<title>Rest et Symfony</title>
 
 		<meta name="author" content="Arnaud Langlade">
 
@@ -69,18 +69,145 @@
     <h2>FosRestBundle</h2>
     <ul>
         <li>
-            La vue (View layer)
+            View layer
         </li>
         <li>
             La gestion des Listeners
         </li>
         <li>
-            La gestion des Exception
+            La gestion des Exceptions
         </li>
         <li>
             La génération automtique des routes
         </li>
     </ul>
+</section>
+
+
+<section>
+    <h2>LView layer</h2>
+    <pre>
+        <code data-trim class="php">
+class UsersController extends FOSRestController
+{
+    public function getUsersAction()
+    {
+        $view = $this->view($data, 200)
+            ->setTemplate("MyBundle:Users:getUsers.html.twig")
+            ->setTemplateVar('users')
+        ;
+
+        return $this->handleView($view);
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Listeners : Format Listener</h2>
+    <pre>
+        <code data-trim class="yml">
+# app/config/config.yml
+format_listener:
+    rules:
+        - { path: '^/', host: 'api.%domain%', priorities: ['json', 'xml'], fallback_format: json}
+
+        - { path: '^/admin', methods: [ 'GET', 'POST'], priorities: [ 'xml', 'html'], fallback_format: xml }
+
+        - { path: '^/api', priorities: [ 'xml', 'json'], fallback_format: xml, exception_fallback_format: xml }
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Listeners : Param Fetcher Listener</h2>
+    <pre>
+        <code data-trim class="php">
+class FooController extends FosRestContoller
+{
+    /**
+     * @QueryParam(name="page", requirements="\d+", default="1", description="Page of the overview.")
+     */
+    public function getArticlesAction(ParamFetcher $paramFetcher)
+    {
+        $dynamicRequestParam = new RequestParam();
+        $dynamicRequestParam->name = "dynamic_request";
+        $dynamicRequestParam->requirements = "\d+";
+        $paramFetcher->addParam($dynamicRequestParam);
+
+        $dynamicQueryParam = new QueryParam();
+        $dynamicQueryParam->name = "dynamic_query";
+        $dynamicQueryParam->requirements="[a-z]+";
+        $paramFetcher->addParam($dynamicQueryParam);
+
+        $page = $paramFetcher->get('page');
+        $articles = array('bim', 'bam', 'bingo');
+
+        return array('articles' => $articles, 'page' => $page);
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>La gestion des Exceptions</h2>
+    <pre>
+        <code data-trim class="yml">
+# app/config/config.yml
+twig:
+    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
+        </code>
+    </pre>
+
+    <pre>
+        <code data-trim class="yml">
+# app/config/config.yml
+fos_rest:
+    exception:
+    codes:
+        'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+        'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+    messages:
+        'Acme\HelloBundle\Exception\MyExceptionWithASafeMessage': true
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>La génération automtique des routes</h2>
+    <pre>
+        <code data-trim class="php">
+class UsersController
+{
+    public function getUsersAction()
+    {} // "get_users"     [GET] /users
+
+    public function newUsersAction()
+    {} // "new_users"     [GET] /users/new
+
+    public function getUserAction($slug)
+    {} // "get_user"      [GET] /users/{slug}
+
+    public function editUserAction($slug)
+    {} // "edit_user"     [GET] /users/{slug}/edit
+
+    public function getUserCommentsAction($slug)
+    {} // "get_user_comments"    [GET] /users/{slug}/comments
+
+    public function newUserCommentsAction($slug)
+    {} // "new_user_comments"    [GET] /users/{slug}/comments/new
+
+    public function deleteUserCommentAction($slug, $id)
+    {} // "delete_user_comment"  [DELETE] /users/{slug}/comments/{id}
+}
+        </code>
+    </pre>
 </section>
 
 
@@ -91,9 +218,51 @@
             <strong>Serializer Component</strong> de Symfony
         </li>
         <li>
-            <strong>BazingaHateoasBundle</strong>
+            <strong>JMSSerializerBundle</strong>
+        </li>
+        <li>
+            <strong>BazingaHateoasBundle</strong> apporte le support de Hateoas
         </li>
     </ul>
+</section>
+
+
+<section>
+    <h2>Serializer Component</h2>
+    <img src="images/rest-symfony/serializer_workflow.png">
+</section>
+
+
+<section>
+    <h2>JMSSerializerBundle et BazingaHateoasBundle</h2>
+    <pre>
+        <code data-trim class="php">
+Sylius\Component\Core\Model\OrderItem:
+    exclusion_policy: ALL
+    properties:
+        inventoryUnits:
+            expose: true
+        variant:
+            expose: true
+    relations:
+        - rel: product
+          exclusion:
+                exclude_if: expr(!object.getVariant())
+          href:
+                route: sylius_api_product_show
+                parameters:
+                    id: expr(object.getVariant().getProduct().getId())
+        - rel: variant
+          exclusion:
+                exclude_if: expr(!object.getVariant())
+          href:
+                route: sylius_api_product_variant_show
+                parameters:
+                    id: expr(object.getVariant().getId())
+                    productId: expr(object.getVariant().getProduct().getId())
+
+        </code>
+    </pre>
 </section>
 
 
@@ -120,7 +289,7 @@
             <strong>TuTu</strong> Serveur HTTP pour mocker en PHP
         </li>
         <li>
-            <strong>Behat</strong>
+            <strong>Behat</strong> avec la bonne extension
         </li>
     </ul>
 </section>
@@ -136,7 +305,7 @@
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				width: 1300,
+				width: 1600,
    				height: 1000,
 				controls: true,
 				progress: true,
