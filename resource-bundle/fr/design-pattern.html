@@ -75,7 +75,7 @@
 <section>
     <h2>Pourquoi l'utiliser ?</h2>
     <p>
-        Le système doit gérer un requête. La requête implique plusieurs objets pour la traiter.
+        Le système doit gérer une requête. La requête implique plusieurs objets pour la traiter.
     </p>
     <p>
         Exemple: Formater le contenu d'un article, gérer les media, la pub, la mise en forme, etc...
@@ -106,24 +106,8 @@ class ArticleRewriter implements ArticleRewriterInterface
 
 
 <section>
-    <h2>Chain of Reponsability</h2>
-    <pre>
-        <code data-trim class="php">
-class ArticleRewriter implements ArticleRewriterInterface
-{
-    public function rewrite(ArticleInterface $article)
-    {
-        if ($article->isPremium()) {
-            // On tronque le contenu
-        } elseif (str_pos($article->getContent(), '<image>') {
-            // Insertion d'une image
-        } elseif (...) {
-            // Oui, cette method peut devenir la plus longue du monde.
-        }
-    }
-}
-        </code>
-    </pre>
+    <h2>Le diagramme</h2>
+    <img src="images/pattern/chain-of-responsability.png" />
 </section>
 
 
@@ -156,7 +140,7 @@ class ImageFormater extends FormaterInterface
 
 
 <section>
-    <h2>Le <strong>Formater</strong></h2>
+    <h2>Le <strong>Rewriter</strong></h2>
     <pre>
         <code data-trim class="php">
 class ArticleRewriter implements ArticleRewriterInterface
@@ -194,7 +178,7 @@ class ArticleRewriter implements ArticleRewriterInterface
 
 
 <section>
-    <h2>Le <strong>Formater</strong></h2>
+    <h2>Le <strong>Rewriter</strong></h2>
     <pre>
         <code data-trim class="php">
 $article = // Je vais chercher mon article en base.
@@ -233,6 +217,97 @@ $articleRewriter->rewrite($article);
     </ul>
 </section>
 
+
+<section>
+    <h2>Strategy</h2>
+    <p>
+        Permet de définir plusieurs algorithmes interchangeables dynamiquement.
+    </p>
+</section>
+
+
+<section>
+    <h2>Pourquoi l'utiliser ?</h2>
+    <p>
+        Dès lors qu'un objet peut effectuer plusieurs traitements différents, dépendant d'une variable ou d'un état.
+    </p>
+    <p>
+        Exemple: Filtrer une collection d'object.
+    </p>
+</section>
+
+
+<section>
+    <h2><strong>ArrayCollection</strong> de Doctrine</h2>
+    <pre>
+        <code data-trim class="php">
+            $articles = new ArrayCollection([$article, $otherArticle])
+
+            $articles->filtre(function (ArticleInterface) {
+                // Ici on déporte dans une closure l'algorithme de filtre
+            });
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Le diagramme</h2>
+    <img src="images/pattern/strategy.png" />
+</section>
+
+
+<section>
+    <h2>Le <strong>DataExtrator</strong></h2>
+    <pre>
+        <code data-trim class="php">
+class ObjectExtrator implements ExtractorInterface
+{
+    public function extract($article)
+    {
+        if (!$article instanceof ArticleInterface) {
+            throw new \InvalidArgumentException('An ArticleInterface is expected');
+        }
+
+        return [$article->getId()];
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Le <strong>DataExtrator</strong></h2>
+    <pre>
+        <code data-trim class="php">
+class Context implements ContextInterface
+{
+    public function addPrintedArticle($data, ExtractorInterface $extrator)
+    {
+        $articlesIds = $extrator->extract($data);
+
+        $this->printedArticles = array_merge($this->printedArticles, $articlesIds);
+    }
+
+    public function getPrintedArticles()
+    {
+        return $this->printedArticles;
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
+    <h2>Conclusion</h2>
+    <ul>
+        <li>Respecte le principe de responsabilité unique</li>
+        <li>Code ouvert à l'extension,il est facilede changer les algorithmes</li>
+        <li>Code facile à maintenir en cas d’évolution/changement.</li>
+    </ul>
+</section>
 
 <section>
     <h2>Merci! Questions ?</h2>
