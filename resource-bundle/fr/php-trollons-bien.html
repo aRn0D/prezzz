@@ -68,6 +68,38 @@
 
 
 <section>
+    <h2>Comment le langage évolue t'il?</h2>
+</section>
+
+
+<section>
+    <h2>En PHP, on a vu (on peut voir encore, sniff...)</h2>
+    <pre>
+        <code data-trim class="php">
+if (isset($_GET['page']))
+{
+    echo "<html>";
+    include('path/to'.$_GET['page'].'php');
+    echo "</html>";
+}
+        </code>
+    </pre>
+    <pre>
+        <code data-trim class="php">
+class Connection
+{
+    var $dsn;
+    function connection()
+    {
+        // ...
+    }
+}
+        </code>
+    </pre>
+</section>
+
+
+<section>
     <h2>PHP, ce n'est plus que </h2>
     <p>du Procédural (tout moche)</p>
     <pre>
@@ -121,8 +153,33 @@ class Connection extends AbastractConnection implement ConnectionInterface
 
 
 <section>
-    <h2>Les PSR</h2>
-    <li>
+    <h2>Qu'est que la communauté apporte t'elle ?</h2>
+</section>
+
+
+<section>
+    <h2>La communauté</h2>
+    <ul>
+        <li>La communauté s'est bien diversifié, oui y'a du skill maintent !</li>
+        <li>Beaucoup de projets open source demandent une bonne qualité de code</li>
+        <li>Et ils sont testés !!</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>PHP Framework Interop Group</h2>
+    <ul>
+        <li>Regroupe des acteurs majeurs du monde PHP (Sf, Zf, eZ, Doctrine, etc.)</li>
+        <li>Parler des problématiques communes à chaque projet</li>
+        <li>Création des PSRs</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Les normes PSR PHP (Specification Request)</h2>
+    <ul>
         <li>PSR0 et PSR4 : Chargement des classes</li>
         <li>PSR1 et PSR2 : Style du code</li>
         <li>PSR3 : Gestion des log</li>
@@ -138,10 +195,7 @@ class Connection extends AbastractConnection implement ConnectionInterface
             Gestionnaire de dépendences : <strong>Composer</strong>
         </li>
         <li>
-            Framework : Symfony, Laravel, Zend, Yii, etc...
-        </li>
-        <li>
-            Micro Framework : Slim, Silex, etc...
+            Framework/Micro Framework : Symfony, Laravel, Zend, Yii, Slim, Silex, etc...
         </li>
         <li>
             Framework de tests : PhpUnit, Atom, Behat ou bien PhpSpec.
