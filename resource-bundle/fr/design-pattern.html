@@ -43,7 +43,7 @@
 
 
 <section>
-    <h2>Les design patterns.</h2>
+    <h2>Les design patterns</h2>
 </section>
 
 
@@ -75,16 +75,16 @@
 <section>
     <h2>Pourquoi l'utiliser ?</h2>
     <p>
-        Le système doit gérer une requête. La requête implique plusieurs objets pour la traiter.
+        Le système doit gérer une requête, la requête implique plusieurs objets pour la traiter.
     </p>
     <p>
-        Exemple: Formater le contenu d'un article, gérer les media, la pub, la mise en forme, etc...
+        <strong>Exemple :</strong> Formater le contenu d'un article, gérer les media, la pub, la mise en forme, etc...
     </p>
 </section>
 
 
 <section>
-    <h2>La solution la plus simple.</h2>
+    <h2>La solution la plus simple</h2>
     <pre>
         <code data-trim class="php">
 class ArticleRewriter implements ArticleRewriterInterface
@@ -112,25 +112,24 @@ class ArticleRewriter implements ArticleRewriterInterface
 
 
 <section>
-    <h2>Le <strong>Formater</strong></h2>
+    <h2>Le Formater</h2>
     <pre>
         <code data-trim class="php">
 class ImageFormater extends FormaterInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function support(ArticleInterface $article, $format)
     {
         return 1 === str_pos($article->getContent(), '<image>');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doFormat(ArticleInterface $article)
+    protected function format(ArticleInterface $article)
     {
-        $content = str_replace('<image>', '<img sr="/pth/to/image.png>">', $article->getContent());
+        $content = str_replace(
+            '<image>',
+            '<img src="/pth/to/image.png>">',
+            $article->getContent()
+        );
+
         $article->setContent($content);
     }
 }
@@ -140,7 +139,7 @@ class ImageFormater extends FormaterInterface
 
 
 <section>
-    <h2>Le <strong>Rewriter</strong></h2>
+    <h2>Le Rewriter</h2>
     <pre>
         <code data-trim class="php">
 class ArticleRewriter implements ArticleRewriterInterface
@@ -148,9 +147,6 @@ class ArticleRewriter implements ArticleRewriterInterface
     /** @var FormaterInterface[] */
     private $formaters = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewrite(ArticleInterface $article, $format)
     {
         krsort($this->formaters);
@@ -162,14 +158,9 @@ class ArticleRewriter implements ArticleRewriterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addFormater($priority, FormaterInterface $formater)
     {
         $this->formaters[$priority] = $formater;
-
-        return $this;
     }
 }
         </code>
@@ -178,7 +169,7 @@ class ArticleRewriter implements ArticleRewriterInterface
 
 
 <section>
-    <h2>Le <strong>Rewriter</strong></h2>
+    <h2>Le Rewriter</h2>
     <pre>
         <code data-trim class="php">
 $article = // Je vais chercher mon article en base.
@@ -196,24 +187,23 @@ $articleRewriter->rewrite($article);
 
 <section>
     <h2>Conclusion</h2>
-    <p>
-       Il permet aussi de séparer les différentes étapes d'un traitement
-    </p>
     <ul>
         <li>
-            if/switch killer, la classe qui traite la requète est mmoins complexe.
+            if/switch killer, la classe qui traite la requète est moins complexe.
         </li>
         <li>
             Chaque étape étape est isolé dans un classe :
-            <lu>
+            <ul>
                 <li>
                     Repecte le principe de reponsabilité unique.
                 </li>
                 <li>
                     Code plus facilement testable.
                 </li>
-            </lu>
+            </ul>
         </li>
+        <li>Code ouvert à l'extension</li>
+        <li>Code facile à maintenir en cas d’évolution/changement.</li>
     </ul>
 </section>
 
@@ -238,14 +228,14 @@ $articleRewriter->rewrite($article);
 
 
 <section>
-    <h2><strong>ArrayCollection</strong> de Doctrine</h2>
+    <h2>ArrayCollection de Doctrine</h2>
     <pre>
         <code data-trim class="php">
-            $articles = new ArrayCollection([$article, $otherArticle])
+$articles = new ArrayCollection([$article, $otherArticle])
 
-            $articles->filtre(function (ArticleInterface) {
-                // Ici on déporte dans une closure l'algorithme de filtre
-            });
+$articles->filter(function (ArticleInterface) {
+    // Ici on déporte dans une closure l'algorithme de filtre
+});
         </code>
     </pre>
 </section>
@@ -258,7 +248,7 @@ $articleRewriter->rewrite($article);
 
 
 <section>
-    <h2>Le <strong>DataExtrator</strong></h2>
+    <h2>Le DataExtrator</h2>
     <pre>
         <code data-trim class="php">
 class ObjectExtrator implements ExtractorInterface
@@ -278,7 +268,7 @@ class ObjectExtrator implements ExtractorInterface
 
 
 <section>
-    <h2>Le <strong>DataExtrator</strong></h2>
+    <h2>Le DataExtrator</h2>
     <pre>
         <code data-trim class="php">
 class Context implements ContextInterface
@@ -304,7 +294,7 @@ class Context implements ContextInterface
     <h2>Conclusion</h2>
     <ul>
         <li>Respecte le principe de responsabilité unique</li>
-        <li>Code ouvert à l'extension,il est facilede changer les algorithmes</li>
+        <li>Code ouvert à l'extension, il est facile d'ajouter les algorithmes</li>
         <li>Code facile à maintenir en cas d’évolution/changement.</li>
     </ul>
 </section>
