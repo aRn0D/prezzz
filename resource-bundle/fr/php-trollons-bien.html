@@ -52,7 +52,7 @@
     <div class="col-50 text-right">
         <p class="topSpace">Arnaud Langlade (@_aRn0D)</p>
         <p>Développeur PHP/Symfony @CleverAge</p>
-        <p>Core team member @Sylius</p>
+        <p>Core team member @Sylius (et bientôt @akeneo)</p>
     </div>
     <div class="col-50 text-left">
         <p>
@@ -62,30 +62,35 @@
 </section>
 
 
+                
 <section>
     <h2>Pourquoi ce talk ?!?</h2>
+    <p class="fragment"><strong>Polo :</strong> Quel langage, utilises tu ?</p>
+    <p class="fragment"><strong>Arnaud :</strong> PHP, mon polo!</p>
+    <p class="fragment"><img src="images/php-troll/au_bucher.gif"></p>
 </section>
 
 
-<section>
-    <h2>Comment le langage évolue t'il?</h2>
-</section>
-
 
 <section>
-    <h2>En PHP, on a vu (on peut voir encore, sniff...)</h2>
-    <pre>
-        <code data-trim class="php">
+    <h2>Oui, en PHP on a vu ...</h2>
+    <div class="col-50">
+        <pre>
+            <code data-trim class="php">
+require 'lib/function.php';
+
 if (isset($_GET['page']))
 {
-    echo "<html>";
-    include('path/to'.$_GET['page'].'php');
-    echo "</html>";
+    echo "&lt;html&gt;";
+    include($_GET['page'].'.php');
+    echo "&lt;/html&gt;";
 }
-        </code>
-    </pre>
-    <pre>
-        <code data-trim class="php">
+            </code>
+        </pre>
+    </div>
+    <div class="col-50">
+        <pre>
+            <code data-trim class="php">
 class Connection
 {
     var $dsn;
@@ -94,58 +99,45 @@ class Connection
         // ...
     }
 }
-        </code>
-    </pre>
+            </code>
+        </pre>
+    </div>
 </section>
 
 
+
 <section>
-    <h2>PHP, ce n'est plus que </h2>
-    <p>du Procédural (tout moche)</p>
-    <pre>
-        <code data-trim class="php">
-if (isset($_GET['page']))
-{
-    include('path/to'.$_GET['page'].'php');
-}
-        </code>
-    </pre>
-    <p>ou un semblant l'object</p>
-    <pre>
-        <code data-trim class="php">
-class Connection
-{
-    var $dsn;
-    function connection()
-    {
-        // ...
-    }
-}
-        </code>
-    </pre>
+    <p>On est d'accord, ça ne donne pas envie...</p>
+    <img src="images/php-troll/couper_les_veines.gif">
 </section>
 
 
-<section>
-    <h2>Maintenant, PHP offre </h2>
-    <p>n'est toujours pas un language Full Object</p>
 
-    <p>mais le mode object a été retravaillé</p>
+<section>
+    <h2>Mais ça évolue !</h2>
+</section>
+
+
+
+<section>
+    <h2>Amélioration du mode object</h2>
     <pre>
         <code data-trim class="php">
 namespace Bdd/Common;
 
-class Connection extends AbastractConnection implement ConnectionInterface
+use Bdd/Common/Connection as BaseConnection;
+
+class Connection extends BaseConnection implement
+    ConnectionInterface,
+    ContainerAwareInterface
 {
     use ConnectionTrait;
 
     private $dsn;
 
-    public function __construct($dsn) // ...
+    public function __construct(array $config) // ...
 
-    public function connect() // ...
-
-    public function __desstruct() // ...
+    public function query(Criteria $criteria) // ...
 }
         </code>
     </pre>
