@@ -67,13 +67,16 @@
     <h2>Pourquoi ce talk ?!?</h2>
     <p class="fragment"><strong>Polo :</strong> Quel langage, utilises tu ?</p>
     <p class="fragment"><strong>Arnaud :</strong> PHP, mon polo!</p>
-    <p class="fragment"><img src="images/php-troll/au_bucher.gif"></p>
+    <p class="fragment"><strong>Polo :</strong></p>
+    <p class="fragment">
+        <img src="images/php-troll/au_bucher.gif" width="600">
+    </p>
 </section>
 
 
 
 <section>
-    <h2>Oui, en PHP on a vu ...</h2>
+    <h2>Oui, en PHP on a vu ... (PHP4)</h2>
     <div class="col-50">
         <pre>
             <code data-trim class="php">
@@ -108,7 +111,7 @@ class Connection
 
 <section>
     <p>On est d'accord, ça ne donne pas envie...</p>
-    <img src="images/php-troll/couper_les_veines.gif">
+    <img src="images/php-troll/couper_les_veines.gif" width="600">
 </section>
 
 
@@ -120,7 +123,7 @@ class Connection
 
 
 <section>
-    <h2>Amélioration du mode object</h2>
+    <h2>Amélioration du mode object (PHP5)</h2>
     <pre>
         <code data-trim class="php">
 namespace Bdd/Common;
@@ -133,71 +136,137 @@ class Connection extends BaseConnection implement
 {
     use ConnectionTrait;
 
-    private $dsn;
+    const TYPE = 'my_sql';
 
-    public function __construct(array $config) // ...
+    private $dsn null; // Peut être public ou protect
 
-    public function query(Criteria $criteria) // ...
+    public function __construct(array $config)
+    {/*...*/}
+
+    public function query(Criteria $criteria)
+    {/*...*/}
 }
         </code>
     </pre>
+    <aside class="notes">
+        Ajout de fonctionnalité comme la réflection, etc.
+
+    </aside>
+</section>
+
+
+
+<section>
+    <h2>Amélioration du mode object (PHP7)</h2>
+    <pre>
+        <code data-trim class="php">
+declare(strict_types = 1);
+
+namespace Bdd/Common;
+
+use Bdd/Common/Connection as BaseConnection;
+
+class ConnectionFactory implement ConnectionFactoryInterface
+{
+    public function create(string $dsn) : Connection
+    {
+        try {
+            return new Connection($dsn);
+        } catch (TypeError $e) {
+            // Une partie des erreurs Fatales sont transformées en Error
+            echo $e->getMessage();
+        }
+    }
+}
+        </code>
+    </pre>
+    <aside class="notes">
+        Gros ménage dans les extensions obsolètes.
+    </aside>
+</section>
+                
+
+<section>
+    <h2>Le train est en marche</h2>
+    <div class="col-50">
+        <ul>
+            <li>Mélange procédural et d'objet (mais gros gap entre PHP4 et PHP7)</li>
+            <li>L'api est très bien documentée (et internationalisé)</li>
+            <li>La core team a défini un processus de release</li>
+            <li>La communauté autour du langage est bien structurée.</li>
+        </ul>
+    </div>
+    <div class="col-50">
+        <img src="images/common/doc-back-to-the-future.jpg">
+    </div>
 </section>
 
 
 <section>
-    <h2>Qu'est que la communauté apporte t'elle ?</h2>
+    <h2>Comment la communauté s'organise t'elle ?</h2>
 </section>
 
 
 <section>
     <h2>La communauté</h2>
     <ul>
-        <li>La communauté s'est bien diversifié, oui y'a du skill maintent !</li>
-        <li>Beaucoup de projets open source demandent une bonne qualité de code</li>
-        <li>Et ils sont testés !!</li>
+        <li>La communauté s'est bien diversifié (il y'a de très bons développeurs)</li>
+        <li>Beaucoup de projets open source demandent une bonne qualité de code (design, <strong>tests</strong>, integration continue)</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>PHP Framework Interop Group</h2>
+    <h2>PHP Framework Interop Group (PHPFIG)</h2>
     <ul>
         <li>Regroupe des acteurs majeurs du monde PHP (Sf, Zf, eZ, Doctrine, etc.)</li>
         <li>Parler des problématiques communes à chaque projet</li>
-        <li>Création des PSRs</li>
+        <li>Création des <strong>PHP Specification Request</strong> (PSRs)</li>
     </ul>
 </section>
 
 
 <section>
-    <h2>Les normes PSR PHP (Specification Request)</h2>
+    <h2>Les normes PSR (PHP Specification Request)</h2>
     <ul>
-        <li>PSR0 et PSR4 : Chargement des classes</li>
-        <li>PSR1 et PSR2 : Style du code</li>
-        <li>PSR3 : Gestion des log</li>
-        <li>PSR7 : Message HTTP</li>
+        <li><strong>PSR0 et PSR4 :</strong> Chargement des classes</li>
+        <li><strong>PSR1 et PSR2 :</strong> Style du code</li>
+        <li><strong>PSR3 :</strong> Gestion des log</li>
+        <li><strong>PSR7 :</strong> Message HTTP</li>
     </ul>
 </section>
 
 
 <section>
     <h2>Industrialisation de PHP</h2>
-    <ul>
-        <li>
-            Gestionnaire de dépendences : <strong>Composer</strong>
-        </li>
-        <li>
-            Framework/Micro Framework : Symfony, Laravel, Zend, Yii, Slim, Silex, etc...
-        </li>
-        <li>
-            Framework de tests : PhpUnit, Atom, Behat ou bien PhpSpec.
-        </li>
-    </ul>
+    <div class="col-50">
+        <ul>
+            <li>
+                <strong>Gestionnaire de dépendences :</strong> Composer
+            </li>
+            <li>
+                <strong>/^(|micro) framework$/:</strong> Symfony, Laravel, Zend, Yii, Slim, Silex, etc...
+            </li>
+            <li>
+                <strong>Framework de tests :</strong> PhpUnit, Atom, Behat ou bien PhpSpec.
+            </li>
+        </ul>
+    </div>
+    <div class="col-50">
+        <img src="images/common/karadoc.jpg">
+    </div>
 </section>
 
 
 <section>
-    <h2>Conclusion</h2>
+    <h2>Pour finir</h2>
+    <div class="col-50">
+        <blockquote>PHP et sa communauté évolue dans le bon sens même si le langage n'est pas parfait</blockquote>
+        <blockquote>Ce n'est pas une langage qui fait un dévoppeur mais la façon dont il l'utilise</blockquote>
+    </div>
+    <div class="col-50">
+        <img src="images/common/no-idea.jpg">
+    </div>
 </section>
 
 <section>
@@ -205,7 +274,6 @@ class Connection extends BaseConnection implement
     <div class="col-50 text-right">
         <p id="question-text">Arnaud Langlade</p>
         <p>Twiter @_aRn0D</p>
-        <p>Sylius : www.sylius.org</p>
     </div>
     <div class="col-50 text-left">
         <img src="images/common/question.jpg" id="question">
