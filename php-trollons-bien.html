@@ -138,7 +138,7 @@ class Connection extends BaseConnection implement
 
     const TYPE = 'my_sql';
 
-    private $dsn null; // Peut être public ou protect
+    private $dsn null; // Peut être public ou protected
 
     public function __construct(array $config)
     {/*...*/}
@@ -149,8 +149,13 @@ class Connection extends BaseConnection implement
         </code>
     </pre>
     <aside class="notes">
-        Ajout de fonctionnalité comme la réflection, etc.
-
+        <ul>
+            <li>6 versions mineures sur 10 ans</li>
+            <li>Le modèle object a été grandement amélioré</li>
+            <li>Amélioration de l'API: DateTime, Intl, Fileinfo, Reflection, Clousure, etc.</li>
+            <li>Amélioration de la gestion de la mémoire sur chaque version mineure</li>
+            <li></li>
+        </ul>
     </aside>
 </section>
 
@@ -181,7 +186,13 @@ class ConnectionFactory implement ConnectionFactoryInterface
         </code>
     </pre>
     <aside class="notes">
-        Gros ménage dans les extensions obsolètes.
+        <ul>
+            <li>Gros ménage dans les fonctions/extensions obsolètes : ext/ereg, ext/mysql, set_magic_quotes_runtime, etc.</li>
+            <li>int, float, bool, string, sont des mots clé réservés. Est ce que certains objets ne feront ils pas leur apparition dans les futures versions?</li>
+            <li>Uniformisation de la syntaxe</li>
+            <li>Performances 50% à 100% supérieures à PHP 5.6 (proches de celles de HHVM 3.7), la consommation mémoire est diminuée</li>
+        </ul>
+
     </aside>
 </section>
                 
@@ -248,7 +259,7 @@ class ConnectionFactory implement ConnectionFactoryInterface
                 <strong>/^(|micro) framework$/:</strong> Symfony, Laravel, Zend, Yii, Slim, Silex, etc...
             </li>
             <li>
-                <strong>Framework de tests :</strong> PhpUnit, Atom, Behat ou bien PhpSpec.
+                <strong>Framework de tests :</strong> PhpUnit, Atoum, Behat ou bien PhpSpec.
             </li>
         </ul>
     </div>
