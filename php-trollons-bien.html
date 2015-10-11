@@ -118,6 +118,7 @@ class Connection
 
 <section>
     <h2>Mais ça évolue !</h2>
+    <p>Depuis un moment déjà...</p>
 </section>
 
 
@@ -138,7 +139,7 @@ class Connection extends BaseConnection implement
 
     const TYPE = 'my_sql';
 
-    private $dsn null; // Peut être public ou protected
+    private $dsn = null; // Peut être public ou protected
 
     public function __construct(array $config)
     {/*...*/}
@@ -202,9 +203,9 @@ class ConnectionFactory implement ConnectionFactoryInterface
     <div class="col-50">
         <ul>
             <li>Mélange procédural et d'objet (mais gros gap entre PHP4 et PHP7)</li>
-            <li>L'api est très bien documentée (et internationalisé)</li>
-            <li>La core team a défini un processus de release</li>
-            <li>La communauté autour du langage complète bien le language</li>
+            <li>L'api est très bien documentée (et internationalisée)</li>
+            <li>La core team a défini un processus de release (RFC + Vote)</li>
+            <li>Communauté vaste, expérimentée et organisée (User group, conférence)</li>
         </ul>
     </div>
     <div class="col-50">
@@ -223,7 +224,7 @@ class ConnectionFactory implement ConnectionFactoryInterface
     <ul>
         <li>La communauté s'est bien diversifié (il y'a de très bons développeurs)</li>
         <li>Les projets open source demandent une bonne qualité de code (design et tests)</li>
-        <li>De nombreuse librairies sont disponibles</li>
+        <li>De nombreuse librairies sont disponibles (<a href="https://packagist.org">packagist.org</a>)</li>
     </ul>
 </section>
 
@@ -262,6 +263,9 @@ class ConnectionFactory implement ConnectionFactoryInterface
             <li>
                 <strong>Framework de tests :</strong> PhpUnit, Atoum, Behat ou bien PhpSpec.
             </li>
+            <li>
+                <strong>Intégration continue:</strong> PHP_CodeSniffer, PHP_Depend/PHPMD, PHPCPD, PhpDependencyAnalysis etc...
+            </li>
         </ul>
     </div>
     <div class="col-50">
@@ -274,7 +278,7 @@ class ConnectionFactory implement ConnectionFactoryInterface
     <h2>Pour finir</h2>
     <div class="col-50">
         <blockquote>PHP et sa communauté évolue dans le bon sens même si le langage n'est pas parfait</blockquote>
-        <blockquote>Ce n'est pas une langage qui fait un dévoppeur mais la façon dont il l'utilise</blockquote>
+        <blockquote>Ce n'est pas un langage qui fait un développeur mais la façon dont il l'utilise</blockquote>
     </div>
     <div class="col-50">
         <img src="images/common/no-idea.jpg">
