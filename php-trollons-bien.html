@@ -131,14 +131,14 @@ class Connection
 
 
 <section>
-    <h2>Amélioration du mode object (PHP5)</h2>
+    <h2>Amélioration du mode objet (PHP5)</h2>
     <pre>
         <code data-trim class="php">
 namespace Bdd/Common;
 
 use Bdd/Common/Connection as BaseConnection;
 
-class Connection extends BaseConnection implement
+class Connection extends BaseConnection implements
     ConnectionInterface,
     ContainerAwareInterface
 {
@@ -159,7 +159,7 @@ class Connection extends BaseConnection implement
     <aside class="notes">
         <ul>
             <li>6 versions mineures sur 10 ans</li>
-            <li>Le modèle object a été grandement amélioré</li>
+            <li>Le modèle objet a été grandement amélioré</li>
             <li>Amélioration de l'API: DateTime, Intl, Fileinfo, Reflection, Clousure, etc.</li>
             <li>Amélioration de la gestion de la mémoire sur chaque version mineure</li>
             <li></li>
@@ -170,7 +170,7 @@ class Connection extends BaseConnection implement
 
 
 <section>
-    <h2>Amélioration du mode object (PHP7)</h2>
+    <h2>Amélioration du mode objet (PHP7)</h2>
     <pre>
         <code data-trim class="php">
 declare(strict_types = 1);
@@ -179,7 +179,7 @@ namespace Bdd/Common;
 
 use Bdd/Common/Connection as BaseConnection;
 
-class ConnectionFactory implement ConnectionFactoryInterface
+class ConnectionFactory implements ConnectionFactoryInterface
 {
     public function create(string $dsn) : Connection
     {
@@ -229,7 +229,7 @@ class ConnectionFactory implement ConnectionFactoryInterface
 <section>
     <h2>La communauté</h2>
     <ul>
-        <li>La communauté s'est bien diversifié (il y'a de très bons développeurs)</li>
+        <li>La communauté s'est bien diversifiée (il y'a de très bons développeurs)</li>
         <li>Les projets open source demandent une bonne qualité de code (design et tests)</li>
         <li>De nombreuse librairies sont disponibles (<a href="https://packagist.org">packagist.org</a>)</li>
     </ul>
@@ -240,7 +240,7 @@ class ConnectionFactory implement ConnectionFactoryInterface
     <h2>PHP Framework Interop Group (PHPFIG)</h2>
     <ul>
         <li>Regroupe des acteurs majeurs du monde PHP (Sf, Zf, eZ, Doctrine, etc.)</li>
-        <li>Parler des problématiques communes à chaque projet</li>
+        <li>Parle des problématiques communes à chaque projet</li>
         <li>Création des <strong>PHP Specification Request</strong> (PSRs)</li>
     </ul>
 </section>
@@ -251,8 +251,8 @@ class ConnectionFactory implement ConnectionFactoryInterface
     <ul>
         <li><strong>PSR0 et PSR4 :</strong> Chargement des classes</li>
         <li><strong>PSR1 et PSR2 :</strong> Style du code</li>
-        <li><strong>PSR3 :</strong> Gestion des log</li>
-        <li><strong>PSR7 :</strong> Message HTTP</li>
+        <li><strong>PSR3 :</strong> Gestion des logs</li>
+        <li><strong>PSR7 :</strong> Messages HTTP</li>
     </ul>
 </section>
 
