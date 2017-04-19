@@ -46,6 +46,10 @@
 			.align-left {
 				text-align: left;
 			}
+
+			.reveal pre code {
+				max-height: none;
+			}
 		</style>
 
 		<!--[if lt IE 9]>
@@ -64,7 +68,9 @@
 				</section>
 
 				<section>
-					<h1>I am <strong>Arnaud</strong></h1>
+					<h1>Hi, I am <strong>Arnaud</strong>!</h1>
+					<p>aRn0D</p>
+					<p>_aRn0D</p>
 				</section>
 
 				<section>
@@ -80,8 +86,9 @@
 
 				<section>
 					<h2>Playground</h2>
-					<p class="fragment"><strong>Business:</strong> human resources management</p>
-					<p class="fragment"><strong>Technical:</strong> Symfony</p>
+					<p class="fragment"><strong>With:</strong> Estelle, our HR</p>
+					<p class="fragment"><strong>Business:</strong> Human resources management</p>
+					<p class="fragment"><strong>Technical:</strong> Symfony / Doctrine ORM</p>
 				</section>
 
 				<section>
@@ -90,7 +97,7 @@
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
+						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
 final class Employee implements EmployeeInterface,
@@ -122,7 +129,7 @@ final class Employee implements EmployeeInterface,
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
+						<code class="php hljs" data-trim >
 namespace Al\Presenter\Form;
 
 final class EmployeeType extends AbstractType
@@ -131,8 +138,6 @@ final class EmployeeType extends AbstractType
 	{
 		$builder->add('name');
 		$builder->add('position');
-		$builder->add('createAt', DateType::class);
-		$builder->add('deleteAt', DateType::class);
 	}
 }
 						</code>
@@ -141,7 +146,7 @@ final class EmployeeType extends AbstractType
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
+						<code class="php hljs" data-trim >
 namespace Al\Presenter\Controller;
 
 class EmployeeController extends Controller
@@ -177,19 +182,23 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
+					<p>Diagram</p>
+				</section>
+
+				<section>
 					<h2>Let's design our rich model</h2>
 				</section>
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
+						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
 final class Employee implements EmployeeInterface,
 {
 	// properties
 
-	private function __construct(Uuid $identifier, string $name, string $position, \DateTimeInterface $hiredAt)
+	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
 	{
 		$this->id = $identifier;
 		$this->name = $name;
@@ -198,7 +207,7 @@ final class Employee implements EmployeeInterface,
 		$this->firedAt = null;
 	}
 
-	public static function hire(Uuid $identifier, string $name, string $forPosition, \DateTimeInterface $hiredAt)
+	public static function hire(Uuid $identifier, string $name, string $forPosition, \DateTime $hiredAt)
 	{
 		return new self($identifier, $name, $forPosition, $withSalaryScale, $hiredAt);
 	}
@@ -227,6 +236,8 @@ final class Employee implements EmployeeInterface,
 
 				<section>
 					<h2>What is a repository?</h2>
+					<p class="fragment">Mediates between the domain and data mapping layers using a collection-like interface for accessing domain objects</p>
+					<p class="fragment">Operations performed over them provide a more object-oriented view of the persistence layer</p>
 				</section>
 
 				<section>
@@ -235,8 +246,8 @@ final class Employee implements EmployeeInterface,
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-namespace Al\Infrastructure\Repository;
+						<code class="php hljs" data-trim >
+namespace Al\Infrastructure;
 
 final class EmployeeRepository implements EmployeeRepositoryInterface
 {
@@ -244,7 +255,7 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 
 	public function get(Uuid $identifier)
 	{
-		if (null === $employee = $this->entityManager->find(Employee::class, (string) $identifier->toString())) {
+		if (null === $employee = $this->entityManager->find(Employee::class, $identifier->toString())) {
 			throw new NotExistingEmployee((string) $identifier->toString());
 		}
 
@@ -268,7 +279,9 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 				</section>
 
 				<section>
-					<h2>Do we need setter?</h2>
+					<h2>Do we need setter? <span class="fragment">NO!</span></h2>
+					<p class="fragment">Doctrine does not instanciate object (<strong>Ocramius/Instantiator</strong>)</p>
+					<p class="fragment">Doctrne use the <strong>reflection</strong> to map data</p>
 				</section>
 
 				<section>
@@ -277,6 +290,7 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 
 				<section>
 					<h2>Command pattern to the rescue!</h2>
+						<blockquote class="fragment">A <strong>Command</strong> is an object that represents all the information needed to call a method.</blockquote>
 				</section>
 
 				<section>
@@ -285,10 +299,10 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-namespace Al\Application\Command;
+						<code class="php hljs" data-trim >
+namespace Al\Application;
 
-final class HireEmployee
+final class HireEmployeeCommand
 {
 	/** @var string */
 	private $name = '';
@@ -296,7 +310,25 @@ final class HireEmployee
 	/** @var string */
 	private $position = '';
 
-	// Getter and Setter
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function getPosition(): string
+    {
+        return $this->position;
+    }
+
+    public function setPosition(string $position)
+    {
+        $this->position = $position;
+    }
 }
 						</code>
 					</pre>
@@ -308,21 +340,21 @@ final class HireEmployee
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
+						<code class="php hljs" data-trim >
 namespace Al\Presenter\Controller;
 
 class EmployeeController extends Controller
 {
 	public function hireAction(Request $request)
 	{
-		$form = $this->createForm(EmployeeType::class, new HireEmployee());
+		$form = $this->createForm(EmployeeType::class, new HireEmployeeCommand());
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$employee = $form->getData();
 
 			Employee::hire(Uuid::uuid4(), $employee->getName(), $employee->getPosition());
-			$this->get('employee.repository')->save($employee);
+			$this->get('employee.repository')->add($employee);
 
 			return $this->redirectToRoute('employee_list');
 		}
@@ -342,16 +374,17 @@ class EmployeeController extends Controller
 
 				<section>
 					<h2>Command Bus to the rescue</h2>
+					<p class="fragment">A <strong>Command Bus</strong> accepts a <strong>Command</strong> object and delegates it to a <strong>Command Handler</strong>.</p>
 				</section>
 
 				<section>
-					<h2>Let’s create a command handle</h2>
+					<h2>Let’s create a command handler</h2>
 				</section>
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-namespace Al\Application\Employee\Handler;
+						<code class="php hljs" data-trim >
+namespace Al\Application\Handler;
 
 final class HireEmployeeHandler
 {
@@ -362,11 +395,48 @@ final class HireEmployeeHandler
         $employee = Employee::hire(
             $command->getName(),
             $command->getPosition(),
-            $command->joinCompanyAt() // TODO
+            //$command->joinCompanyAt() // TODO
         );
 
         $this->employeeRepository->add($employee);
     }
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<h2>Let’s update our controller</h2>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Presenter\Controller;
+
+class EmployeeController extends Controller
+{
+	public function hireAction(Request $request)
+	{
+		$form = $this->createForm(EmployeeType::class, new HireEmployeeCommand());
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+            $employeeCommand = $form->getData();
+
+            try {
+                $this->get('command_bus')->handle($employeeCommand);
+            } catch (\Exception $e) {
+                $this->addFlash('negative', 'An error occurs, please contact an administrator');
+            }
+
+			return $this->redirectToRoute('employee_list');
+		}
+
+		return $this->render('employee/hire.html.twig', [
+			'form' => $form->createView()
+		]);
+	}
 }
 						</code>
 					</pre>
@@ -378,8 +448,37 @@ final class HireEmployeeHandler
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-							TODO
+						<code class="php hljs" data-trim >
+final class Employee implements EmployeeInterface, ContainsRecordedMessages
+{
+	use PrivateMessageRecorderCapabilities;
+
+	private function __construct(
+		Uuid $identifier,
+		string $name,
+		string $forPosition,
+		int $withSalaryScale,
+		\DateTimeInterface $hiredAt
+	) {
+		// Set value to properties
+
+		$this->record(new EmployeeHired((string)$this->id, $this->name, $this->position));
+	}
+
+	public function promote(string $toNewPosition, int $withNewSalaryScale)
+	{
+		// Set value to properties
+
+		$this->record(new EmployeePromoted((string)$this->id, $this->name, $this->position));
+	}
+
+	public function fire(\DateTime $firedAt)
+	{
+		// Set value to properties
+
+		$this->record(new EmployeeFired((string)$this->id, $this->name, $this->position));
+	}
+}
 						</code>
 					</pre>
 				</section>
@@ -389,27 +488,29 @@ final class HireEmployeeHandler
 				</section>
 
 				<section>
-					<h2>Do we still need them?</h2>
+					<h2>Our getter, do we still need them? <span class="fragment">No!</span></h2>
 				</section>
 
 				<section>
 					<h2>DTO (Data Transfer Object) to the rescue!</h2>
+					<p class="fragment">Definition</p>
 				</section>
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-namespace Al\Application\Employee;
+						<code class="php hljs" data-trim >
+namespace Al\Application;
 
-final class Employee
+final class EmployeeDTO
 {
     // Properties
 
-    public function __construct(string $id, string $name, string $position, string $firedAt = null)
+    public function __construct(string $id, string $name, string $position, string $hiredAt = null, string $firedAt = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->position = $position;
+        $this->hiredAt = $hiredAt;
         $this->firedAt = $firedAt;
     }
 
@@ -428,11 +529,16 @@ final class Employee
         return $this->position;
     }
 
+	public function getHiredAt(): string
+    {
+        return $this->hiredAt;
+    }
+
 	public function getFiredAt(): string
     {
         return $this->firedAt;
     }
-}
+}}
 						</code>
 					</pre>
 				</section>
@@ -443,8 +549,25 @@ final class Employee
 
 				<section>
 					<pre>
-						<code class="hljs" data-trim contenteditable>
-							TODO
+						<code class="php hljs" data-trim >
+namespace Al\Infrastructure;
+
+final class EmployeeFinder
+{
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    public function findAll(Specification $searchCriteria, $page = 1, $limit = 10)
+    {
+		$queryBuilder = $this->entityManager->createQueryBuilder()
+			->from(Employee::class, 'e')
+			->select(sprintf('NEW %s(e.name, e.position)', EmployeeDTO::class));
+	}
+}
 						</code>
 					</pre>
 				</section>
@@ -476,7 +599,7 @@ final class Employee
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); hljs.configure({tabReplace: '    '});} },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
