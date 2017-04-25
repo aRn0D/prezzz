@@ -47,6 +47,10 @@
 				box-shadow: none;
 			}
 
+			.reveal .social {
+				font-size: 60px;
+			}
+
 			.reveal .social img {
 				margin-top: 0;
 				margin-bottom: 0;
@@ -104,15 +108,18 @@
 					</p>
 				</section>
 
+				<section data-background="images/code-me-hr/estelle.png">
+				</section>
+
 				<section>
 					<h2><strong class="akeneo-color">Model anemic</strong> versus <strong class="sylius-color">Rich model</strong></h2>
 				</section>
 
 				<section>
 					<h2>Playground</h2>
-					<p class="fragment"><strong>Business:</strong> Human resources management</p>
-					<p class="fragment"><strong>Technical:</strong> Symfony / Doctrine ORM</p>
-					<p class="fragment"><strong>Estelle</strong> wants to have an employee database</p>
+					<p class="fragment"><strong class="akeneo-color">Business:</strong> Human resources management</p>
+					<p class="fragment"><strong class="sylius-color">Technical:</strong> Symfony / Doctrine ORM</p>
+					<!--<p class="fragment"><strong>Estelle</strong> wants to have an employee database</p>-->
 				</section>
 
 				<section>
@@ -120,7 +127,7 @@
 				</section>
 
 				<section>
-					<h2>Let’s create </strong>anemic model</strong>!</h2>
+					<h2>We begin by creating <strong>anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -152,7 +159,7 @@ final class Employee implements EmployeeInterface
 				</section>
 
 				<section>
-					<h2>Let’s create a <strong>form</strong> and <strong>controller</strong></h2>
+					<h2>Then a <strong>form</strong> and a <strong>controller</strong></h2>
 				</section>
 
 				<section>
@@ -210,7 +217,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>What happen when I listen Estelle?</h2>
+					<h2>How Estelle talks about her work?</h2>
 				</section>
 
 				<section>
@@ -218,11 +225,11 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<p>Diagram</p>
+					<img src="images/code-me-hr/employee.png">
 				</section>
 
 				<section>
-					<h2>Let's design our <strong>rich model</strong>!</h2>
+					<h2>Let's refactor our <strong>anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -230,7 +237,7 @@ class EmployeeController extends Controller
 						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface,
+final class Employee implements EmployeeInterface
 {
 	// properties
 
@@ -286,7 +293,7 @@ final class Employee implements EmployeeInterface,
 				<section>
 					<h2>What is a repository?</h2>
 					<blockquote class="fragment">
-						TODO definition
+						&laquo;TODO definition&raquo;
 					</blockquote>
 					<aside class="notes">
 						<p>
@@ -355,7 +362,7 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 				<section>
 					<h2><strong>Command pattern</strong> to the rescue!</h2>
 						<blockquote class="fragment">
-							&lsaquo; A <strong>Command</strong> is an object that represents all the information needed to call a method."
+							&laquo; A <strong>Command</strong> is an object that represents all the information needed to call a method.&raquo;
 						</blockquote>
 				</section>
 
@@ -445,7 +452,9 @@ class EmployeeController extends Controller
 
 				<section>
 					<h2><strong>Command Bus</strong> to the rescue</h2>
-					<p class="fragment">A <strong>Command Bus</strong> accepts a <strong>Command</strong> object and delegates it to a <strong>Command Handler</strong>.</p>
+					<blockquote class="fragment">
+						&laquo;A <strong>Command Bus</strong> accepts a <strong>Command</strong> object and delegates it to a <strong>Command Handler</strong>.&raquo;
+					</blockquote>
 				</section>
 
 				<section>
@@ -474,7 +483,7 @@ final class HireEmployeeHandler
 
 				<section>
 					<h2>Let’s update our controller</h2>
-					<p class="fragment">TODO simple bus</p>
+					<p class="fragment">Here, we are going to use <strong>simple-bus/message-bus</strong></p>
 				</section>
 
 				<section>
@@ -561,7 +570,13 @@ final class Employee implements EmployeeInterface, ContainsRecordedMessages
 
 				<section>
 					<h2><strong>DTO (Data Transfer Object)</strong> to the rescue!</h2>
-					<p class="fragment">Definition</p>
+					<blockquote class="fragment">
+						&laquo;A Data Transfer Object is an object that is used to encapsulate data, and send it from one subsystem of an application to another.&raquo;
+					</blockquote>
+					<aside class="">
+						découplage entre la couche de présentation et les objets métier stockés sur le serveur.
+						permettent également de remonter des informations à persister.
+					</aside>
 				</section>
 
 				<section>
@@ -573,7 +588,7 @@ final class EmployeeDTO
 {
     // Properties
 
-    public function __construct(string $id, string $name, string $position, string $hiredAt, string $firedAt = null)
+    public function __construct(string $id, string $name, string $position, string $hiredAt, string $firedAt)
     {
         $this->id = $id;
         $this->name = $name;
@@ -589,6 +604,7 @@ final class EmployeeDTO
         return new \DateTime($this->hiredAt);
     }
 
+	// TODO: http://confluence.netapsys.fr/display/DOCSWD31/DTO+-+Le+pattern, on ajoute ces méthode?
 	public function isFired(): bool
     {
         return null !== $this->firedAt;
