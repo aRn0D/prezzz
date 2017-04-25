@@ -123,11 +123,11 @@
 				</section>
 
 				<section>
-					<h2>What do we usually do? <span class="fragment"><strong>CRUD!</strong></span></h2>
+					<h2>What do we usually do? <span class="fragment"><strong class="php-color">CRUD!</strong></span></h2>
 				</section>
 
 				<section>
-					<h2>We begin by creating <strong>anemic model</strong></h2>
+					<h2>We begin by creating <strong class="php-color">anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -159,7 +159,7 @@ final class Employee implements EmployeeInterface
 				</section>
 
 				<section>
-					<h2>Then a <strong>form</strong> and a <strong>controller</strong></h2>
+					<h2>Then a <strong class="akeneo-color">form</strong> and a <strong class="sylius-color">controller</strong></h2>
 				</section>
 
 				<section>
@@ -229,7 +229,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>Let's refactor our <strong>anemic model</strong></h2>
+					<h2>Let's refactor our <strong class="php-color">anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -278,16 +278,18 @@ final class Employee implements EmployeeInterface
 				</section>
 
 				<section>
-					<h2><strong>First problem:</strong> how do we use Doctrine?</h2>
-					<p class="fragment">We use them as queries repository</p>
-					<pre class="fragment">
-						<code class="php hljs" data-trim >
-							interface EmployeeRepository
-							{
-								public function findByNameAndPositionWithoutFiredPeople(string $name, string $position);
-							}
-						</code>
-					</pre>
+					<h2><strong class="php-color">First problem:</strong> how do we use Doctrine?</h2>
+					<span class="fragment">
+						<pre>
+							<code class="php hljs" data-trim >
+								interface EmployeeRepository
+								{
+									public function findByNameAndPositionWithoutFiredPeople(string $name, string $position);
+								}
+							</code>
+						</pre>
+						<p>We use them as query repositories</p>
+					</span>
 				</section>
 
 				<section>
@@ -349,20 +351,20 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 				</section>
 
 				<section>
-					<h2>Is it mandatory to use setter? <span class="fragment"><strong>NO!</strong></span></h2>
-					<p class="fragment">Doctrine uses the <strong>reflection</strong> to map data</p>
-					<p class="fragment">Doctrine does not instantiate objects (<strong>Ocramius/Instantiator</strong>)</p>
+					<h2>Is it mandatory to use setter? <span class="fragment"><strong class="php-color">NO!</strong></span></h2>
+					<p class="fragment">Doctrine uses the <strong class="akeneo-color">reflection</strong> to map data</p>
+					<p class="fragment">Doctrine does not instantiate objects (<strong class="sylius-color">Ocramius/Instantiator</strong>)</p>
 				</section>
 
 				<section>
-					<h2><strong>Second problem:</strong> Form component</h2>
-					<p class="fragment"><strong>PropertyAccess</strong> is used to map data, it needs public properties or setter.</p>
+					<h2><strong class="php-color">Second problem:</strong> Form component</h2>
+					<p class="fragment"><strong class="akeneo-color">PropertyAccess</strong> is used to map data, it needs public properties or setter.</p>
 				</section>
 
 				<section>
-					<h2><strong>Command pattern</strong> to the rescue!</h2>
+					<h2><strong class="php-color">Command pattern</strong> to the rescue!</h2>
 						<blockquote class="fragment">
-							&laquo; A <strong>Command</strong> is an object that represents all the information needed to call a method.&raquo;
+							&laquo; A <strong class="sylius-color">Command</strong> is an object that represents all the information needed to call a method.&raquo;
 						</blockquote>
 				</section>
 
@@ -451,9 +453,9 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2><strong>Command Bus</strong> to the rescue</h2>
+					<h2><strong class="php-color">Command Bus</strong> to the rescue</h2>
 					<blockquote class="fragment">
-						&laquo;A <strong>Command Bus</strong> accepts a <strong>Command</strong> object and delegates it to a <strong>Command Handler</strong>.&raquo;
+						&laquo;A <strong class="sylius-color">Command Bus</strong> accepts a <strong>Command</strong> object and delegates it to a <strong>Command Handler</strong>.&raquo;
 					</blockquote>
 				</section>
 
@@ -483,7 +485,7 @@ final class HireEmployeeHandler
 
 				<section>
 					<h2>Let’s update our controller</h2>
-					<p class="fragment">Here, we are going to use <strong>simple-bus/message-bus</strong></p>
+					<p class="fragment">Here, we are going to use <strong class="akeneo-color">simple-bus/message-bus</strong></p>
 				</section>
 
 				<section>
@@ -520,7 +522,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>How can we manage event?</h2>
+					<h2>Can we manage event differently? <strong class="php-color">Yes!</strong></h2>
 				</section>
 
 				<section>
@@ -530,30 +532,25 @@ final class Employee implements EmployeeInterface, ContainsRecordedMessages
 {
 	use PrivateMessageRecorderCapabilities;
 
-	private function __construct(
-		Uuid $identifier,
-		string $name,
-		string $forPosition,
-		int $withSalaryScale,
-		\DateTimeInterface $hiredAt
-	) {
-		// Set value to properties
+	private function __construct(Uuid $identifier, string $name, string $forPosition, \DateTime $hiredAt)
+	{
+		// Method business code
 
-		$this->record(new EmployeeHired((string)$this->id, $this->name, $this->position));
+		$this->record(new EmployeeHired($identifier->toString()));
 	}
 
 	public function promote(string $toNewPosition, int $withNewSalaryScale)
 	{
-		// Set value to properties
+		// Method business code
 
-		$this->record(new EmployeePromoted((string)$this->id, $this->name, $this->position));
+		$this->record(new EmployeePromoted($identifier->toString()));
 	}
 
 	public function fire(\DateTime $firedAt)
 	{
-		// Set value to properties
+		// Method business code
 
-		$this->record(new EmployeeFired((string)$this->id, $this->name, $this->position));
+		$this->record(new EmployeeFired($identifier->toString()));
 	}
 }
 						</code>
@@ -565,15 +562,16 @@ final class Employee implements EmployeeInterface, ContainsRecordedMessages
 				</section>
 
 				<section>
-					<h2>Do our models need getter? <span class="fragment"><strong>Not necessarily !</strong></span></h2>
+					<h2>Do our models need getter? <span class="fragment"><strong class="php-color">Not necessary !</strong></span></h2>
 				</section>
 
 				<section>
-					<h2><strong>DTO (Data Transfer Object)</strong> to the rescue!</h2>
+					<h2><strong class="php-color">DTO (Data Transfer Object)</strong> to the rescue!</h2>
 					<blockquote class="fragment">
-						&laquo;A Data Transfer Object is an object that is used to encapsulate data, and send it from one subsystem of an application to another.&raquo;
+						&laquo;A <strong class="sylius-color">Data Transfer Object</strong> is an object that is used to encapsulate data, and send it from one subsystem of an application to another.&raquo;
 					</blockquote>
-					<aside class="">
+					<aside class="notes">
+						TODO:
 						découplage entre la couche de présentation et les objets métier stockés sur le serveur.
 						permettent également de remonter des informations à persister.
 					</aside>
@@ -586,36 +584,29 @@ namespace Al\Application;
 
 final class EmployeeDTO
 {
-    // Properties
+	/** string */
+	private $id;
 
-    public function __construct(string $id, string $name, string $position, string $hiredAt, string $firedAt)
+	/** string */
+	private $name;
+
+    // Cetera...
+
+    public function __construct(string $id, string $name, string $position)
     {
         $this->id = $id;
         $this->name = $name;
         $this->position = $position;
-        $this->hiredAt = $hiredAt;
-        $this->firedAt = $firedAt;
     }
 
-	// Define a getter for each property tou to expose
-
-	public function getHiredAt(): \DateTime
-    {
-        return new \DateTime($this->hiredAt);
-    }
-
-	// TODO: http://confluence.netapsys.fr/display/DOCSWD31/DTO+-+Le+pattern, on ajoute ces méthode?
-	public function isFired(): bool
-    {
-        return null !== $this->firedAt;
-    }
+	// Define an accessor for each properties
 }}
 						</code>
 					</pre>
 				</section>
 
 				<section>
-					<h2>Operator NEW (doctrine >= 2.5)</h2>
+					<h2><strong class="php-color">Doctrine (>=2.4):</strong> Operator NEW </h2>
 				</section>
 
 				<section>
@@ -636,7 +627,7 @@ final class EmployeeFinder
     {
 		$queryBuilder = $this->entityManager->createQueryBuilder()
 			->from(Employee::class, 'e')
-			->select(sprintf('NEW %s(e.name, e.position)', EmployeeDTO::class));
+			->select(sprintf('NEW %s(e.id, e.name, e.position)', EmployeeDTO::class));
 
 		return $queryBuilder->getQuery()->getResult();
 	}
@@ -645,14 +636,14 @@ final class EmployeeFinder
 					</pre>
 				</section>
 
+
 				<section>
-					<h2>Before doctrine 2.5</h2>
-					<p class="fragment">DBAL</p>
-					<p class="fragment">TODO result set</p>
+					<h2>Diagram</h2>
 				</section>
 
 				<section>
-					<h2>Conclusion</h2>
+					<h2>What is the better solution?</h2>
+					<p>It depends!</p>
 				</section>
 
 				<section>
