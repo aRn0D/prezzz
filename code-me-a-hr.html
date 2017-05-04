@@ -124,6 +124,9 @@
 
 				<section>
 					<h2>What do we usually do? <span class="fragment"><strong class="php-color">CRUD!</strong></span></h2>
+					<p class="fragment">
+						<strong class="akeneo-color">C</strong>reate <strong class="sylius-color">R</strong>ead <strong class="akeneo-color">U</strong>pdate <strong class="sylius-color">D</strong>elete
+					</p>
 				</section>
 
 				<section>
@@ -174,11 +177,51 @@ final class EmployeeType extends AbstractType
 		$builder->add('name');
 		$builder->add('position');
 	}
+
+	public function configureOptions(OptionsResolver $resolver)
+	{
+		$resolver->setDefaults(array(
+			'data_class' => Employee::class,
+		));
+	}
 }
 						</code>
 					</pre>
 				</section>
 
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Presenter\Controller;
+
+class EmployeeController extends Controller
+{
+	public function indexAction(Request $request)
+	{
+	}
+
+	public function showAction(Request $request)
+	{
+	}
+
+	public function createAction(Request $request)
+	{
+	}
+
+	public function updateAction(Request $request)
+	{
+	}
+
+	public function deleteAction(Request $request)
+	{
+	}
+}
+						</code>
+					</pre>
+					<aside class="notes">
+						TODO: What happen if i create a employee without validation?
+					</aside>
+				</section>
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
@@ -239,19 +282,70 @@ namespace Al\Domain;
 
 final class Employee implements EmployeeInterface
 {
+	public function hire(Uuid $identifier, string $name, string $forPosition, \DateTime $joinCompanyAt)
+	{
+	}
+
+	public function promote(string $toNewPosition)
+	{
+	}
+
+	public function fire(\DateTime $leftCompanyAt)
+	{
+	}
+
+	public function retire(\DateTime $leftCompanyAt)
+	{
+	}
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Domain;
+
+final class Employee implements EmployeeInterface
+{
+	/** @var Uuid */
+	private $id;
+
+	/** @var string */
+	private $name;
+
+	/** @var string */
+	private $position;
+
+	/** @var \DateTimeInterface */
+	private $hiredAt;
+
+	/** @var \DateTimeInterface */
+	private $firedAt = null;
+
+	/** @var \DateTimeInterface */
+	private $retiredAt = null;
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Domain;
+
+final class Employee implements EmployeeInterface
+{
 	// properties
 
 	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
 	{
-		if ($hiredAt < new \DateTime(2012-03-04)) { TODO: check that
-			throw new \OutOfRangeException('The company did not exist before 2012-03-04');
-		}
-
 		$this->id = $identifier;
 		$this->name = $name;
 		$this->position = $position;
 		$this->hireAt = $hiredAt
-		$this->firedAt = null;
 	}
 
 	public static function hire(Uuid $identifier, string $name, string $forPosition, \DateTime $hiredAt)
@@ -264,9 +358,46 @@ final class Employee implements EmployeeInterface
 		$this->position = $toNewPosition;
 	}
 
-	public function fire(\DateTime $firedAt)
+	public function fire(\DateTime $leftCompanyAt)
 	{
-		$this->firedAt = $firedAt;
+		$this->firedAt = $leftCompanyAt;
+	}
+
+	public function retire(\DateTime $leftCompanyAt)
+	{
+		$this->retiredAt = $leftCompanyAt;
+	}
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Domain;
+
+final class Employee implements EmployeeInterface
+{
+	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
+	{
+		if ($hiredAt < new \DateTime(2012-03-04)) { TODO: check that
+			throw new \OutOfRangeException('The company did not exist before 2012-03-04');
+		}
+
+		$this->id = $identifier;
+		$this->name = $name;
+		$this->position = $position;
+		$this->hireAt = $hiredAt
+	}
+
+	public function retire(\DateTime $leftCompanyAt)
+	{
+		if (null !== $this->fired) {
+			throw new \Exception(sprint('%s employee has been fired!', $this->name));
+		}
+
+		$this->retiredAt = $leftCompanyAt;
 	}
 }
 						</code>
@@ -316,7 +447,60 @@ namespace Al\Infrastructure;
 
 final class EmployeeRepository implements EmployeeRepositoryInterface
 {
-	// Constructor and property
+	public function get(Uuid $identifier)
+	{
+	}
+
+	public function add(EmployeeInterface $employee)
+	{
+	}
+
+	public function remove(EmployeeInterface $employee)
+	{
+	}
+
+	public function all()
+	{
+	}
+}
+						</code>
+					</pre>
+					<aside class="notes">
+						<ul>
+							<li>TODO identity map</li>
+							<li>Don't need to extend the <strong>Doctrine\ORM\EntityRepository</strong></li>
+							<li>It only depends on the <strong>Doctrine\ORM\EntityManager</strong></li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Infrastructure;
+
+final class EmployeeRepository implements EmployeeRepositoryInterface
+{
+	/** @var EntityManagerInterface */
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Infrastructure;
+
+final class EmployeeRepository implements EmployeeRepositoryInterface
+{
+	// Constructor
 
 	public function get(Uuid $identifier)
 	{
@@ -338,16 +522,14 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 		$this->entityManager->remove($employee);
 		$this->entityManager->flush();
 	}
+
+	public function all()
+	{
+		return $this->findBy([]);
+	}
 }
 						</code>
 					</pre>
-					<aside class="notes">
-						<ul>
-							<li>TODO identity map</li>
-							<li>Don't need to extend the <strong>Doctrine\ORM\EntityRepository</strong></li>
-							<li>It only depends on the <strong>Doctrine\ORM\EntityManager</strong></li>
-						</ul>
-					</aside>
 				</section>
 
 				<section>
@@ -422,6 +604,29 @@ class EmployeeController extends Controller
 {
 	public function hireAction(Request $request)
 	{
+	}
+
+	public function fireAction(Request $request)
+	{
+	}
+
+	public function retireAction(Request $request)
+	{
+	}
+}
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<pre>
+						<code class="php hljs" data-trim >
+namespace Al\Presenter\Controller;
+
+class EmployeeController extends Controller
+{
+	public function hireAction(Request $request)
+	{
 		$form = $this->createForm(EmployeeType::class, new HireEmployeeCommand());
 		$form->handleRequest($request);
 
@@ -445,7 +650,6 @@ class EmployeeController extends Controller
 
 				<section>
 					<h2>That's it, it works!</h2>
-					<p class="fragment">Don't forget to update the other controller's methods and its routes</p>
 				</section>
 
 				<section>
@@ -470,7 +674,13 @@ namespace Al\Application\Handler;
 
 final class HireEmployeeHandler
 {
-    // Constructor and properties
+	/** @var EmployeeRepositoryInterface */
+    private $employeeRepository;
+
+    public function __construct(EmployeeRepositoryInterface $employeeRepository)
+    {
+        $this->employeeRepository = $employeeRepository;
+    }
 
     public function handle(HireEmployee $command)
     {
@@ -562,7 +772,11 @@ final class Employee implements EmployeeInterface, ContainsRecordedMessages
 				</section>
 
 				<section>
-					<h2>Do our models need getter? <span class="fragment"><strong class="php-color">Not necessary !</strong></span></h2>
+					<h2>Estelle won't use <strong class="php-color">phpMyAdmin</strong> to read data!</span></h2>
+				</section>
+
+				<section>
+					<h2>Do our models need getter? <strong class="php-color fragment">Not necessary !</strong></h2>
 				</section>
 
 				<section>
@@ -590,7 +804,8 @@ final class EmployeeDTO
 	/** string */
 	private $name;
 
-    // Cetera...
+	/** string */
+	private $position;
 
     public function __construct(string $id, string $name, string $position)
     {
@@ -629,6 +844,8 @@ final class EmployeeFinder
 			->from(Employee::class, 'e')
 			->select(sprintf('NEW %s(e.id, e.name, e.position)', EmployeeDTO::class));
 
+		// NEW Al\Application\EmployeeDTO(e.id, e.name, e.position)
+
 		return $queryBuilder->getQuery()->getResult();
 	}
 }
@@ -636,6 +853,9 @@ final class EmployeeFinder
 					</pre>
 				</section>
 
+				<section>
+					<h2>We can search and display Employee data!</h2>
+				</section>
 
 				<section>
 					<img src="images/code-me-hr/sumary.png">
@@ -643,7 +863,17 @@ final class EmployeeFinder
 
 				<section>
 					<h2>What is the best solution?</h2>
-					<p class="fragment">It depends!</p>
+					<p class="fragment">It depends on the project/team/context</p>
+				</section>
+
+				<section>
+					<h2><span class="php-color">Misreading of Doctrine</span> / <span class="akeneo-color">DDD</span> / <span class="sylius-color">CQRS</span></h2>
+					<p class="fragment">
+						<strong class="akeneo-color">D</strong>omain <strong class="sylius-color">D</strong>esign <strong class="sylius-color">D</strong>riven
+					</p>
+					<p class="fragment">
+						<strong class="akeneo-color">C</strong>ommand <strong class="sylius-color">Q</strong>uery <strong class="akeneo-color">R</strong>esponsibility <strong class="sylius-color">S</strong>egregation
+					</p>
 				</section>
 
 				<section>
