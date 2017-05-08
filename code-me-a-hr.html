@@ -113,13 +113,15 @@
 
 				<section>
 					<h2><strong class="akeneo-color">Model anemic</strong> versus <strong class="sylius-color">Rich model</strong></h2>
+					<aside class="notes">
+						les docs nous orientent vers l'utilisation
+					</aside>
 				</section>
 
 				<section>
 					<h2>Playground</h2>
 					<p class="fragment"><strong class="akeneo-color">Business:</strong> Human resources management</p>
 					<p class="fragment"><strong class="sylius-color">Technical:</strong> Symfony / Doctrine ORM</p>
-					<!--<p class="fragment"><strong>Estelle</strong> wants to have an employee database</p>-->
 				</section>
 
 				<section>
@@ -261,6 +263,9 @@ class EmployeeController extends Controller
 
 				<section>
 					<h2>How Estelle talks about her work?</h2>
+					<aside class="notes">
+						ce que je viens de raconter est technique, pas envie de tout le temps traduire
+					</aside>
 				</section>
 
 				<section>
@@ -458,10 +463,6 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 	public function remove(EmployeeInterface $employee)
 	{
 	}
-
-	public function all()
-	{
-	}
 }
 						</code>
 					</pre>
@@ -522,11 +523,6 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 		$this->entityManager->remove($employee);
 		$this->entityManager->flush();
 	}
-
-	public function all()
-	{
-		return $this->findBy([]);
-	}
 }
 						</code>
 					</pre>
@@ -540,7 +536,7 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 
 				<section>
 					<h2><strong class="php-color">Second problem:</strong> Form component</h2>
-					<p class="fragment"><strong class="akeneo-color">PropertyAccess</strong> is used to map data, it needs public properties or setter.</p>
+					<p class="fragment"><strong class="akeneo-color">PropertyAccessor</strong> is used to map data, it needs public properties or setter.</p>
 				</section>
 
 				<section>
@@ -604,29 +600,6 @@ class EmployeeController extends Controller
 {
 	public function hireAction(Request $request)
 	{
-	}
-
-	public function fireAction(Request $request)
-	{
-	}
-
-	public function retireAction(Request $request)
-	{
-	}
-}
-						</code>
-					</pre>
-				</section>
-
-				<section>
-					<pre>
-						<code class="php hljs" data-trim >
-namespace Al\Presenter\Controller;
-
-class EmployeeController extends Controller
-{
-	public function hireAction(Request $request)
-	{
 		$form = $this->createForm(EmployeeType::class, new HireEmployeeCommand());
 		$form->handleRequest($request);
 
@@ -663,35 +636,6 @@ class EmployeeController extends Controller
 					</blockquote>
 				</section>
 
-				<section>
-					<h2>Let’s create a command handler</h2>
-				</section>
-
-				<section>
-					<pre>
-						<code class="php hljs" data-trim >
-namespace Al\Application\Handler;
-
-final class HireEmployeeHandler
-{
-	/** @var EmployeeRepositoryInterface */
-    private $employeeRepository;
-
-    public function __construct(EmployeeRepositoryInterface $employeeRepository)
-    {
-        $this->employeeRepository = $employeeRepository;
-    }
-
-    public function handle(HireEmployee $command)
-    {
-        $employee = Employee::hire(Uuid::uuid4(), $command->getName(), $command->getPosition());
-
-        $this->employeeRepository->add($employee);
-    }
-}
-						</code>
-					</pre>
-				</section>
 
 				<section>
 					<h2>Let’s update our controller</h2>
@@ -731,37 +675,32 @@ class EmployeeController extends Controller
 					</pre>
 				</section>
 
+
 				<section>
-					<h2>Can we manage event differently? <strong class="php-color fragment">Yes!</strong></h2>
+					<h2>Let’s create a command handler</h2>
 				</section>
 
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-final class Employee implements EmployeeInterface, ContainsRecordedMessages
+namespace Al\Application\Handler;
+
+final class HireEmployeeHandler
 {
-	use PrivateMessageRecorderCapabilities;
+	/** @var EmployeeRepositoryInterface */
+    private $employeeRepository;
 
-	private function __construct(Uuid $identifier, string $name, string $forPosition, \DateTime $hiredAt)
-	{
-		// Method business code
+    public function __construct(EmployeeRepositoryInterface $employeeRepository)
+    {
+        $this->employeeRepository = $employeeRepository;
+    }
 
-		$this->record(new EmployeeHired($identifier->toString()));
-	}
+    public function handle(HireEmployee $command)
+    {
+        $employee = Employee::hire(Uuid::uuid4(), $command->getName(), $command->getPosition());
 
-	public function promote(string $toNewPosition, int $withNewSalaryScale)
-	{
-		// Method business code
-
-		$this->record(new EmployeePromoted($identifier->toString()));
-	}
-
-	public function fire(\DateTime $firedAt)
-	{
-		// Method business code
-
-		$this->record(new EmployeeFired($identifier->toString()));
-	}
+        $this->employeeRepository->add($employee);
+    }
 }
 						</code>
 					</pre>
@@ -792,6 +731,10 @@ final class Employee implements EmployeeInterface, ContainsRecordedMessages
 				</section>
 
 				<section>
+					<h2><strong class="php-color">Doctrine (>=2.4):</strong> Operator NEW </h2>
+				</section>
+
+				<section>
 					<pre>
 						<code class="php hljs" data-trim >
 namespace Al\Application;
@@ -814,14 +757,10 @@ final class EmployeeDTO
         $this->position = $position;
     }
 
-	// Define an accessor for each properties
+	// Define an accessor for each property
 }}
 						</code>
 					</pre>
-				</section>
-
-				<section>
-					<h2><strong class="php-color">Doctrine (>=2.4):</strong> Operator NEW </h2>
 				</section>
 
 				<section>
@@ -829,7 +768,7 @@ final class EmployeeDTO
 						<code class="php hljs" data-trim >
 namespace Al\Infrastructure;
 
-final class EmployeeFinder
+final class EmployeeSearcher
 {
     private $entityManager;
 
