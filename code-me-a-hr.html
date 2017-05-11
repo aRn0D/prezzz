@@ -114,7 +114,7 @@
 				<section>
 					<h2><strong class="akeneo-color">Model anemic</strong> versus <strong class="sylius-color">Rich model</strong></h2>
 					<aside class="notes">
-						les docs nous orientent vers l'utilisation
+						Objects combine data and logic while anemic models separate them
 					</aside>
 				</section>
 
@@ -220,9 +220,6 @@ class EmployeeController extends Controller
 }
 						</code>
 					</pre>
-					<aside class="notes">
-						TODO: What happen if i create a employee without validation?
-					</aside>
 				</section>
 				<section>
 					<pre>
@@ -236,7 +233,7 @@ class EmployeeController extends Controller
 		$form = $this->createForm(EmployeeType::class, new Employee());
 		$form->handleRequest($request);
 
-		// Data are validated and mapped to the model
+		// First, data are mapped to the model and it is validated thereafter.
 		if ($form->isSubmitted() && $form->isValid()) {
 			$em = $this->get('doctrine.orm.entity_manager');
 			$em->persist($form->getData());
@@ -253,12 +250,16 @@ class EmployeeController extends Controller
 						</code>
 					</pre>
 					<aside class="notes">
-						TODO: What happen if i create a employee without validation?
+						Object oriented means that: an object manages it’s state and gurantees that it is in a legal state at any time.
 					</aside>
 				</section>
 
 				<section>
 					<h2>That's it, it works!</h2>
+				</section>
+
+				<section>
+					<h2>Let's refactor our <strong class="php-color">anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -269,15 +270,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>So, what is an employee life cycle?</h2>
-				</section>
-
-				<section>
 					<img src="images/code-me-hr/employee.png">
-				</section>
-
-				<section>
-					<h2>Let's refactor our <strong class="php-color">anemic model</strong></h2>
 				</section>
 
 				<section>
@@ -429,7 +422,7 @@ final class Employee implements EmployeeInterface
 				</section>
 
 				<section>
-					<h2>What is a repository?</h2>
+					<h2>What is a <strong class="php-color">repository</strong>?</h2>
 					<blockquote class="fragment">
 						&laquo;A <strong class="sylius-color">repository</strong> behaves like a collection of unique entities without taking take about the storage&raquo;
 					</blockquote>
@@ -540,7 +533,7 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 				</section>
 
 				<section>
-					<h2><strong class="php-color">Command pattern</strong> to the rescue!</h2>
+					<h2><strong class="php-color">Command</strong> to the rescue!</h2>
 						<blockquote class="fragment">
 							&laquo; A <strong class="sylius-color">Command</strong> is an object that represents all the information needed to call a method.&raquo;
 						</blockquote>
@@ -626,7 +619,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>Now, Estelle import employees!</h2>
+					<h2>Now, Estelle want to import employees!</h2>
 				</section>
 
 				<section>
@@ -797,7 +790,11 @@ final class EmployeeSearcher
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/sumary.png">
+					<img src="images/code-me-hr/summary-1.png">
+				</section>
+
+				<section>
+					<img src="images/code-me-hr/summary-2.png">
 				</section>
 
                 <section>
@@ -812,7 +809,7 @@ final class EmployeeSearcher
 
 				<section>
 					<h2>What is the best solution?</h2>
-					<p class="fragment">It depends on the project/team/context</p>
+					<p class="fragment">It depends on what you want!</p>
 				</section>
 
 				<section>
