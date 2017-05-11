@@ -379,8 +379,8 @@ final class Employee implements EmployeeInterface
 {
 	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
 	{
-		if ($hiredAt < new \DateTime(2012-03-04)) { TODO: check that
-			throw new \OutOfRangeException('The company did not exist before 2012-03-04');
+		if ($hiredAt < new \DateTime('2013-01-01')) {
+			throw new \OutOfRangeException('The company did not exist before 2013-01-01');
 		}
 
 		$this->id = $identifier;
