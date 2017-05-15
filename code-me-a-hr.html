@@ -30,6 +30,10 @@
 		</script>
 
 		<style>
+			.reveal .slides > section {
+				padding: 0;
+			}
+
 			.reveal section img {
 				border: none;
 				box-shadow: none;
@@ -45,6 +49,13 @@
 
 			.reveal pre {
 				box-shadow: none;
+				margin: auto;
+			}
+
+			.reveal pre code {
+				font-size: 28px;
+				line-height: 30px;
+				max-height: none;
 			}
 
 			.reveal .social {
@@ -55,14 +66,6 @@
 				margin-top: 0;
 				margin-bottom: 0;
 				vertical-align: middle;
-			}
-
-			.align-left {
-				text-align: left;
-			}
-
-			.reveal pre code {
-				max-height: none;
 			}
 
 			.akeneo-color {
@@ -76,6 +79,7 @@
 			.php-color {
 				color: #6C7EB7;
 			}
+
 		</style>
 
 		<!--[if lt IE 9]>
@@ -95,24 +99,19 @@
 
 				<section>
 					<h1>Hi, I am <strong class="php-color">Arnaud!</strong></h1>
-					<p class="social margin-top">
-						<img src="images/common/github.png" height="80"> aRn0D <img src="images/common/twitter.png" height="80" class="margin-left"> _aRn0D
-					</p>
 
-				</section>
-
-				<section>
-					<p>
+					<p class="margin-top">
 						<img src="images/common/akeneo-large.png" height="140">
 						<img src="images/common/sylius-large.png" height="140" class="margin-left">
 					</p>
+
 				</section>
 
 				<section data-background="images/code-me-hr/estelle.png">
 				</section>
 
 				<section>
-					<h2><strong class="akeneo-color">Model anemic</strong> versus <strong class="sylius-color">Rich model</strong></h2>
+					<h2><strong class="akeneo-color">Anemic model</strong> versus <strong class="sylius-color">Model rich</strong></h2>
 					<aside class="notes">
 						Objects combine data and logic while anemic models separate them
 					</aside>
@@ -140,7 +139,7 @@
 						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface
+final class Employee
 {
 	/** @var Uuid */
 	private $id;
@@ -155,7 +154,7 @@ final class Employee implements EmployeeInterface
 	private $createdAt;
 
 	/** @var \DateTimeInterface */
-	private $deleteAt;
+	private $deletedAt;
 
 	// Getter and Setter
 }
@@ -254,8 +253,12 @@ class EmployeeController extends Controller
 					</aside>
 				</section>
 
+				<!--<section>-->
+					<!--<h2>That's it, it works!</h2>-->
+				<!--</section>-->
+
 				<section>
-					<h2>That's it, it works!</h2>
+					<img src="images/code-me-hr/summary-anemic.png">
 				</section>
 
 				<section>
@@ -280,7 +283,7 @@ namespace Al\Domain;
 
 final class Employee implements EmployeeInterface
 {
-	public function hire(Uuid $identifier, string $name, string $forPosition, \DateTime $joinCompanyAt)
+	public function hire(Uuid $identifier, string $name, string $forPosition)
 	{
 	}
 
@@ -288,11 +291,11 @@ final class Employee implements EmployeeInterface
 	{
 	}
 
-	public function fire(\DateTime $leftCompanyAt)
+	public function fire()
 	{
 	}
 
-	public function retire(\DateTime $leftCompanyAt)
+	public function retire()
 	{
 	}
 }
@@ -336,17 +339,15 @@ namespace Al\Domain;
 
 final class Employee implements EmployeeInterface
 {
-	// properties
-
-	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
+	private function __construct(Uuid $identifier, string $name, string $position)
 	{
 		$this->id = $identifier;
 		$this->name = $name;
 		$this->position = $position;
-		$this->hireAt = $hiredAt
+		$this->hireAt = new \DateTime();
 	}
 
-	public static function hire(Uuid $identifier, string $name, string $forPosition, \DateTime $hiredAt)
+	public static function hire(Uuid $identifier, string $name, string $forPosition)
 	{
 		return new self($identifier, $name, $forPosition, $hiredAt);
 	}
@@ -356,50 +357,51 @@ final class Employee implements EmployeeInterface
 		$this->position = $toNewPosition;
 	}
 
-	public function fire(\DateTime $leftCompanyAt)
+	public function fire()
 	{
-		$this->firedAt = $leftCompanyAt;
+		$this->firedAt = new \DateTime();
 	}
 
-	public function retire(\DateTime $leftCompanyAt)
+	public function retire()
 	{
-		$this->retiredAt = $leftCompanyAt;
+		$this->retiredAt = new \DateTime();
 	}
 }
 						</code>
 					</pre>
 				</section>
 
-				<section>
-					<pre>
-						<code class="php hljs" data-trim >
+				<section><pre><code class="php hljs">
 namespace Al\Domain;
 
 final class Employee implements EmployeeInterface
 {
-	private function __construct(Uuid $identifier, string $name, string $position, \DateTime $hiredAt)
+	private function __construct(Uuid $identifier, string $name, string $position)
 	{
 		if ($hiredAt < new \DateTime('2013-01-01')) {
-			throw new \OutOfRangeException('The company did not exist before 2013-01-01');
+			throw new \OutOfRangeException(
+				'The company did not exist before 2013-01-01'
+			);
 		}
 
 		$this->id = $identifier;
 		$this->name = $name;
 		$this->position = $position;
-		$this->hireAt = $hiredAt
+		$this->hireAt = new \DateTime();
 	}
 
 	public function retire(\DateTime $leftCompanyAt)
 	{
 		if (null !== $this->fired) {
-			throw new \Exception(sprint('%s employee has been fired!', $this->name));
+			throw new \Exception(
+				sprint('%s employee has been fired!', $this->name)
+			);
 		}
 
 		$this->retiredAt = $leftCompanyAt;
 	}
 }
-						</code>
-					</pre>
+						</code></pre>
 				</section>
 
 				<section>
@@ -413,7 +415,10 @@ final class Employee implements EmployeeInterface
 							<code class="php hljs" data-trim >
 								interface EmployeeRepository
 								{
-									public function findByNameAndPositionWithoutFiredPeople(string $name, string $position);
+									public function findByNameAndPositionWithoutFiredPeople(
+										string $name,
+										string $position
+									);
 								}
 							</code>
 						</pre>
@@ -424,7 +429,7 @@ final class Employee implements EmployeeInterface
 				<section>
 					<h2>What is a <strong class="php-color">repository</strong>?</h2>
 					<blockquote class="fragment">
-						&laquo;A <strong class="sylius-color">repository</strong> behaves like a collection of unique entities without taking take about the storage&raquo;
+						&laquo;A <strong class="sylius-color">repository</strong> behaves like a collection of unique entities without taking care about the storage&raquo;
 					</blockquote>
 					<aside class="notes">
 						<p>
@@ -494,11 +499,14 @@ namespace Al\Infrastructure;
 
 final class EmployeeRepository implements EmployeeRepositoryInterface
 {
-	// Constructor
-
 	public function get(Uuid $identifier)
 	{
-		if (null === $employee = $this->entityManager->find(Employee::class, $identifier->toString())) {
+		$employee = $this->entityManager->find(
+			Employee::class,
+			$identifier->toString()
+		);
+
+		if (null === $employee) {
 			throw new NonExistingEmployee($identifier->toString());
 		}
 
@@ -508,13 +516,13 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 	public function add(EmployeeInterface $employee)
 	{
 		$this->entityManager->persist($employee);
-		$this->entityManager->flush();
+		$this->entityManager->flush($employee);
 	}
 
 	public function remove(EmployeeInterface $employee)
 	{
 		$this->entityManager->remove($employee);
-		$this->entityManager->flush();
+		$this->entityManager->flush($employee);
 	}
 }
 						</code>
@@ -551,30 +559,10 @@ namespace Al\Application;
 final class HireEmployeeCommand
 {
 	/** @var string */
-	private $name = '';
+	public $name = '';
 
 	/** @var string */
-	private $position = '';
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function getPosition(): string
-    {
-        return $this->position;
-    }
-
-    public function setPosition(string $position)
-    {
-        $this->position = $position;
-    }
+	public $position = '';
 }
 						</code>
 					</pre>
@@ -597,9 +585,14 @@ class EmployeeController extends Controller
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$employee = $form->getData();
+			$employeeCommand = $form->getData();
 
-			$employee = Employee::hire(Uuid::uuid4(), $employee->getName(), $employee->getPosition());
+			$employee = Employee::hire(
+				Uuid::uuid4(),
+				$employeeCommand->getName(),
+				$employeeCommand->getPosition()
+			);
+
 			$this->get('employee.repository')->add($employee);
 
 			return $this->redirectToRoute('employee_list');
@@ -615,7 +608,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<h2>That's it, it works!</h2>
+					<img src="images/code-me-hr/summary-command.png">
 				</section>
 
 				<section>
@@ -653,7 +646,7 @@ class EmployeeController extends Controller
             try {
                 $this->get('command_bus')->handle($employeeCommand);
             } catch (\Exception $e) {
-                $this->addFlash('error', 'An error occurs, please contact an administrator');
+                $this->addFlash('error', 'An error occurs!');
             }
 
 			return $this->redirectToRoute('employee_list');
@@ -690,7 +683,11 @@ final class HireEmployeeHandler
 
     public function handle(HireEmployee $command)
     {
-        $employee = Employee::hire(Uuid::uuid4(), $command->getName(), $command->getPosition());
+        $employee = Employee::hire(
+			Uuid::uuid4(),
+			$command->getName(),
+			$command->getPosition()
+		);
 
         $this->employeeRepository->add($employee);
     }
@@ -700,7 +697,7 @@ final class HireEmployeeHandler
 				</section>
 
 				<section>
-					<h2>That’s better, our model reflects our business!</h2>
+					<img src="images/code-me-hr/summary-bus.png">
 				</section>
 
 				<section>
@@ -774,7 +771,9 @@ final class EmployeeSearcher
     {
 		$queryBuilder = $this->entityManager->createQueryBuilder()
 			->from(Employee::class, 'e')
-			->select(sprintf('NEW %s(e.id, e.name, e.position)', EmployeeDTO::class));
+			->select(
+				sprintf('NEW %s(e.id, e.name, e.position)', EmployeeDTO::class)
+			);
 
 		// NEW Al\Application\EmployeeDTO(e.id, e.name, e.position)
 
@@ -790,18 +789,14 @@ final class EmployeeSearcher
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/summary-1.png">
-				</section>
-
-				<section>
-					<img src="images/code-me-hr/summary-2.png">
+					<img src="images/code-me-hr/summary-rich-model.png">
 				</section>
 
                 <section>
                     <h2><span class="php-color">Misreading of Doctrine</span> / <span class="akeneo-color">DDD</span> / <span class="sylius-color">CQRS</span></h2>
                     <p class="fragment">
-                        <strong class="akeneo-color">D</strong>omain <strong class="sylius-color">D</strong>esign <strong class="sylius-color">D</strong>riven
-                    </p>
+                        <strong class="akeneo-color">D</strong>omain <strong class="sylius-color">D</strong>riven <strong class="sylius-color">D</strong>esign
+					</p>
                     <p class="fragment">
                         <strong class="akeneo-color">C</strong>ommand <strong class="sylius-color">Q</strong>uery <strong class="akeneo-color">R</strong>esponsibility <strong class="sylius-color">S</strong>egregation
                     </p>
@@ -817,8 +812,14 @@ final class EmployeeSearcher
 				</section>
 
 				<section>
-					<h2>Thank you!</h2>
-					<img src="images/code-me-hr/conclusion.png">
+					<h2>Thank you! Questions?</h2>
+
+					<img src="images/code-me-hr/conclusion.png" height="400">
+
+					<p class="social">
+						<img src="images/common/github.png" height="80"> aRn0D <img src="images/common/twitter.png" height="80" class="margin-left"> _aRn0D
+					</p>
+
 				</section>
 			</div>
 		</div>
