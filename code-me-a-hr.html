@@ -50,11 +50,12 @@
 			.reveal pre {
 				box-shadow: none;
 				margin: auto;
+				width: 100%;
 			}
 
 			.reveal pre code {
-				font-size: 28px;
-				line-height: 30px;
+				font-size: 30px;
+				line-height: 32px;
 				max-height: none;
 			}
 
@@ -95,6 +96,7 @@
 			<div class="slides">
 				<section>
 					<h1>Code me a HR!</h1>
+					<img src="images/code-me-hr/title.jpg">
 				</section>
 
 				<section>
@@ -253,12 +255,16 @@ class EmployeeController extends Controller
 					</aside>
 				</section>
 
-				<!--<section>-->
-					<!--<h2>That's it, it works!</h2>-->
-				<!--</section>-->
-
 				<section>
-					<img src="images/code-me-hr/summary-anemic.png">
+					<img src="images/code-me-hr/summary-anemic.png" height="900">
+					<aside class="notes">
+						<li>
+							<ul>Pas SRP</ul>
+							<ul>Validation</ul>
+							<ul>Manager</ul>
+							<ul>Trop technique</ul>
+						</li>
+					</aside>
 				</section>
 
 				<section>
@@ -273,7 +279,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/employee.png">
+					<img src="images/code-me-hr/employee.png" height="900">
 				</section>
 
 				<section>
@@ -371,7 +377,9 @@ final class Employee implements EmployeeInterface
 					</pre>
 				</section>
 
-				<section><pre><code class="php hljs">
+				<section>
+					<pre>
+						<code class="php hljs " data-trim>
 namespace Al\Domain;
 
 final class Employee implements EmployeeInterface
@@ -390,7 +398,7 @@ final class Employee implements EmployeeInterface
 		$this->hireAt = new \DateTime();
 	}
 
-	public function retire(\DateTime $leftCompanyAt)
+	public function retire()
 	{
 		if (null !== $this->fired) {
 			throw new \Exception(
@@ -398,7 +406,7 @@ final class Employee implements EmployeeInterface
 			);
 		}
 
-		$this->retiredAt = $leftCompanyAt;
+		$this->retiredAt = new \DateTime();
 	}
 }
 						</code></pre>
@@ -608,7 +616,7 @@ class EmployeeController extends Controller
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/summary-command.png">
+					<img src="images/code-me-hr/summary-command.png" height="900">
 				</section>
 
 				<section>
@@ -697,7 +705,7 @@ final class HireEmployeeHandler
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/summary-bus.png">
+					<img src="images/code-me-hr/summary-bus.png" height="900">
 				</section>
 
 				<section>
@@ -789,7 +797,7 @@ final class EmployeeSearcher
 				</section>
 
 				<section>
-					<img src="images/code-me-hr/summary-rich-model.png">
+					<img src="images/code-me-hr/summary-rich-model.png"  height="900">
 				</section>
 
                 <section>
@@ -832,7 +840,7 @@ final class EmployeeSearcher
 			// More info https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
                 width: 1600,
-                height: 1000,
+                height: 1100,
                 controls: true,
                 progress: true,
                 history: true,
