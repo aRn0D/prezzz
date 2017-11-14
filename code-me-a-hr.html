@@ -171,7 +171,7 @@ final class Employee
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-namespace Al\Presenter\Form;
+namespace Al\Infrastructure\UserInterface\Web\Form;
 
 final class EmployeeType extends AbstractType
 {
@@ -195,7 +195,7 @@ final class EmployeeType extends AbstractType
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-namespace Al\Presenter\Controller;
+namespace Al\Infrastructure\UserInterface\Web\Controller;
 
 class EmployeeController extends Controller
 {
@@ -225,7 +225,7 @@ class EmployeeController extends Controller
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-namespace Al\Presenter\Controller;
+namespace Al\Infrastructure\UserInterface\Web\Controller;
 
 class EmployeeController extends Controller
 {
@@ -287,7 +287,7 @@ class EmployeeController extends Controller
 						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface
+final class Employee
 {
 	public function hire(Uuid $identifier, string $name, string $forPosition)
 	{
@@ -314,7 +314,7 @@ final class Employee implements EmployeeInterface
 						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface
+final class Employee
 {
 	/** @var Uuid */
 	private $id;
@@ -343,7 +343,7 @@ final class Employee implements EmployeeInterface
 						<code class="php hljs" data-trim >
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface
+final class Employee
 {
 	private function __construct(Uuid $identifier, string $name, string $position)
 	{
@@ -382,7 +382,7 @@ final class Employee implements EmployeeInterface
 						<code class="php hljs " data-trim>
 namespace Al\Domain;
 
-final class Employee implements EmployeeInterface
+final class Employee
 {
 	private function __construct(Uuid $identifier, string $name, string $position)
 	{
@@ -462,11 +462,11 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 	{
 	}
 
-	public function add(EmployeeInterface $employee)
+	public function add(Employee $employee)
 	{
 	}
 
-	public function remove(EmployeeInterface $employee)
+	public function remove(Employee $employee)
 	{
 	}
 }
@@ -521,13 +521,13 @@ final class EmployeeRepository implements EmployeeRepositoryInterface
 		return $employee;
 	}
 
-	public function add(EmployeeInterface $employee)
+	public function add(Employee $employee)
 	{
 		$this->entityManager->persist($employee);
 		$this->entityManager->flush($employee);
 	}
 
-	public function remove(EmployeeInterface $employee)
+	public function remove(Employee $employee)
 	{
 		$this->entityManager->remove($employee);
 		$this->entityManager->flush($employee);
@@ -583,7 +583,7 @@ final class HireEmployeeCommand
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-namespace Al\Presenter\Controller;
+namespace Al\Infrastructure\UserInterface\Web\Controller;
 
 class EmployeeController extends Controller
 {
@@ -639,7 +639,7 @@ class EmployeeController extends Controller
 				<section>
 					<pre>
 						<code class="php hljs" data-trim >
-namespace Al\Presenter\Controller;
+namespace Al\Infrastructure\UserInterface\Web\Controller;
 
 class EmployeeController extends Controller
 {
@@ -756,7 +756,7 @@ final class EmployeeDTO
     }
 
 	// Define an accessor for each property
-}}
+}
 						</code>
 					</pre>
 				</section>
@@ -766,7 +766,7 @@ final class EmployeeDTO
 						<code class="php hljs" data-trim >
 namespace Al\Infrastructure;
 
-final class EmployeeSearcher
+final class SearchEmployeeQuery implement SearchEmployeeQueryInterface
 {
     private $entityManager;
 
@@ -817,9 +817,9 @@ final class EmployeeSearcher
 
 				<section>
 					<h2>That's the end!</h2>
-					<p>
-						https://joind.in/talk/6c974
-					</p>
+					<!--<p>-->
+						<!--https://joind.in/talk/6c974-->
+					<!--</p>-->
 				</section>
 
 				<section>
@@ -830,9 +830,9 @@ final class EmployeeSearcher
 					<p class="social">
 						<img src="images/common/github.png" height="80"> aRn0D <img src="images/common/twitter.png" height="80" class="margin-left"> _aRn0D
 					</p>
-					<p>
-						https://joind.in/talk/6c974
-					</p>
+					<!--<p>-->
+						<!--https://joind.in/talk/6c974-->
+					<!--</p>-->
 				</section>
 			</div>
 		</div>
