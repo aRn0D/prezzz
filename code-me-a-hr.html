@@ -830,10 +830,10 @@ final class ListEmployeeQuery implement SearchEmployeeQueryInterface
 		$queryBuilder = $this->entityManager->createQueryBuilder()
 			->from(Employee::class, 'e')
 			->select(
-				sprintf('NEW %s(e.id, e.name, e.position)', EmployeeDTO::class)
+				sprintf('NEW %s(e.id, e.name, e.position)', Employee::class)
 			);
 
-		// NEW Al\Application\EmployeeDTO(e.id, e.name, e.position)
+		// NEW Al\Domain\ReadModel\Employee(e.id, e.name, e.position)
 
 		return $queryBuilder->getQuery()->getResult();
 	}
