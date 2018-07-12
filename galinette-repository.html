@@ -81,6 +81,10 @@
 				color: #6C7EB7;
 			}
 
+			.reveal p.social {
+				margin: 100px 0;
+			}
+
 		</style>
 
 		<!--[if lt IE 9]>
@@ -97,6 +101,7 @@
 				<section>
 					<h2><span class="akeneo-color">bad</span> or <span class="sylius-color">good</span> repository?</h2>
 				</section>
+
 				<section>
 					<h1>Hi, I am <strong class="php-color">Arnaud!</strong></h1>
 
@@ -105,21 +110,33 @@
 						<img src="images/common/sylius-large.png" height="140" class="margin-left">
 					</p>
 				</section>
-				<section>
-					<h2>We will talk about <span class="sylius-color">Galinette</span>!</h2>
-					<img src="images/common/sylius-large.png">
-				</section>
-				<section>
+
+                <section>
+                    <h2>What is a <strong class="php-color">repository</strong>?</h2>
+                    <blockquote class="fragment">
+                        &laquo;A <strong class="sylius-color">repository</strong> behaves like a in memory collection of unique entities without taking care about the storage&raquo;
+                    </blockquote>
+                </section>
+
+                <section>
 					<h2>Let's modelize a <span class="sylius-color">Galinette</span>!</h2>
-					<img src="images/common/sylius-large.png">
+					<img src="images/repository-galinette/dede.png">
+					<p><strong class="sylius-color">Dédé, Business Expert</strong> <span class="akeneo-color">@BouchonnoisCorp</span></p>
 				</section>
-				<section>
+
+                <section>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Domain;
 
 							final class Galinette
 							{
+								private $identifier;
+								private $birthday;
+								private $name;
+								private $gender;
+								private $diedAt;
+
 								public static function born(
 									Identifier $identifier,
 									Birthday $birthday,
@@ -139,7 +156,7 @@
 				</section>
 
 				<section>
-					<h2><h2>What is a bad <strong class="php-color">repository</strong> ?</h2></h2>
+					<h2><h2>The bad <strong class="php-color">repository</strong></h2></h2>
 				</section>
 
 				<section>
@@ -155,52 +172,37 @@
 
 								public function findGalinetteForARelease(): Galinette[];
 
-								public function findGalinetteIdentifierForARelease(): string[];
+								public function findGalinetteIdentifierForAReleaseAsString(): string[];
 							}
 						</code>
 					</pre>
 				</section>
 				<section>
-					<h2>These are not <span class="akeneo-color">repositories</span>!</h2>
-					<p class="fragment">They are more SQL query repositories</p>
+					<h2>These are not <span class="php-color">repositories</span>!</h2>
+					<p class="fragment">They are more <strong class="sylius-color">SQL query</strong> repositories</p>
 				</section>
+
+
 				<section>
-					<h2>So... What is a <strong class="php-color">repository</strong>?</h2>
-					<blockquote class="fragment">
-						&laquo;A <strong class="sylius-color">repository</strong> behaves like a in memory collection of unique entities without taking care about the storage&raquo;
-					</blockquote>
+					<h2>The good <strong class="php-color">repository</strong></h2>
+					<p class="fragment">Let's use <strong class="sylius-color">doctrine</strong> to design it</p>
 				</section>
 
 				<section>
-					<h2>What does a <span class="akeneo-color">doctrine repository</span> look like?</h2>
-				</section>
-
-				<section>
+					<h2>Public <strong class="php-color">API</strong></h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
 
-							final class GalinetteRepository implements GalinetteRepository
+							interface GalinetteRepository
 							{
-								public function get(Domain\Identifier $identifier): Domain\Galinette
-								{
-									// ...
-								}
+								public function get(Domain\Identifier $identifier): Domain\Galinette;
 
-								public function add(Domain\Galinette $galinette): void
-								{
-									// ...
-								}
+								public function add(Domain\Galinette $galinette): void;
 
-								public function remove(Domain\Identifier $identifier): void
-								{
-									// ...
-								}
+								public function remove(Domain\Identifier $identifier): void;
 
-								public function nextIdentity(): Domain\Identifier
-								{
-									// ...
-								}
+								public function nextIdentity(): Domain\Identifier;
 							}
 
 						</code>
@@ -208,7 +210,7 @@
 				</section>
 
 				<section>
-					<h2>Repository <span class="akeneo-color">dependencies</span></h2>
+					<h2>Repository <span class="php-color">dependencies</span></h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
@@ -229,7 +231,7 @@
 				</section>
 
 				<section>
-					<h2><span class="akeneo-color">Add</span> a galinette</h2>
+					<h2><span class="php-color">Add</span> a galinette</h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
@@ -255,7 +257,7 @@
 				</section>
 
 				<section>
-					<h2><span class="akeneo-color">Remove</span> a galinette</h2>
+					<h2><span class="php-color">Remove</span> a galinette</h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
@@ -286,7 +288,7 @@
 				</section>
 
 				<section>
-					<h2><span class="akeneo-color">Retrieve</span> a galinette</h2>
+					<h2><span class="php-color">Retrieve</span> a galinette</h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
@@ -315,7 +317,7 @@
 				</section>
 
 				<section>
-					<h2>Get the <span class="akeneo-color">next identity</span></h2>
+					<h2>Get the <span class="php-color">next identity</span></h2>
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
@@ -334,9 +336,9 @@
 				</section>
 
 				<section>
-					<h2>How to manage my <span class="akeneo-color">SQL queries</span>?</h2>
+					<h2>How to manage my <span class="php-color">SQL queries</span>?</h2>
 					<p class="fragment">
-						<span class="sylius-color"><strong>Query function:</strong></span> A class with a single method
+						<strong class="sylius-color"><strong>Query function:</strong></strong> A class with a single method
 					</p>
 				</section>
 
