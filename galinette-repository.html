@@ -109,19 +109,25 @@
 						<img src="images/common/akeneo-large.png" height="140">
 						<img src="images/common/sylius-large.png" height="140" class="margin-left">
 					</p>
+					<aside class="notes">
+					My name is Arnaud Langlade and I am a developer. I work for <a href="https://www.akeneo.com/">Akeneo</a>: a french company which makes a Product Information Management. I was member of the <a href="https://www.sylius.com/">Sylius</a>  core team few years ago.
+					</aside>
 				</section>
 
                 <section>
                     <h2>What is a <strong class="php-color">repository</strong>?</h2>
                     <blockquote class="fragment">
-                        &laquo;A <strong class="sylius-color">repository</strong> behaves like a in memory collection of unique entities without taking care about the storage&raquo;
+                        &laquo;A <strong class="sylius-color">repository</strong> behaves like a in memory collection of unique domain object without taking care about the storage&raquo;
                     </blockquote>
                 </section>
 
                 <section>
-					<h2>Let's modelize a <span class="sylius-color">Galinette</span>!</h2>
+					<h2>Let's model a <span class="sylius-color">Galinette</span>!</h2>
 					<img src="images/repository-galinette/dede.png">
 					<p><strong class="sylius-color">Dédé, Business Expert</strong> <span class="akeneo-color">@BouchonnoisCorp</span></p>
+					<aside class="notes">
+						First, we need a domain object: a galinette! Before coding, we need to ask information to our business expert Dédé (seasoned hunter) about the Galienette cendrée. We asked a simple question to him: what is a galinette? He answered that a galinette is a bird that borns someday and then it meets a good hunter. Then he laughed and he have a drink....
+					</aside>
 				</section>
 
                 <section>
@@ -135,7 +141,9 @@
 								private $birthday;
 								private $name;
 								private $gender;
-								private $diedAt;
+								private $goToHeavenAt;
+
+								// constructor ...
 
 								public static function born(
 									Identifier $identifier,
@@ -146,13 +154,16 @@
 									return new self($identifier, $birthday, $name, $gender);
 								}
 
-								public function die(): void
+								public function goToHeaven(): void
 								{
-									$this->diedAt = new \DateTimeImmutable('NOW');
+									$this->goToHeavenAt = new \DateTimeImmutable('NOW');
 								}
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						Dédé did not want reveal all his secret about the galinette but he said us enough information to design a domain object. This object have a named construct called "born". A named constructor is a static method used to build a object instead of using the default constructor. We don't used it because we don't create or build a galinette it borns, this name is related to the business we want to design. The last information given by Dédé is that a galinette go to the heaven someday and we need to store when it happens.
+					</aside>
 				</section>
 
 				<section>
@@ -176,10 +187,16 @@
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						Lot of applications have repositories which looks like this one. To be honest, I wrote a lot of repositories like this one. This repository have several methods that returns either a Domain object (Galinette) or scalar or array
+					</aside>
 				</section>
 				<section>
 					<h2>These are not <span class="php-color">repositories</span>!</h2>
 					<p class="fragment">They are more <strong class="sylius-color">SQL query</strong> repositories</p>
+					<aside class="notes">
+						We use repository like a collection of SQL queries, we just use them to get get information. It does not match the definition you gave previously. It does not ack like a domain object collection because we cannot add anything to it.
+					</aside>
 				</section>
 
 
@@ -192,7 +209,7 @@
 					<h2>Public <strong class="php-color">API</strong></h2>
 					<pre>
 						<code class="php hljs" data-trim >
-							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
+							namespace BouchonnoisCorp\Domain;
 
 							interface GalinetteRepository
 							{
@@ -207,6 +224,9 @@
 
 						</code>
 					</pre>
+					<aside class="notes">
+						A repository looks like a collection so we need a method to a add a domain object (Galinette) to the repository. Then with a the get we can access to the object we added to it. the method remove allow to delete a object with its identifier. The last method nextIdentifier generates a domain object identifier. It is useful to use uuid to avoid coupling between the database and our application. A uuid is made with the current time and a mac address, this is something to infrastructure layer. That is why the repository generates it!
+					</aside>
 				</section>
 
 				<section>
@@ -214,6 +234,8 @@
 					<pre>
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
+
+							use BouchonnoisCorp\Domain\GalinetteRepository;
 
 							final class GalinetteRepository implements GalinetteRepository
 							{
@@ -228,6 +250,9 @@
 							}
 						</code>
 					</pre>
+                    <aside class="notes">
+                        The repository does not need anymore to extends the Doctrine EntityRepository but it only need to depend the Doctrine EntityManager. The repository belongs the infrastructure layer but it implements an interface define in the domain layer.
+                    </aside>
 				</section>
 
 				<section>
@@ -254,6 +279,41 @@
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						First, we need to able to add a domain object (Galinette) the repository. This method ask to the entity manager to persist this object. That means that the entity manager will track all changes apply to this object. When we will call the flush method they will record in the database. Be careful, some exception might be thrown by the entity manager! We have to catch them and throw a LogicException to respect the contract define by GalinetteRepository.
+					</aside>
+				</section>
+
+				<section>
+					<h2><span class="php-color">Retrieve</span> a galinette</h2>
+					<pre>
+						<code class="php hljs" data-trim >
+							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
+
+							final class GalinetteRepository implements GalinetteRepository
+							{
+								// ...
+
+								public function get(Domain\Identifier $identifier): Domain\Galinette
+								{
+									$employee = $this->entityManager->find(Domain\Galinette::class, $identifier)
+									if (null === $employee) {
+										throw new Exception\UnknownGalinette(
+											(string) $identifier,
+											Domain\Galinette::class
+										);
+									}
+
+									return $employee;
+								}
+
+								// ...
+							}
+						</code>
+					</pre>
+					<aside class="notes">
+						Then, we may need to get the Galinette we previously added to the repository. the entity manager is able to get data from the database and map them to an object thank to an domain object identifier and its FQCN.
+					</aside>
 				</section>
 
 				<section>
@@ -285,35 +345,9 @@
 							}
 						</code>
 					</pre>
-				</section>
-
-				<section>
-					<h2><span class="php-color">Retrieve</span> a galinette</h2>
-					<pre>
-						<code class="php hljs" data-trim >
-							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine;
-
-							final class GalinetteRepository implements GalinetteRepository
-							{
-								// ...
-
-								public function get(Domain\Identifier $identifier): Domain\Galinette
-								{
-									$employee = $this->entityManager->find(Domain\Galinette::class, $identifier)
-									if (null === $employee) {
-										throw new Exception\UnknownGalinette(
-											(string) $identifier,
-											Domain\Galinette::class
-										);
-									}
-
-									return $employee;
-								}
-
-								// ...
-							}
-						</code>
-					</pre>
+					<aside class="notes">
+						T
+					</aside>
 				</section>
 
 				<section>
@@ -338,7 +372,7 @@
 				<section>
 					<h2>How to manage my <span class="php-color">SQL queries</span>?</h2>
 					<p class="fragment">
-						<strong class="sylius-color"><strong>Query function:</strong></strong> A class with a single method
+						With a <strong class="sylius-color"><strong>query function</strong></strong>: a class which represents a SQL query.
 					</p>
 				</section>
 
@@ -356,7 +390,7 @@
 									$this->entityManager = $entityManager;
 								}
 
-								public function findGalinette(): array
+								public function findGalinettes(): array
 								{
 									$select = sprintf(
 										'NEW %s(g.identifier, g.name, g.birthday)',
@@ -377,9 +411,9 @@
 				</section>
 
 				<section>
-					<h2>What is a <span class="akeneo-color">Read model</span>?</h2>
+					<h2>What is a <strong class="akeneo-color">Read model</strong>?</h2>
 					<blockquote class="fragment">
-						&laquo;A <strong class="sylius-color">read model</strong> Todo&raquo;
+						&laquo;A <strong class="sylius-color">read model</strong> is a immutable model specialized for reads.&raquo;
 					</blockquote>
 				</section>
 
@@ -417,6 +451,14 @@
 					</pre>
 				</section>
 
+				<section>
+					<h2>Code example is <strong class="php-color">available</strong> on Github!</h2>
+					<p>
+						<a href="https://github.com/arnolanglade/galinette-repository">
+							https://github.com/arnolanglade/galinette-repository
+						</a>
+					</p>
+				</section>
 
 				<section>
 					<h2>Thank you! Questions?</h2>
