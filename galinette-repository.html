@@ -213,15 +213,26 @@
 
 							interface GalinetteRepository
 							{
-								public function get(Domain\Identifier $identifier): Domain\Galinette;
-
+								/**
+								 * @throws \LogicException
+								 */
 								public function add(Domain\Galinette $galinette): void;
 
+								/**
+								 * @throws UnknownGalinette | \LogicException
+								 */
+								public function get(Domain\Identifier $identifier): Domain\Galinette;
+
+								/**
+								 * @throws \LogicException
+								 */
 								public function remove(Domain\Identifier $identifier): void;
 
+								/**
+								 * @throws \LogicException
+								 */
 								public function nextIdentity(): Domain\Identifier;
 							}
-
 						</code>
 					</pre>
 					<aside class="notes">
@@ -296,15 +307,20 @@
 
 								public function get(Domain\Identifier $identifier): Domain\Galinette
 								{
-									$employee = $this->entityManager->find(Domain\Galinette::class, $identifier)
-									if (null === $employee) {
-										throw new Exception\UnknownGalinette(
-											(string) $identifier,
-											Domain\Galinette::class
-										);
-									}
+									try {
+										$galinette = $this->entityManager->find(Galinette::class, $identifier);
+									} catch (ORMInvalidArgumentException | ORMException $e) {
+										throw new \LogicException('It is not possible to add this galinette');
+									} finally {
+										if (null === $galinette) {
+											throw new Exception\UnknownGalinette(
+												(string) $identifier,
+												Galinette::class
+											);
+										}
 
-									return $employee;
+										return $galinette;
+									}
 								}
 
 								// ...
@@ -362,7 +378,11 @@
 
 								public function nextIdentity(): Domain\Identifier
 								{
-									return new Domain\Identifier(Uuid::uuid4()->toString());
+							        try {
+										return new Domain\Identifier(Uuid::uuid4()->toString());
+									} catch (\InvalidArgumentException $e) {
+										throw new \LogicException('It is not possible to build the next identity');
+									}
 								}
 							}
 						</code>
