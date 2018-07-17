@@ -110,7 +110,15 @@
 						<img src="images/common/sylius-large.png" height="140" class="margin-left">
 					</p>
 					<aside class="notes">
-					My name is Arnaud Langlade and I am a developer. I work for <a href="https://www.akeneo.com/">Akeneo</a>: a french company which makes a Product Information Management. I was member of the <a href="https://www.sylius.com/">Sylius</a>  core team few years ago.
+					My name is Arnaud Langlade and I am a developer. I work for <a href="https://www.akeneo.com/">Akeneo</a>: a french company which develops a Product Information Management. I was core team member of <a href="https://www.sylius.com/">Sylius</a> few years ago. This is a open source e-commerce framework.
+					</aside>
+				</section>
+
+				<section>
+					<h2><strong class="sylius-color">Bouchonnois Corp</strong></h2>
+					<img src="images/repository-galinette/bouchonnoiscorp.png">
+					<aside class="notes">
+						We won't talk about that today but we will speak about Bouchonnois Corp which is a french corporation of hunters. It owns lot of applications, one of them is used to register their galinettes farming. We will focus on a small part of one of this application to speak about the pattern repository.
 					</aside>
 				</section>
 
@@ -126,7 +134,7 @@
 					<img src="images/repository-galinette/dede.png">
 					<p><strong class="sylius-color">Dédé, Business Expert</strong> <span class="akeneo-color">@BouchonnoisCorp</span></p>
 					<aside class="notes">
-						First, we need a domain object: a galinette! Before coding, we need to ask information to our business expert Dédé (seasoned hunter) about the Galienette cendrée. We asked a simple question to him: what is a galinette? He answered that a galinette is a bird that borns someday and then it meets a good hunter. Then he laughed and he have a drink....
+						First, we need a domain object: a galinette! Before coding we need to ask information for our business expert Dédé (seasoned hunter). He said us that a galinette is a bird that borns someday and then it meets a good hunter. Then he laughed and he wanted to have a break.
 					</aside>
 				</section>
 
@@ -162,7 +170,7 @@
 						</code>
 					</pre>
 					<aside class="notes">
-						Dédé did not want reveal all his secret about the galinette but he said us enough information to design a domain object. This object have a named construct called "born". A named constructor is a static method used to build a object instead of using the default constructor. We don't used it because we don't create or build a galinette it borns, this name is related to the business we want to design. The last information given by Dédé is that a galinette go to the heaven someday and we need to store when it happens.
+						Dédé is not stupid he did not want reveal all his secrets about the galinette but he said us enough information to design a domain object. Let's keep it simple for this talk! This object has a named construct called "born". A named constructor is a static method used to build a object. We don't use the default constructor because it does not bring any information about our business. Dédé did not say that we create a galinette but he said that a galinette borns. The last information given by Dédé is that a galinette go to the heaven someday. The other method goToHeaven is quite simple we only store the date when the galinette dies.
 					</aside>
 				</section>
 
@@ -188,14 +196,14 @@
 						</code>
 					</pre>
 					<aside class="notes">
-						Lot of applications have repositories which looks like this one. To be honest, I wrote a lot of repositories like this one. This repository have several methods that returns either a Domain object (Galinette) or scalar or array
+						Lot of applications have repositories which looks like this one. To be honest, I wrote a lot of repositories like this one. This repository have several methods that returns either a Domain object (Galinette) or scalar or array.
 					</aside>
 				</section>
 				<section>
 					<h2>These are not <span class="php-color">repositories</span>!</h2>
 					<p class="fragment">They are more <strong class="sylius-color">SQL query</strong> repositories</p>
 					<aside class="notes">
-						We use repository like a collection of SQL queries, we just use them to get get information. It does not match the definition you gave previously. It does not ack like a domain object collection because we cannot add anything to it.
+						We use our repositories like a collection of SQL queries, we just use them to get get information. It does not match the definition you gave previously. It does not ack like a domain object collection because we cannot add anything to it.
 					</aside>
 				</section>
 
@@ -328,7 +336,7 @@
 						</code>
 					</pre>
 					<aside class="notes">
-						Then, we may need to get the Galinette we previously added to the repository. the entity manager is able to get data from the database and map them to an object thank to an domain object identifier and its FQCN.
+						Then, we may need to get the Galinette object to apply business action. The entity manager is able to get data from the database and map them to an object thank to an domain object identifier and its FQCN. For that, we need to define the doctrine mapping that will tell to doctrine which database field matches the object property.
 					</aside>
 				</section>
 
@@ -362,7 +370,7 @@
 						</code>
 					</pre>
 					<aside class="notes">
-						T
+						The object deletion works pretty the same than the addition except we will use the method remove instead persist. This method asks to doctrine to remove all data related to this object in database when the method flush will be called.
 					</aside>
 				</section>
 
@@ -387,13 +395,24 @@
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						The value object Identifier belongs to the galinette aggregate and represents a galinette identifier (it is a part of the domain layer.). This method will simply build a galinette identifier, it will be use when we will register galinette birth.
+					</aside>
 				</section>
 
 				<section>
 					<h2>How to manage my <span class="php-color">SQL queries</span>?</h2>
-					<p class="fragment">
-						With a <strong class="sylius-color"><strong>query function</strong></strong>: a class which represents a SQL query.
-					</p>
+					<img src="images/repository-galinette/dede-broucouille.png">
+					<aside class="notes">
+						Even a good hunter can fail! When it happens, the hunters organize a release of galinette. The hunters need to easily select some galinettes and drop the nature! It will be easier to find them if you know what I mean. For us, developer, that means we need to be able to select some galinette data in the database to display them in our application.
+					</aside>
+				</section>
+
+				<section>
+					<h2>What is a <strong class="php-color">Query function</strong>?</h2>
+					<blockquote class="fragment">
+						&laquo;A <strong class="sylius-color">query function</strong> is a class which represents <strong class="akeneo-color">a</strong> SQL query.&raquo;
+					</blockquote>
 				</section>
 
 				<section>
@@ -417,7 +436,7 @@
 										ReadModel\ReleaseOfGalinette::class
 									);
 
-									// NEW BouchonnoisCorp\Domain\ReadModel\ReleaseOfGalinette(g.identifier, ...)
+									// NEW ReadModel\ReleaseOfGalinette(g.identifier, g.name, g.birthday)
 									$query = $this->entityManager->createQueryBuilder()
 										->select($select)
 										->from(Galinette::class, 'g')
@@ -428,6 +447,9 @@
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						For now, we will keep simple we will create a query function with the operator NEW from Doctrine. There are several ways to it: a native sql query, DQL query, etc. It builds easily an object with the data retrieved from the database.
+					</aside>
 				</section>
 
 				<section>
@@ -469,6 +491,9 @@
 							}
 						</code>
 					</pre>
+					<aside class="notes">
+						To build the list of galinette released in the nature, we created a model that represent them. We don't use the write model to report data to the end user. This model won't be responsible of changing the state of the galinettes but they represent data. I don't like getter even for read model. To avoid them this model normalizes itself thought the method normalize.
+					</aside>
 				</section>
 
 				<section>
