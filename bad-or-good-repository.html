@@ -116,7 +116,7 @@
 
 				<section>
 					<h2><strong class="sylius-color">Bouchonnois Corp</strong></h2>
-					<img src="images/repository-galinette/bouchonnoiscorp.png">
+					<img src="images/bad-or-good-repository/bouchonnoiscorp.png">
 					<aside class="notes">
 						We won't talk about that today but we will speak about Bouchonnois Corp which is a french corporation of hunters. It owns lot of applications, one of them is used to register their galinettes farming. We will focus on a small part of one of this application to speak about the pattern repository.
 					</aside>
@@ -131,7 +131,7 @@
 
                 <section>
 					<h2>Let's model a <span class="sylius-color">Galinette</span>!</h2>
-					<img src="images/repository-galinette/dede.png">
+					<img src="images/bad-or-good-repository/dede.png">
 					<p><strong class="sylius-color">Dédé, Business Expert</strong> <span class="akeneo-color">@BouchonnoisCorp</span></p>
 					<aside class="notes">
 						First, we need a domain object: a galinette! Before coding we need to ask information for our business expert Dédé (seasoned hunter). He said us that a galinette is a bird that borns someday and then it meets a good hunter. Then he laughed and he wanted to have a break.
@@ -192,6 +192,8 @@
 								public function findGalinetteForARelease(): Galinette[];
 
 								public function findGalinetteIdentifierForAReleaseAsString(): string[];
+
+								// etc ...
 							}
 						</code>
 					</pre>
@@ -207,10 +209,8 @@
 					</aside>
 				</section>
 
-
 				<section>
 					<h2>The good <strong class="php-color">repository</strong></h2>
-					<p class="fragment">Let's use <strong class="sylius-color">doctrine</strong> to design it</p>
 				</section>
 
 				<section>
@@ -246,6 +246,10 @@
 					<aside class="notes">
 						A repository looks like a collection so we need a method to a add a domain object (Galinette) to the repository. Then with a the get we can access to the object we added to it. the method remove allow to delete a object with its identifier. The last method nextIdentifier generates a domain object identifier. It is useful to use uuid to avoid coupling between the database and our application. A uuid is made with the current time and a mac address, this is something to infrastructure layer. That is why the repository generates it!
 					</aside>
+				</section>
+
+				<section>
+					<h2>Let's use <strong class="sylius-color">doctrine</strong> to design it</h2>
 				</section>
 
 				<section>
@@ -401,8 +405,13 @@
 				</section>
 
 				<section>
-					<h2>How to manage my <span class="php-color">SQL queries</span>?</h2>
-					<img src="images/repository-galinette/dede-broucouille.png">
+					<h2>Use your repository to </h2>
+					<h2>get a <strong class="php-color">domain object</strong>!</h2>
+				</section>
+
+				<section>
+					<h2>How to manage my <strong class="php-color">SQL queries</strong>?</h2>
+					<img src="images/bad-or-good-repository/dede-broucouille.png">
 					<aside class="notes">
 						Even a good hunter can fail! When it happens, the hunters organize a release of galinette. The hunters need to easily select some galinettes and drop the nature! It will be easier to find them if you know what I mean. For us, developer, that means we need to be able to select some galinette data in the database to display them in our application.
 					</aside>
@@ -420,7 +429,7 @@
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine\Query;
 
-							final class ReleaseOfGalinette implements Query\ReleaseOfGalinette
+							final class ReleaseOfGalinette implements ReleaseOfGalinette
 							{
 								private $entityManager;
 
@@ -429,14 +438,14 @@
 									$this->entityManager = $entityManager;
 								}
 
-								public function findGalinettes(): array
+								public function findGalinettes(): ReleasedGalinette[]
 								{
 									$select = sprintf(
 										'NEW %s(g.identifier, g.name, g.birthday)',
 										ReadModel\ReleaseOfGalinette::class
 									);
 
-									// NEW ReadModel\ReleaseOfGalinette(g.identifier, g.name, g.birthday)
+									// NEW ReadModel\ReleasedGalinette(g.identifier, g.name, g.birthday)
 									$query = $this->entityManager->createQueryBuilder()
 										->select($select)
 										->from(Galinette::class, 'g')
@@ -453,7 +462,7 @@
 				</section>
 
 				<section>
-					<h2>What is a <strong class="akeneo-color">Read model</strong>?</h2>
+					<h2>What is a <strong class="php-color">Read model</strong>?</h2>
 					<blockquote class="fragment">
 						&laquo;A <strong class="sylius-color">read model</strong> is a immutable model specialized for reads.&raquo;
 					</blockquote>
@@ -464,7 +473,7 @@
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Domain\ReadModel;
 
-							final class ReleaseOfGalinette
+							final class ReleasedGalinette
 							{
 								private $identifier;
 								private $name;
@@ -497,7 +506,7 @@
 				</section>
 
 				<section>
-					<h2>Code example is <strong class="php-color">available</strong> on Github!</h2>
+					<h2>Code example is available on <strong class="php-color">Github</strong>!</h2>
 					<p>
 						<a href="https://github.com/arnolanglade/galinette-repository">
 							https://github.com/arnolanglade/galinette-repository
