@@ -144,21 +144,19 @@
 
 							final class Galinette
 							{
-								private $identifier;
-								private $birthday;
-								private $name;
-								private $gender;
-								private $goToHeavenAt;
-
 								// constructor ...
 
 								public static function born(
 									Identifier $identifier,
 									Birthday $birthday,
-									Name $name,
 									Gender $gender
 								): Galinette {
-									return new self($identifier, $birthday, $name, $gender);
+									return new self($identifier, $birthday, new Name(''), $gender);
+								}
+
+							    public function name(Name $name): void
+								{
+									$this->name = $name;
 								}
 
 								public function goToHeaven(): void
@@ -428,29 +426,31 @@
 						<code class="php hljs" data-trim >
 							namespace BouchonnoisCorp\Infrastructure\Storage\Doctrine\Query;
 
-							final class ReleaseOfGalinette implements ReleaseOfGalinette
+							final class ReleaseOfGalinette
 							{
-								private $entityManager;
+								private $connection;
 
-								public function __construct(EntityManagerInterface $entityManager)
+								public function __construct(Connection $connection)
 								{
-									$this->entityManager = $entityManager;
+									$this->connection = $connection;
 								}
 
-								public function findGalinettes(): ReleasedGalinette[]
+								public function findGalinettes(): array
 								{
-									$select = sprintf(
-										'NEW %s(g.identifier, g.name, g.birthday)',
-										ReadModel\ReleaseOfGalinette::class
-									);
+									$query = 'SELECT g.identifier, g.name, g.birthday FROM galinette as g'
 
-									// NEW ReadModel\ReleasedGalinette(g.identifier, g.name, g.birthday)
-									$query = $this->entityManager->createQueryBuilder()
-										->select($select)
-										->from(Galinette::class, 'g')
-										->getQuery();
+									$statement = $this->connection->query($query);
 
-									return $query->execute();
+									$galinettes = [];
+									while ($galinette = $statement->fetch()) {
+										$galinettes[] = new ReadModel\ReleasedGalinette(
+											$galinette['identifier'],
+											$galinette['name'],
+											$galinette['birthday']
+										);
+									}
+
+									return $galinettes;
 								}
 							}
 						</code>
@@ -460,12 +460,12 @@
 					</aside>
 				</section>
 
-				<section>
-					<h2>What is a <strong class="php-color">Read model</strong>?</h2>
-					<blockquote class="fragment">
-						&laquo;A <strong class="sylius-color">read model</strong> is a immutable model specialized for reads.&raquo;
-					</blockquote>
-				</section>
+				<!--<section>-->
+					<!--<h2>What is a <strong class="php-color">Read model</strong>?</h2>-->
+					<!--<blockquote class="fragment">-->
+						<!--&laquo;A <strong class="sylius-color">read model</strong> is an easily serializable object which is not responsible of changing the application state&raquo;-->
+					<!--</blockquote>-->
+				<!--</section>-->
 
 				<section>
 					<pre>
@@ -479,9 +479,9 @@
 								private $birthday;
 
 								public function __construct(
-									Identifier $identifier,
-									Name $name,
-									Birthday $birthday
+									string $identifier,
+									string $name,
+									string $birthday
 								) {
 									$this->identifier = $identifier;
 									$this->name = $name;
@@ -491,9 +491,9 @@
 								public function normalize(): array
 								{
 									return [
-										'id' => (string) $this->identifier,
-										'name' => (string) $this->name,
-										'birthday' => (string) $this->birthday,
+										'id' => $this->identifier,
+										'name' => $this->name,
+										'birthday' => $this->birthday,
 									];
 								}
 							}
